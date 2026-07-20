@@ -1,0 +1,134 @@
+<!-- Toast -->
+<ng2-toasty [position]="'top-right'"></ng2-toasty>
+
+<!-- Default view: show location request table -->
+<nz-card [@slideIn]>
+    <!-- Actions -->
+    <div nz-row nzGutter="16" style="margin-bottom: 25px;">
+        <div nz-col class="gutter-row d-flex" nzSpan="7">
+            <nz-input-group [nzPrefix]="prefixTemplate" [nzSuffix]="suffixTemplate">
+                <input nz-input placeholder="Press enter to search." [(ngModel)]="searchBoxValue"
+                    (keyup.enter)="onKeyUp()" ng-model-options="{ debounce: 1000 }" #searchBox nzSize="small">
+            </nz-input-group>
+            <ng-template #prefixTemplate>
+                <i nz-icon nzType="search" title="Search" class="cursor-pointer" theme="outline"
+                    (click)="onKeyUp()"></i>
+            </ng-template>
+            <ng-template #suffixTemplate>
+                <span style="color: #a1887c;font-size: 12px;text-decoration: underline;cursor: pointer;background-color: #ffffff;"
+                    (click)="resetSearch()">
+                    Reset
+                </span>
+            </ng-template>
+        </div>
+        <div nz-col class="gutter-row" nzSpan="17" *ngIf="this.serviceArea">
+            <span style="float: right;font-size: 16px; margin-top: 10px;color: #2a2a2a;font-weight: 500;"
+                class="m-r-45">Service Area: {{this.serviceArea}} miles</span>
+        </div>
+    </div>
+    <div nz-row nzGutter="16">
+        <div nz-col class="gutter-row" nzSpan='24'>
+            <nz-table [nzLoading]="loadingFlag" [nzTemplateMode]="true">
+                <thead (nzSortChange)="sort($event)" nzSingleSort>
+                    <tr>
+                        <th class="font-16 font-small-caps" nzWidth="50%" nzShowFilter="true"
+                            [nzFilters]="serviceFilterList" [nzFilterMultiple]="false"
+                            (nzFilterChange)="changeFilter($event)">Address</th>
+                        <th class="font-16 font-small-caps">User</th>
+                        <!-- <th class="font-16 font-small-caps">Guest</th> -->
+                        <th class="font-16 font-small-caps" nzShowSort nzSortKey="Distance">Distance (miles)</th>
+                        <th nzCustomFilter class="font-16 font-small-caps" nzShowSort nzSortKey="Created">Request Date
+                            <i
+                                        nz-th-extra
+                                        class=" ant-table-filter-icon"
+                                           
+                                        nz-icon
+                                        nz-dropdown
+                                        #dropdown="nzDropdown"
+                                        nzType="filter"
+                                        nzTheme="fill"
+                                        [nzDropdownMenu]="menu"
+                                        [class.ant-table-filter-open]="dropdown.nzVisible"
+                                        nzTrigger="click"
+                                        nzPlacement="bottomRight"
+                                        [nzClickHide]="false"
+                                        [(nzVisible)]="visible"
+                                        nzTableFilter
+                                        [ngClass]="{'ant-table-filter-selected': (dateRange.length>0) ? true : false}"
+                                      ></i>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of locationData" class="data-row"
+                        [ngClass]="{'opac-half': data.InServiceArea}"
+                        [ngStyle]="{'background-color': (data.Archive==1) ? '#FFEBEE' : null}">
+                        <td>
+                            {{data.Name}}
+                            <span *ngIf="data.InServiceArea">
+                                <i nz-icon nzType="check-circle" style="color: green;" title="In service area"
+                                    nzTheme="outline"></i>
+                            </span>
+                        </td>
+                        <td>
+                            <span *ngIf="data.UserName">
+                                {{data.UserName}}
+                            </span>
+                            <span *ngIf="data.GuestName" nz-popover [nzPopoverContent]="contentGuest" nzPopoverTrigger="hover"
+                                nzPopoverPlacement="right">
+                                {{data.GuestName}} <i nz-icon nzType="info-circle" nzTheme="outline" style="color: #a1887c"></i>
+                                <ng-template #contentGuest>
+                                    <div style="padding: 15px">
+                                        <span style="font-weight: bold;">
+                                            Guest detail
+                                        </span>
+                                        <br/>
+                                        <i class="far fa-envelope" *ngIf="data.GuestEmail" style="color:red;margin-right: 5px;"></i>{{data.GuestEmail}}
+                                        <br/>
+                                        <i nz-icon nzType="phone" *ngIf="data.GuestPhone" nzTheme="outline" style="color: green; margin-right: 5px;"></i>{{data.GuestPhone}}
+                                    </div>
+                                </ng-template>
+                            </span>
+                            <span *ngIf="!data.UserName && !data.GuestName" [nz-tooltip]="(data.Archive==1? 'User no longer exists': null)">
+                                -
+                            </span>
+                        </td>
+                        <td>
+                            <span *ngIf="data.Distance">
+                                {{data.Distance}}
+                            </span>
+                            <span *ngIf="!data.Distance">
+                                -
+                            </span>
+                        </td>
+                        <td>
+                            {{data.CreatedShow}}
+                        </td>
+                    </tr>
+                </tbody>
+            </nz-table>
+            <nz-dropdown-menu #menu="nzDropdownMenu">
+                <div class="">
+                  <nz-range-picker nzAllowClear="false"
+                  [(ngModel)]="dateRange"
+                      nzFormat="yyyy-MM-dd" ></nz-range-picker>
+                  <!-- <button nz-button nzSize="small" nzType="primary" (click)="changeDateFilter(listTab.dateRange)" class="search-button">Filter</button>
+                  <button nz-button nzSize="small" (click)="resetDate(listTab);changeDateFilter(listTab.dateRange)">Reset</button> -->
+                </div>
+                <div class="ant-table-filter-dropdown-btns">
+                  <a [attr.disabled]="(dateRangeCalled.length==0 && dateRange.length == 0 ) ? true : null" class="ant-table-filter-dropdown-link confirm" (click)="visible=false;changeDateFilter(dateRange)"><span>OK</span></a>
+                  <a class="ant-table-filter-dropdown-link clear" (click)="visible=false;resetDateFilter();changeDateFilter(dateRange)"><span>Reset</span></a>
+              </div>
+              
+            </nz-dropdown-menu>
+            <div *ngIf="locationData?.length && !searchBoxValue && locationTable.pagination" class="m-t-12" style="text-align: right;">
+                <nz-pagination [(nzPageIndex)]="locationTable.pagination.curPage" [nzTotal]="locationTable.pagination.itemCount"
+                    (nzPageIndexChange)="changePageNumber($event)" (nzPageSizeChange)="changePageSize($event)"
+                    [nzPageSizeOptions]="locationTablePageSizeOptions" nzShowSizeChanger></nz-pagination>
+            </div>
+            <div *ngIf="!locationData?.length && !loadingFlag">
+                <nz-list [nzDataSource]="[]"></nz-list>
+            </div>
+        </div>
+    </div>
+</nz-card>

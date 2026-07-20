@@ -1,0 +1,15 @@
+.amount-show-container {
+    padding: 8px 20px;
+    background-color: #e5ddd8ba;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 14px;
+    height: 100%;
+    margin-right: 20px;
+    width: 100%;
+}
+
+.tip-euro {
+    height: 15px;
+    width: auto;
+}

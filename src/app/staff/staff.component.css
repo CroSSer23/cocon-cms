@@ -1,0 +1,114 @@
+.day-working {
+    color: #a1887c;
+    margin-right: 2px;
+}
+
+.day-off {
+    color: #e5ddd8;
+    margin-right: 2px;
+}
+
+.days-checkbox-container {
+    width: 100%;
+    border: 1px solid #edf2f9;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.day-check-box {
+    margin-bottom: 8px;
+}
+
+.detailIcon {
+    width: 16px;
+    color: #a1887c;
+    cursor: pointer;
+    position: relative;
+    top: 2px;
+    margin-right: 5px;
+}
+
+.day-panel-content {
+    padding: 0.2rem 1.8rem 0.2rem 1.5rem;
+}
+
+.ant-drawer.ant-drawer-open .ant-drawer-mask {
+    background-color: rgba(0, 0, 0, 0.30) !important;
+}
+
+.rate-selector {
+    /* border: 1px solid #edf2f9; */
+    border-radius: 5px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+::ng-deep .vertical-center-modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+::ng-deep .vertical-center-modal .ant-modal {
+    top: 0;
+}
+
+.detail-left {
+    height: 75vh;
+    margin-bottom: 0px;
+    overflow-y: auto;
+}
+
+.detail-left::-webkit-scrollbar {
+    width: 6px;
+    background-color: #F5F5F5;
+    border-radius: 15px;
+}
+
+.detail-left::-webkit-scrollbar-thumb {
+    background-color: #c1c1c1;
+    border-radius: 15px;
+}
+
+.detail-left::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #F5F5F5;
+    border-radius: 15px;
+}
+
+.detail-right {
+    height: 75vh;
+    margin-bottom: 0px;
+    overflow-y: auto;
+}
+
+.detail-right::-webkit-scrollbar {
+    width: 6px;
+    background-color: #F5F5F5;
+    border-radius: 15px;
+}
+
+.detail-right::-webkit-scrollbar-thumb {
+    background-color: #c1c1c1;
+    border-radius: 15px;
+}
+
+.detail-right::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #F5F5F5;
+    border-radius: 15px;
+}
+
+.left-panel-row {
+    padding: 5px 8px 0px 8px;
+    transition: all .3s;
+}
+
+.left-panel-row:hover {
+    background-color: rgba(245, 243, 242, 0.36);
+    cursor: pointer;
+}
+
+.left-panel-row-selected {
+    background-color: rgba(245, 243, 242, 1);
+}

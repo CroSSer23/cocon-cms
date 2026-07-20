@@ -1,0 +1,158 @@
+.coverImageDiv {
+    height: 235px;
+    overflow: hidden;
+}
+
+.coverImage {
+    border-radius: 6px 6px 0px 0px;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.categoryCard {
+    transition: all 0.4s;
+    border-radius: 6px;
+}
+
+.categoryCard:hover {
+    box-shadow: 0 0px 2px 0 rgba(229, 221, 216, 1), 0 3px 8px 0 rgba(229, 221, 216, 1) !important;
+}
+
+.categoryCard:hover .cardEditIcon {
+    visibility: visible;
+}
+
+.cardEditIcon {
+    visibility: hidden;
+}
+
+.img-thumb-div {
+    height: 3em;
+    overflow: hidden;
+}
+
+.table-img-thumb-div {
+    width: 3em;
+    height: 4em;
+    overflow: hidden;
+}
+
+.img-uploading-div {
+    height: 3em;
+}
+
+.img-thumb {
+    border-radius: 6px;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+.fade {
+    transition: all 0.4s;
+}
+
+.modalImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.tableActionItem {
+    color: #e5ddd8;
+}
+
+.tableActionItem:hover {
+    color: #A1887C;
+    cursor: pointer;
+}
+
+.toggleView {
+    position: relative;
+    top: -1px;
+    padding: 7px;
+    margin-right: 8px;
+    /* border: 1px solid #edf2f9; */
+    border-radius: 5px;
+    box-shadow: 0px 0px 1px 1px #e5ddd8;
+}
+
+.toggleIconPosition {
+    vertical-align: -.20em;
+}
+
+.overflowHidden {
+    height: 15vh;
+    overflow: hidden;
+}
+
+.overflowHidden:hover {
+    overflow-y: auto;
+}
+
+.scroller {
+    scrollbar-color: #c1c1c1 #ffffff;
+    scrollbar-width: thin;
+    scroll-behavior: smooth;
+}
+
+.scroller::-webkit-scrollbar {
+    width: 6px;
+    background-color: #ffffff;
+    border-radius: 15px;
+}
+
+.scroller::-webkit-scrollbar-thumb {
+    background-color: #c1c1c1;
+    border-radius: 15px;
+}
+
+.scroller::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #ffffff;
+    border-radius: 15px;
+}
+
+.cardDescription-content, .cardDescription:hover, .cardDescription:focus {
+    visibility: visible;
+}
+
+.cardDescription-content {
+    height: 15vh;
+}
+
+.cardDescription::-webkit-scrollbar {
+    width: 6px;
+    background-color: #F5F5F5;
+    border-radius: 15px;
+}
+
+.cardDescription::-webkit-scrollbar-thumb {
+    background-color: #c1c1c1;
+    border-radius: 15px;
+}
+
+.cardDescription::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #F5F5F5;
+    border-radius: 15px;
+}
+
+.card-description {
+    max-width: 100%;
+    max-height: 15vh;
+    min-height: 15vh;
+    margin-top: 12px;
+    scroll-behavior: smooth;
+}
+
+::ng-deep .cdk-drag-preview {
+    display: table;
+}
+
+::ng-deep .cdk-drag-placeholder {
+    opacity: 0;
+}
+::ng-deep .nz-input-number{ width:100% !important;}

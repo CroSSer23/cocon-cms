@@ -1,0 +1,729 @@
+<!-- Toast -->
+<ng2-toasty [position]="'top-right'"></ng2-toasty>
+
+<!-- Default UI: show all staff current week schedule -->
+<nz-card [@slideIn]>
+    <div nz-row nzGutter="16" style="margin-bottom: 20px;">
+        <div nz-col nzSpan="5" class="gutter-row">
+            <nz-select nzShowSearch class="ant-col-24 m-r-10" nzPlaceHolder="Select Staff" nzTitle="Select Staff"
+                [(ngModel)]="selectedStaff" (ngModelChange)="setStaff($event)">
+                <nz-option *ngFor="let staff of staffList" [nzValue]="staff.StaffId" [nzLabel]="staff.StaffName">
+                </nz-option>
+            </nz-select>
+        </div>
+        <div nz-col nzSpan="9" class="gutter-row">
+            <!-- <div class="color-theme" nz-popover [nzPopoverContent]="contentColorTheme" nzPopoverTrigger="hover"
+                nzPopoverPlacement="right">
+                &nbsp;
+            </div>
+            <ng-template #contentColorTheme>
+                <div>
+                    <nz-badge nzColor="#9c7863" nzText="Don't repeat"></nz-badge>
+                    <br />
+                    <nz-badge nzColor="#e5ddd8" nzText="Weekly ongoing"></nz-badge>
+                    <br />
+                    <nz-badge nzColor="#cdbcb1" nzText="Specific date"></nz-badge>
+                    <br />
+                </div>
+                </div><button nz-button nzType="primary" [nzSize]="size" nzShape="circle"><span nz-icon nzType="download"></span></button>
+            </ng-template> -->
+        </div>
+        <div nz-col nzSpan="2" class="gutter-row">
+        <button nz-button nzType="primary"  nzShape="circle" style="float: right;" (click)="refresh()" title="Refresh staff data">
+            <fa-icon [icon]="faRefresh"></fa-icon>
+        </button>
+            
+        </div>
+        <div nz-col nzSpan="8" class="gutter-row">
+            <!-- <div class="text-center color-brand-primary" style="float: right;">
+                <nz-date-picker [nzShowToday]="true" [nzAllowClear]="false" [(ngModel)]="selectedDate"
+                    [nzFormat]="dateFormat" (ngModelChange)="fetchSchedule($event)">
+                </nz-date-picker>
+            </div> -->
+            <div nz-row nzGutter="8" class="custom-date-panel text-center color-brand-primary">
+                <div class="gutter-row p-8 b-r-1 cursor-pointer" nz-col nzSpan="2" (click)="setPrevWeek()"
+                    title="Previous">
+                    <i nz-icon nzType="left"></i>
+                </div>
+                <div class="gutter-row p-t-8 p-b-8 b-r-1 cursor-pointer" nz-col nzSpan="5" (click)="setToday()"
+                    [ngClass]="{'back-light' : todaySelected}">
+                    Today
+                </div>
+                <div class="gutter-row p-t-8 p-b-8 b-r-1" nz-col nzSpan="15" nz-popover  
+                    [nzPopoverContent]="contentCalendar" nzPopoverTrigger="click" nzPopoverPlacement="bottom" nzPopoverOverlayClassName="calendar-popover" [(nzVisible)]="popoverVisible">
+                    {{this.selectedWeekString}}
+                </div>
+                <div class="gutter-row p-8 cursor-pointer" nz-col nzSpan="2" (click)="setNextWeek()" title="Next">
+                    <i nz-icon nzType="right"></i>
+                </div>
+                <ng-template #contentCalendar>
+                    <nz-calendar [nzFullscreen]="false" [(ngModel)]="selectedDate"
+                        (nzSelectChange)="fetchScheduleForDate($event)">
+                    </nz-calendar>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+    <div nz-row nzGutter="16" style="margin-bottom: 3px;">
+        <div nz-col nzSpan="24">
+            <span style="float: left;">
+                <nz-badge nzColor="#ffffff" nzText="GO - General Offer" style="margin: 0px 5px 0px 0px;"></nz-badge>
+                <nz-badge nzColor="#ffffff" nzText="IC - Instant Confirmation" style="margin-right: 5px;"></nz-badge>
+            </span>
+            <span style="float: right;">
+                <nz-badge nzColor="#9c7863" nzText="Don't repeat" style="margin: 0px 5px 0px 0px;"></nz-badge>
+                <nz-badge nzColor="#e5ddd8" nzText="Weekly ongoing" style="margin-right: 5px;"></nz-badge>
+                <nz-badge nzColor="#cdbcb1" nzText="Specific date"></nz-badge>
+            </span>
+        </div>
+    </div>
+    <div nz-row nzGutter="16">
+        <div nz-col nzSpan="24" class="gutter-row" style="overflow: auto;">
+            <nz-table   [nzTemplateMode]="true" [nzBordered]="true" 
+                nzSize="default" [nzLoading]="loadingFlag" [nzScroll]="{ x: '1340px'}">
+                <thead>
+                    <tr>
+                        <th class="font-small-caps text-center" style="position: relative; width: 150px !important; max-width: 150px !important; min-width: 150px !important;" nzWidth="150px" nzLeft="0px">Staff</th>
+                        <th class="font-small-caps text-center" style=" position: relative;width: 170px !important; max-width: 170px !important; min-width: 170px !important;" nzWidth="170px" *ngFor="let column of currentWeek;let i = index;">
+                            {{column.DateShow}}
+                            <a (click)="sortStaffList(column,i)"
+                             style="text-decoration: underline;"  [ngClass]="{'t1': column.Selected, 't2': !column.Selected}">
+                             <i nz-icon nzType="caret-up" nzTheme="outline"></i>
+                        </a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of scheduleData" class="text-center">
+                        <td class="text-left bg-white" style="position: relative; width: 150px !important; max-width: 150px !important; min-width: 150px !important;" nzLeft="0px" nzWidth="150px">
+                            <span class="f-600">
+                                {{data.Name}}
+                            </span>
+                            <br />
+                            <span style="font-size: 12px;" class="text-muted">
+                                GO: {{data.GeneralOfferHours}} hrs/week
+                                <br />
+                                IC: {{data.InstantConfirmationHours}} hrs/week
+                            </span>
+                        </td>
+                        <td class="data-row"  style="position: relative; width: 170px !important; max-width: 170px !important; min-width: 170px !important;" nzWidth="170px" [ngClass]="{'cursor-pointer' : !data.Schedule.Monday.CurrentSchedular}">
+                            <div class="schedule-tuple" *ngIf="data.Schedule.Monday.GeneralOffer.DayStart"
+                                [ngClass]="{'single-day': data.Schedule.Monday.GeneralOffer.singleDay, 'spe-day': data.Schedule.Monday.GeneralOffer.specDay, 'ong-day': data.Schedule.Monday.GeneralOffer.ongDay}"
+                                (click)="editSchedule(data.StaffId, data.Schedule.Monday.DayCode, 'GENERAL_OFFER')">
+                                <span class="schedule-type-head">GO </span>
+                                {{data.Schedule.Monday.GeneralOffer.DayStart}} -
+                                {{data.Schedule.Monday.GeneralOffer.DayEnd}}
+                            </div>
+                            <div class="schedule-tuple data-row-action"
+                                *ngIf="!data.Schedule.Monday.GeneralOffer.CurrentSchedular">
+                                <button nz-button
+                                    (click)="newSchedule(data.StaffId, data.Schedule.Monday.Date, 'GENERAL_OFFER')"
+                                    class="add-sch-btn">
+                                    <i nz-icon nzType="plus"></i> General Offer
+                                </button>
+                            </div>
+                            <div class="schedule-tuple"
+                                *ngIf="data.Schedule.Monday.InstantConfirmation.CurrentSchedular"
+                                [ngClass]="{'single-day': data.Schedule.Monday.InstantConfirmation.singleDay, 'spe-day': data.Schedule.Monday.InstantConfirmation.specDay, 'ong-day': data.Schedule.Monday.InstantConfirmation.ongDay}"
+                                (click)="editSchedule(data.StaffId, data.Schedule.Monday.DayCode, 'INSTANT_CONFIRMATION')">
+                                <span class="schedule-type-head">IC </span>
+                                {{data.Schedule.Monday.InstantConfirmation.DayStart}} -
+                                {{data.Schedule.Monday.InstantConfirmation.DayEnd}}
+                            </div>
+                            <div class="schedule-tuple data-row-action"
+                                *ngIf="!data.Schedule.Monday.InstantConfirmation.CurrentSchedular">
+                                <button nz-button class="add-sch-btn"
+                                    (click)="newSchedule(data.StaffId, data.Schedule.Monday.Date, 'INSTANT_CONFIRMATION')">
+                                    <i nz-icon nzType="plus"></i> Instant Confirmation
+                                </button>
+                            </div>
+                            <div class="schedule-tuple" *ngIf="data.Schedule.Monday.BlockTime.CurrentSchedular"
+                                [ngClass]="{'single-day': data.Schedule.Monday.BlockTime.singleDay, 'spe-day': data.Schedule.Monday.BlockTime.specDay, 'ong-day': data.Schedule.Monday.BlockTime.ongDay}"
+                                (click)="editSchedule(data.StaffId, data.Schedule.Monday.DayCode, 'BLOCKTIME')">
+                                <span class="schedule-type-head">Blocks </span>
+                                {{data.Schedule.Monday.BlockTime.Blocks.length}}
+                            </div>
+                            <div class="schedule-tuple data-row-action"
+                                *ngIf="!data.Schedule.Monday.BlockTime.CurrentSchedular">
+                                <button nz-button class="add-sch-btn"
+                                    (click)="newSchedule(data.StaffId, data.Schedule.Monday.Date, 'BLOCKTIME')">
+                                    <i nz-icon nzType="plus"></i> Blocks
+                                </button>
+                            </div>
+                            <!-- <div class="schedule-tuple data-row-action"
+                                *ngIf="!data.Schedule.Monday.GeneralOffer.CurrentSchedular || !data.Schedule.Monday.InstantConfirmation.CurrentSchedular || !data.Schedule.Monday.BlockTime.CurrentSchedular">
+                                <button nz-button nz-dropdown [nzDropdownMenu]="MondayMenu" [nzPlacement]="topRight" class="add-sch-btn">
+                                    <i nz-icon nzType="plus"></i>
+                                    <nz-dropdown-menu #MondayMenu="nzDropdownMenu">
+                                        <ul nz-menu>
+                                            <li nz-menu-item
+                                                [nzDisabled]="data.Schedule.Monday.GeneralOffer.CurrentSchedular ? true : false"
+                                                (click)="newSchedule(data.StaffId, data.Schedule.Monday.Date, 'GENERAL_OFFER')">
+                                                General Offer</li>
+                                            <li nz-menu-item
+                                                [nzDisabled]="data.Schedule.Monday.InstantConfirmation.CurrentSchedular ? true : false"
+                                                (click)="newSchedule(data.StaffId, data.Schedule.Monday.Date, 'INSTANT_CONFIRMATION')">
+                                                Instant Confirmation</li>
+                                            <li nz-menu-item
+                                                [nzDisabled]="data.Schedule.Monday.BlockTime.CurrentSchedular ? true : false"
+                                                (click)="newSchedule(data.StaffId, data.Schedule.Monday.Date, 'BLOCKTIME')">
+                                                Block Time</li>
+                                        </ul>
+                                    </nz-dropdown-menu>
+                                </button>
+                            </div> -->
+                        </td>
+                        <td class="data-row" style="position: relative; width: 170px !important; max-width: 170px !important; min-width: 170px !important;" nzWidth="170px" [ngClass]="{'cursor-pointer' : !data.Schedule.Tuesday.CurrentSchedular}">
+                            <div class="schedule-tuple" *ngIf="data.Schedule.Tuesday.GeneralOffer.DayStart"
+                                [ngClass]="{'single-day': data.Schedule.Tuesday.GeneralOffer.singleDay, 'spe-day': data.Schedule.Tuesday.GeneralOffer.specDay, 'ong-day': data.Schedule.Tuesday.GeneralOffer.ongDay}"
+                                (click)="editSchedule(data.StaffId, data.Schedule.Tuesday.DayCode, 'GENERAL_OFFER')">
+                                <span class="schedule-type-head">GO </span>
+                                {{data.Schedule.Tuesday.GeneralOffer.DayStart}} -
+                                {{data.Schedule.Tuesday.GeneralOffer.DayEnd}}
+                            </div>
+                            <div class="schedule-tuple data-row-action"
+                                *ngIf="!data.Schedule.Tuesday.GeneralOffer.CurrentSchedular">
+                                <button nz-button
+                                    (click)="newSchedule(data.StaffId, data.Schedule.Tuesday.Date, 'GENERAL_OFFER')"
+                                    class="add-sch-btn">
+                                    <i nz-icon nzType="plus"></i> General Offer
+                                </button>
+                            </div>
+                            <div class="schedule-tuple"
+                                *ngIf="data.Schedule.Tuesday.InstantConfirmation.CurrentSchedular"
+                                [ngClass]="{'single-day': data.Schedule.Tuesday.InstantConfirmation.singleDay, 'spe-day': data.Schedule.Tuesday.InstantConfirmation.specDay, 'ong-day': data.Schedule.Tuesday.InstantConfirmation.ongDay}"
+                                (click)="editSchedule(data.StaffId, data.Schedule.Tuesday.DayCode, 'INSTANT_CONFIRMATION')">
+                                <span class="schedule-type-head">IC </span>
+                                {{data.Schedule.Tuesday.InstantConfirmation.DayStart}} -
+                                {{data.Schedule.Tuesday.InstantConfirmation.DayEnd}}
+                            </div>
+                            <div class="schedule-tuple data-row-action"
+                                *ngIf="!data.Schedule.Tuesday.InstantConfirmation.CurrentSchedular">
+                                <button nz-button class="add-sch-btn"
+                                    (click)="newSchedule(data.StaffId, data.Schedule.Tuesday.Date, 'INSTANT_CONFIRMATION')">
+                                    <i nz-icon nzType="plus"></i> Instant Confirmation
+                                </button>
+                            </div>
+                            <div class="schedule-tuple" *ngIf="data.Schedule.Tuesday.BlockTime.CurrentSchedular"
+                                [ngClass]="{'single-day': data.Schedule.Tuesday.BlockTime.singleDay, 'spe-day': data.Schedule.Tuesday.BlockTime.specDay, 'ong-day': data.Schedule.Tuesday.BlockTime.ongDay}"
+                                (click)="editSchedule(data.StaffId, data.Schedule.Tuesday.DayCode, 'BLOCKTIME')">
+                                <span class="schedule-type-head">Blocks </span>
+                                {{data.Schedule.Tuesday.BlockTime.Blocks.length}}
+                            </div>
+                            <div class="schedule-tuple data-row-action"
+                                *ngIf="!data.Schedule.Tuesday.BlockTime.CurrentSchedular">
+                                <button nz-button class="add-sch-btn"
+                                    (click)="newSchedule(data.StaffId, data.Schedule.Tuesday.Date, 'BLOCKTIME')">
+                                    <i nz-icon nzType="plus"></i> Blocks
+                                </button>
+                            </div>
+                        </td>
+                        <td class="data-row" style="position: relative; width: 170px !important; max-width: 170px !important; min-width: 170px !important;" nzWidth="170px" [ngClass]="{'cursor-pointer' : !data.Schedule.Wednesday.CurrentSchedular}">
+                            <div class="schedule-tuple" *ngIf="data.Schedule.Wednesday.GeneralOffer.DayStart"
+                                [ngClass]="{'single-day': data.Schedule.Wednesday.GeneralOffer.singleDay, 'spe-day': data.Schedule.Wednesday.GeneralOffer.specDay, 'ong-day': data.Schedule.Wednesday.GeneralOffer.ongDay}"
+                                (click)="editSchedule(data.StaffId, data.Schedule.Wednesday.DayCode, 'GENERAL_OFFER')">
+                                <span class="schedule-type-head">GO </span>
+                                {{data.Schedule.Wednesday.GeneralOffer.DayStart}} -
+                                {{data.Schedule.Wednesday.GeneralOffer.DayEnd}}
+                            </div>
+                            <div class="schedule-tuple data-row-action"
+                                *ngIf="!data.Schedule.Wednesday.GeneralOffer.CurrentSchedular">
+                                <button nz-button
+                                    (click)="newSchedule(data.StaffId, data.Schedule.Wednesday.Date, 'GENERAL_OFFER')"
+                                    class="add-sch-btn">
+                                    <i nz-icon nzType="plus"></i> General Offer
+                                </button>
+                            </div>
+                            <div class="schedule-tuple"
+                                *ngIf="data.Schedule.Wednesday.InstantConfirmation.CurrentSchedular"
+                                [ngClass]="{'single-day': data.Schedule.Wednesday.InstantConfirmation.singleDay, 'spe-day': data.Schedule.Wednesday.InstantConfirmation.specDay, 'ong-day': data.Schedule.Wednesday.InstantConfirmation.ongDay}"
+                                (click)="editSchedule(data.StaffId, data.Schedule.Wednesday.DayCode, 'INSTANT_CONFIRMATION')">
+                                <span class="schedule-type-head">IC </span>
+                                {{data.Schedule.Wednesday.InstantConfirmation.DayStart}} -
+                                {{data.Schedule.Wednesday.InstantConfirmation.DayEnd}}
+                            </div>
+                            <div class="schedule-tuple data-row-action"
+                                *ngIf="!data.Schedule.Wednesday.InstantConfirmation.CurrentSchedular">
+                                <button nz-button class="add-sch-btn"
+                                    (click)="newSchedule(data.StaffId, data.Schedule.Wednesday.Date, 'INSTANT_CONFIRMATION')">
+                                    <i nz-icon nzType="plus"></i> Instant Confirmation
+                                </button>
+                            </div>
+                            <div class="schedule-tuple" *ngIf="data.Schedule.Wednesday.BlockTime.CurrentSchedular"
+                                [ngClass]="{'single-day': data.Schedule.Wednesday.BlockTime.singleDay, 'spe-day': data.Schedule.Wednesday.BlockTime.specDay, 'ong-day': data.Schedule.Wednesday.BlockTime.ongDay}"
+                                (click)="editSchedule(data.StaffId, data.Schedule.Wednesday.DayCode, 'BLOCKTIME')">
+                                <span class="schedule-type-head">Blocks </span>
+                                {{data.Schedule.Wednesday.BlockTime.Blocks.length}}
+                            </div>
+                            <div class="schedule-tuple data-row-action"
+                                *ngIf="!data.Schedule.Wednesday.BlockTime.CurrentSchedular">
+                                <button nz-button class="add-sch-btn"
+                                    (click)="newSchedule(data.StaffId, data.Schedule.Wednesday.Date, 'BLOCKTIME')">
+                                    <i nz-icon nzType="plus"></i> Blocks
+                                </button>
+                            </div>
+                        </td>
+                        <td class="data-row" style="position: relative; width: 170px !important; max-width: 170px !important; min-width: 170px !important;" nzWidth="170px" [ngClass]="{'cursor-pointer' : !data.Schedule.Thursday.CurrentSchedular}">
+                            <div class="schedule-tuple" *ngIf="data.Schedule.Thursday.GeneralOffer.DayStart"
+                                [ngClass]="{'single-day': data.Schedule.Thursday.GeneralOffer.singleDay, 'spe-day': data.Schedule.Thursday.GeneralOffer.specDay, 'ong-day': data.Schedule.Thursday.GeneralOffer.ongDay}"
+                                (click)="editSchedule(data.StaffId, data.Schedule.Thursday.DayCode, 'GENERAL_OFFER')">
+                                <span class="schedule-type-head">GO </span>
+                                {{data.Schedule.Thursday.GeneralOffer.DayStart}} -
+                                {{data.Schedule.Thursday.GeneralOffer.DayEnd}}
+                            </div>
+                            <div class="schedule-tuple data-row-action"
+                                *ngIf="!data.Schedule.Thursday.GeneralOffer.CurrentSchedular">
+                                <button nz-button
+                                    (click)="newSchedule(data.StaffId, data.Schedule.Thursday.Date, 'GENERAL_OFFER')"
+                                    class="add-sch-btn">
+                                    <i nz-icon nzType="plus"></i> General Offer
+                                </button>
+                            </div>
+                            <div class="schedule-tuple"
+                                *ngIf="data.Schedule.Thursday.InstantConfirmation.CurrentSchedular"
+                                [ngClass]="{'single-day': data.Schedule.Thursday.InstantConfirmation.singleDay, 'spe-day': data.Schedule.Thursday.InstantConfirmation.specDay, 'ong-day': data.Schedule.Thursday.InstantConfirmation.ongDay}"
+                                (click)="editSchedule(data.StaffId, data.Schedule.Thursday.DayCode, 'INSTANT_CONFIRMATION')">
+                                <span class="schedule-type-head">IC </span>
+                                {{data.Schedule.Thursday.InstantConfirmation.DayStart}} -
+                                {{data.Schedule.Thursday.InstantConfirmation.DayEnd}}
+                            </div>
+                            <div class="schedule-tuple data-row-action"
+                                *ngIf="!data.Schedule.Thursday.InstantConfirmation.CurrentSchedular">
+                                <button nz-button class="add-sch-btn"
+                                    (click)="newSchedule(data.StaffId, data.Schedule.Thursday.Date, 'INSTANT_CONFIRMATION')">
+                                    <i nz-icon nzType="plus"></i> Instant Confirmation
+                                </button>
+                            </div>
+                            <div class="schedule-tuple" *ngIf="data.Schedule.Thursday.BlockTime.CurrentSchedular"
+                                [ngClass]="{'single-day': data.Schedule.Thursday.BlockTime.singleDay, 'spe-day': data.Schedule.Thursday.BlockTime.specDay, 'ong-day': data.Schedule.Thursday.BlockTime.ongDay}"
+                                (click)="editSchedule(data.StaffId, data.Schedule.Thursday.DayCode, 'BLOCKTIME')">
+                                <span class="schedule-type-head">Blocks </span>
+                                {{data.Schedule.Thursday.BlockTime.Blocks.length}}
+                            </div>
+                            <div class="schedule-tuple data-row-action"
+                                *ngIf="!data.Schedule.Thursday.BlockTime.CurrentSchedular">
+                                <button nz-button class="add-sch-btn"
+                                    (click)="newSchedule(data.StaffId, data.Schedule.Thursday.Date, 'BLOCKTIME')">
+                                    <i nz-icon nzType="plus"></i> Blocks
+                                </button>
+                            </div>
+                        </td>
+                        <td class="data-row" style="position: relative; width: 170px !important; max-width: 170px !important; min-width: 170px !important;" nzWidth="170px" [ngClass]="{'cursor-pointer' : !data.Schedule.Friday.CurrentSchedular}">
+                            <div class="schedule-tuple" *ngIf="data.Schedule.Friday.GeneralOffer.DayStart"
+                                [ngClass]="{'single-day': data.Schedule.Friday.GeneralOffer.singleDay, 'spe-day': data.Schedule.Friday.GeneralOffer.specDay, 'ong-day': data.Schedule.Friday.GeneralOffer.ongDay}"
+                                (click)="editSchedule(data.StaffId, data.Schedule.Friday.DayCode, 'GENERAL_OFFER')">
+                                <span class="schedule-type-head">GO </span>
+                                {{data.Schedule.Friday.GeneralOffer.DayStart}} -
+                                {{data.Schedule.Friday.GeneralOffer.DayEnd}}
+                            </div>
+                            <div class="schedule-tuple data-row-action"
+                                *ngIf="!data.Schedule.Friday.GeneralOffer.CurrentSchedular">
+                                <button nz-button
+                                    (click)="newSchedule(data.StaffId, data.Schedule.Friday.Date, 'GENERAL_OFFER')"
+                                    class="add-sch-btn">
+                                    <i nz-icon nzType="plus"></i> General Offer
+                                </button>
+                            </div>
+                            <div class="schedule-tuple"
+                                *ngIf="data.Schedule.Friday.InstantConfirmation.CurrentSchedular"
+                                [ngClass]="{'single-day': data.Schedule.Friday.InstantConfirmation.singleDay, 'spe-day': data.Schedule.Friday.InstantConfirmation.specDay, 'ong-day': data.Schedule.Friday.InstantConfirmation.ongDay}"
+                                (click)="editSchedule(data.StaffId, data.Schedule.Friday.DayCode, 'INSTANT_CONFIRMATION')">
+                                <span class="schedule-type-head">IC </span>
+                                {{data.Schedule.Friday.InstantConfirmation.DayStart}} -
+                                {{data.Schedule.Friday.InstantConfirmation.DayEnd}}
+                            </div>
+                            <div class="schedule-tuple data-row-action"
+                                *ngIf="!data.Schedule.Friday.InstantConfirmation.CurrentSchedular">
+                                <button nz-button class="add-sch-btn"
+                                    (click)="newSchedule(data.StaffId, data.Schedule.Friday.Date, 'INSTANT_CONFIRMATION')">
+                                    <i nz-icon nzType="plus"></i> Instant Confirmation
+                                </button>
+                            </div>
+                            <div class="schedule-tuple" *ngIf="data.Schedule.Friday.BlockTime.CurrentSchedular"
+                                [ngClass]="{'single-day': data.Schedule.Friday.BlockTime.singleDay, 'spe-day': data.Schedule.Friday.BlockTime.specDay, 'ong-day': data.Schedule.Friday.BlockTime.ongDay}"
+                                (click)="editSchedule(data.StaffId, data.Schedule.Friday.DayCode, 'BLOCKTIME')">
+                                <span class="schedule-type-head">Blocks </span>
+                                {{data.Schedule.Friday.BlockTime.Blocks.length}}
+                            </div>
+                            <div class="schedule-tuple data-row-action"
+                                *ngIf="!data.Schedule.Friday.BlockTime.CurrentSchedular">
+                                <button nz-button class="add-sch-btn"
+                                    (click)="newSchedule(data.StaffId, data.Schedule.Friday.Date, 'BLOCKTIME')">
+                                    <i nz-icon nzType="plus"></i> Blocks
+                                </button>
+                            </div>
+                        </td>
+                        <td class="data-row" style="position: relative; width: 170px !important; max-width: 170px !important; min-width: 170px !important;" nzWidth="170px" [ngClass]="{'cursor-pointer' : !data.Schedule.Saturday.CurrentSchedular}">
+                            <div class="schedule-tuple" *ngIf="data.Schedule.Saturday.GeneralOffer.DayStart"
+                                [ngClass]="{'single-day': data.Schedule.Saturday.GeneralOffer.singleDay, 'spe-day': data.Schedule.Saturday.GeneralOffer.specDay, 'ong-day': data.Schedule.Saturday.GeneralOffer.ongDay}"
+                                (click)="editSchedule(data.StaffId, data.Schedule.Saturday.DayCode, 'GENERAL_OFFER')">
+                                <span class="schedule-type-head">GO </span>
+                                {{data.Schedule.Saturday.GeneralOffer.DayStart}} -
+                                {{data.Schedule.Saturday.GeneralOffer.DayEnd}}
+                            </div>
+                            <div class="schedule-tuple data-row-action"
+                                *ngIf="!data.Schedule.Saturday.GeneralOffer.CurrentSchedular">
+                                <button nz-button
+                                    (click)="newSchedule(data.StaffId, data.Schedule.Saturday.Date, 'GENERAL_OFFER')"
+                                    class="add-sch-btn">
+                                    <i nz-icon nzType="plus"></i> General Offer
+                                </button>
+                            </div>
+                            <div class="schedule-tuple"
+                                *ngIf="data.Schedule.Saturday.InstantConfirmation.CurrentSchedular"
+                                [ngClass]="{'single-day': data.Schedule.Saturday.InstantConfirmation.singleDay, 'spe-day': data.Schedule.Saturday.InstantConfirmation.specDay, 'ong-day': data.Schedule.Saturday.InstantConfirmation.ongDay}"
+                                (click)="editSchedule(data.StaffId, data.Schedule.Saturday.DayCode, 'INSTANT_CONFIRMATION')">
+                                <span class="schedule-type-head">IC </span>
+                                {{data.Schedule.Saturday.InstantConfirmation.DayStart}} -
+                                {{data.Schedule.Saturday.InstantConfirmation.DayEnd}}
+                            </div>
+                            <div class="schedule-tuple data-row-action"
+                                *ngIf="!data.Schedule.Saturday.InstantConfirmation.CurrentSchedular">
+                                <button nz-button class="add-sch-btn"
+                                    (click)="newSchedule(data.StaffId, data.Schedule.Saturday.Date, 'INSTANT_CONFIRMATION')">
+                                    <i nz-icon nzType="plus"></i> Instant Confirmation
+                                </button>
+                            </div>
+                            <div class="schedule-tuple" *ngIf="data.Schedule.Saturday.BlockTime.CurrentSchedular"
+                                [ngClass]="{'single-day': data.Schedule.Saturday.BlockTime.singleDay, 'spe-day': data.Schedule.Saturday.BlockTime.specDay, 'ong-day': data.Schedule.Saturday.BlockTime.ongDay}"
+                                (click)="editSchedule(data.StaffId, data.Schedule.Saturday.DayCode, 'BLOCKTIME')">
+                                <span class="schedule-type-head">Blocks </span>
+                                {{data.Schedule.Saturday.BlockTime.Blocks.length}}
+                            </div>
+                            <div class="schedule-tuple data-row-action"
+                                *ngIf="!data.Schedule.Saturday.BlockTime.CurrentSchedular">
+                                <button nz-button class="add-sch-btn"
+                                    (click)="newSchedule(data.StaffId, data.Schedule.Saturday.Date, 'BLOCKTIME')">
+                                    <i nz-icon nzType="plus"></i> Blocks
+                                </button>
+                            </div>
+                        </td>
+                        <td class="data-row" style="position: relative; width: 170px !important; max-width: 170px !important; min-width: 170px !important;" nzWidth="170px" [ngClass]="{'cursor-pointer' : !data.Schedule.Sunday.CurrentSchedular}">
+                            <div class="schedule-tuple" *ngIf="data.Schedule.Sunday.GeneralOffer.DayStart"
+                                [ngClass]="{'single-day': data.Schedule.Sunday.GeneralOffer.singleDay, 'spe-day': data.Schedule.Sunday.GeneralOffer.specDay, 'ong-day': data.Schedule.Sunday.GeneralOffer.ongDay}"
+                                (click)="editSchedule(data.StaffId, data.Schedule.Sunday.DayCode, 'GENERAL_OFFER')">
+                                <span class="schedule-type-head">GO </span>
+                                {{data.Schedule.Sunday.GeneralOffer.DayStart}} -
+                                {{data.Schedule.Sunday.GeneralOffer.DayEnd}}
+                            </div>
+                            <div class="schedule-tuple data-row-action"
+                                *ngIf="!data.Schedule.Sunday.GeneralOffer.CurrentSchedular">
+                                <button nz-button
+                                    (click)="newSchedule(data.StaffId, data.Schedule.Sunday.Date, 'GENERAL_OFFER')"
+                                    class="add-sch-btn">
+                                    <i nz-icon nzType="plus"></i> General Offer
+                                </button>
+                            </div>
+                            <div class="schedule-tuple"
+                                *ngIf="data.Schedule.Sunday.InstantConfirmation.CurrentSchedular"
+                                [ngClass]="{'single-day': data.Schedule.Sunday.InstantConfirmation.singleDay, 'spe-day': data.Schedule.Sunday.InstantConfirmation.specDay, 'ong-day': data.Schedule.Sunday.InstantConfirmation.ongDay}"
+                                (click)="editSchedule(data.StaffId, data.Schedule.Sunday.DayCode, 'INSTANT_CONFIRMATION')">
+                                <span class="schedule-type-head">IC </span>
+                                {{data.Schedule.Sunday.InstantConfirmation.DayStart}} -
+                                {{data.Schedule.Sunday.InstantConfirmation.DayEnd}}
+                            </div>
+                            <div class="schedule-tuple data-row-action"
+                                *ngIf="!data.Schedule.Sunday.InstantConfirmation.CurrentSchedular">
+                                <button nz-button class="add-sch-btn"
+                                    (click)="newSchedule(data.StaffId, data.Schedule.Sunday.Date, 'INSTANT_CONFIRMATION')">
+                                    <i nz-icon nzType="plus"></i> Instant Confirmation
+                                </button>
+                            </div>
+                            <div class="schedule-tuple" *ngIf="data.Schedule.Sunday.BlockTime.CurrentSchedular"
+                                [ngClass]="{'single-day': data.Schedule.Sunday.BlockTime.singleDay, 'spe-day': data.Schedule.Sunday.BlockTime.specDay, 'ong-day': data.Schedule.Sunday.BlockTime.ongDay}"
+                                (click)="editSchedule(data.StaffId, data.Schedule.Sunday.DayCode, 'BLOCKTIME')">
+                                <span class="schedule-type-head">Blocks </span>
+                                {{data.Schedule.Sunday.BlockTime.Blocks.length}}
+                            </div>
+                            <div class="schedule-tuple data-row-action"
+                                *ngIf="!data.Schedule.Sunday.BlockTime.CurrentSchedular">
+                                <button nz-button class="add-sch-btn"
+                                    (click)="newSchedule(data.StaffId, data.Schedule.Sunday.Date, 'BLOCKTIME')">
+                                    <i nz-icon nzType="plus"></i> Blocks
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </nz-table>
+           <!-- {{scheduleData.pagination.curPage}} -->
+            <div  class="m-t-12" style="text-align: right;">
+                <!-- <nz-pagination [(nzPageIndex)]="scheduleTable.pagination.curPage" [nzTotal]="scheduleTable.pagination.itemCount"
+                    (nzPageIndexChange)="changePageNumber($event)" (nzPageSizeChange)="changePageSize($event)"
+                    [nzPageSizeOptions]="scheduleTablePageSizeOptions" nzShowSizeChanger></nz-pagination> -->
+                    <div (window:scroll)="onScroll()"></div>
+            </div>
+            
+            
+        </div>
+    </div>
+    <div  class="m-t-12" style="margin-top: 10px;">
+        <div nz-col nzSpan="24"  style="text-align: right;">
+            <a (click)="loadMore()"
+                class="extra-label" style="text-decoration: underline;">
+               See more
+            </a>
+        </div>
+    </div>
+</nz-card>
+
+<!-- Schedule modal -->
+<nz-modal [(nzVisible)]="scheduleModalVisible" [nzTitle]="scheduleModalHeader" [nzContent]="scheduleModalContent"
+    [nzFooter]="scheduleModalFooter" nzWrapClassName="vertical-center-modal" (nzOnCancel)="closeScheduleModal()"
+    [nzClosable]="true" [nzMaskClosable]="false">
+    <ng-template #scheduleModalHeader>
+        <div nz-row nzGutter="8">
+            <div nz-col nzSpan="24" class="gutter-row text-center">
+                <span class="color-brand-primary">
+                    {{selectedSchedule.staffName}}
+                </span>
+                <br />
+                <span class="color-brand-primary sch-edit-modal-header-descriptor">
+                    {{selectedSchedule.dateShow}}
+                </span>
+                <!-- <br />
+                <span class="color-brand-primary sch-edit-modal-header-descriptor">
+                    {{selectedSchedule.Schedule.ScheduleTypeName}}
+                </span> -->
+            </div>
+        </div>
+    </ng-template>
+    <ng-template #scheduleModalContent>
+        <div nz-row nzGutter="16">
+            <div nz-col nzSpan="24" class="text-center color-brand-primary sch-edit-modal-header-descriptor">
+                {{selectedSchedule.Schedule.ScheduleTypeName}}
+            </div>
+        </div>
+        <form [formGroup]="scheduleForm" _ngcontent-jfp-c14="" novalidate="" nz-form=""
+            class="ant-form ng-untouched ng-invalid ng-dirty ant-form-horizontal">
+            <nz-form-item class="ant-form-item ant-row"
+                *ngIf="selectedSchedule.Schedule.ScheduleType === 0 || selectedSchedule.Schedule.ScheduleType === 1">
+                <div nz-row nzGutter="16">
+                    <div nz-col class="gutter-row" nzSpan="8">
+                        <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                            <label>Day Start</label>
+                        </nz-form-label>
+                    </div>
+                    <div nz-col class="gutter-row" nzSpan="1"></div>
+                    <div nz-col class="gutter-row" nzSpan="8">
+                        <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                            <label>Day End</label>
+                        </nz-form-label>
+                    </div>
+                </div>
+                <div nz-row nzGutter="16">
+                    <div nz-col class="gutter-row" nzSpan="8">
+                        <nz-form-control _ngcontent-jfp-c14=""
+                            class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                            <div class="ant-form-item-control">
+                                <span class="ant-form-item-children">
+                                    <nz-time-picker formControlName="DayStartTime" nzPlaceHolder="Day Start"
+                                        nzFormat="HH:mm" nzSize="small">
+                                    </nz-time-picker>
+                                    <span class="ant-form-item-children-icon"></span>
+                                </span>
+                            </div>
+                        </nz-form-control>
+                    </div>
+                    <div nz-col class="gutter-row" nzSpan="1"></div>
+                    <div nz-col class="gutter-row" nzSpan="8">
+                        <nz-form-control _ngcontent-jfp-c14=""
+                            class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                            <div class="ant-form-item-control">
+                                <span class="ant-form-item-children">
+                                    <nz-time-picker formControlName="DayEndTime" nzPlaceHolder="Day End"
+                                        nzFormat="HH:mm" nzSize="small">
+                                    </nz-time-picker>
+                                    <span class="ant-form-item-children-icon"></span>
+                                </span>
+                            </div>
+                        </nz-form-control>
+                    </div>
+                </div>
+            </nz-form-item>
+            <nz-form-item class="ant-form-item ant-row" *ngIf="selectedSchedule.Schedule.ScheduleType === 2">
+                <div *ngIf="scheduleForm.get('BlockTime').length !== 0">
+                    <div nz-row nzGutter="8">
+                        <div nz-col class="gutter-row" nzSpan="8">
+                            <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                                <label>Reason</label>
+                            </nz-form-label>
+                        </div>
+                        <div nz-col class="gutter-row" nzSpan="1"></div>
+                        <div nz-col class="gutter-row" nzSpan="7">
+                            <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                                <label>Start</label>
+                            </nz-form-label>
+                        </div>
+                        <div nz-col class="gutter-row" nzSpan="7">
+                            <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                                <label>End</label>
+                            </nz-form-label>
+                        </div>
+                    </div>
+                </div>
+                <div formArrayName="BlockTime">
+                    <div class="block-container" #blocksCont id="blocksCont">
+                        <div style="width: 97%;">
+                            <div *ngFor="let day of scheduleForm.get('BlockTime').controls; let i=index" class="m-t-10">
+                                <div nz-row nzGutter="8" [formGroupName]="i">
+                                    <div nz-col class="gutter-row" nzSpan="8">
+                                        <nz-form-control _ngcontent-jfp-c14=""
+                                            class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                                            <div class="ant-form-item-control">
+                                                <span class="ant-form-item-children">
+                                                    <input _ngcontent-jfp-c14="" nz-input="" placeholder="Reason"
+                                                        nzPlaceHolder="Reason" nzSize="small"
+                                                        class="ant-input ng-untouched ng-pristine ng-invalid"
+                                                        formControlName="Name">
+                                                    <span class="ant-form-item-children-icon"></span>
+                                                </span>
+                                            </div>
+                                        </nz-form-control>
+                                    </div>
+                                    <div nz-col class="gutter-row" nzSpan="1"></div>
+                                    <div nz-col class="gutter-row" nzSpan="14">
+                                        <nz-form-control _ngcontent-jfp-c14=""
+                                            class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-12">
+                                            <div class="ant-form-item-control">
+                                                <span class="ant-form-item-children">
+                                                    <nz-time-picker formControlName="StartTime"
+                                                        nzPlaceHolder="Start Time" nzFormat="HH:mm" nzSize="small">
+                                                    </nz-time-picker>
+                                                    <span class="ant-form-item-children-icon"></span>
+                                                </span>
+                                            </div>
+                                        </nz-form-control>
+                                        <nz-form-control _ngcontent-jfp-c14=""
+                                            class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-12">
+                                            <div class="ant-form-item-control">
+                                                <span class="ant-form-item-children" style="float: right;">
+                                                    <nz-time-picker formControlName="EndTime" nzPlaceHolder="End Time"
+                                                        nzFormat="HH:mm" nzSize="small">
+                                                    </nz-time-picker>
+                                                    <span class="ant-form-item-children-icon"></span>
+                                                </span>
+                                            </div>
+                                        </nz-form-control>
+                                    </div>
+                                    <div nz-col class="gutter-row" nzSpan="1">
+                                        <img src="assets/images/icons/delete.png" class="editIconTable" title="Delete"
+                                            style="position:relative;top:9px;height:18px;" (click)="deleteBlock(i)" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div nz-row nzGutter="16" class="m-t-10">
+                        <div nz-col class="gutter-row" nzSpan="24">
+                            <a (click)="addBlockTimeControls()" style="text-decoration: underline;">
+                                <i nz-icon nzType="plus" theme="outline"></i> Add block time
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </nz-form-item>
+            <nz-form-item class="ant-form-item ant-row">
+                <div nz-row nzGutter="16">
+                    <div nz-col class="gutter-row" nzSpan="8">
+                        <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                            <label>Repeats</label>
+                        </nz-form-label>
+                    </div>
+                </div>
+                <div nz-row nzGutter="16">
+                    <div nz-col class="gutter-row" nzSpan="8">
+                        <nz-form-control _ngcontent-jfp-c14=""
+                            class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted">
+                            <div class="ant-form-item-control">
+                                <span class="ant-form-item-children">
+                                    <nz-select nzShowSearch class="ant-col-24" nzSize="small"
+                                        nzPlaceHolder="Select repeat" nzTitle="Select Staff" formControlName="Repeat">
+                                        <nz-option *ngFor="let rep of repeatType" [nzValue]="rep.Code"
+                                            [nzLabel]="rep.Name">
+                                        </nz-option>
+                                    </nz-select>
+                                    <span class="ant-form-item-children-icon"></span>
+                                </span>
+                            </div>
+                        </nz-form-control>
+                    </div>
+                    <div nz-col class="gutter-row" nzSpan="1"></div>
+                    <div nz-col class="gutter-row" nzSpan="11" *ngIf="scheduleForm.controls.Repeat.value === 2">
+                        <nz-form-control _ngcontent-jfp-c14=""
+                            class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                            <div class="ant-form-item-control">
+                                <span class="ant-form-item-children">
+                                    <nz-date-picker [nzShowToday]="false" nzAllowClear [nzFormat]="dateFormat"
+                                        [nzDisabledDate]="disabledEndDate" formControlName="EndDate">
+                                    </nz-date-picker>
+                                    <span class="ant-form-item-children-icon"></span>
+                                </span>
+                            </div>
+                        </nz-form-control>
+                    </div>
+                </div>
+            </nz-form-item>
+        </form>
+    </ng-template>
+    <ng-template #scheduleModalFooter>
+        &nbsp;
+        <span *ngIf="this.prevDayDisable" style="color: #f55753; float: left;">
+            Previous day schedule cannot be updated or deleted.
+        </span>
+        <span *ngIf="!this.prevDayDisable">
+            <button _ngcontent-jfp-c14="" (click)="confirmDelete()" nz-button="" nztype="default"
+                [disabled]="disabledDelete()" *ngIf="scheduleEditMode" [nzLoading]="isDelLoading"
+                class="ant-btn ant-btn-primary btn-custom-danger" nz-wave="[object Object]" style="float: left;">
+                <span>Delete</span>
+            </button>
+            <button _ngcontent-jfp-c14="" (click)="scheduleEditMode? confirmUpdation() : submitNewSchedule()"
+                nz-button="" nztype="default" [disabled]="disabledSave()" [nzLoading]="isSchLoading"
+                class="ant-btn ant-btn-primary" nz-wave="[object Object]">
+                <span>Save</span>
+            </button>
+        </span>
+    </ng-template>
+</nz-modal>
+
+<!-- Confirmation modal -->
+<nz-modal [(nzVisible)]="confirmationModalVisible" [nzTitle]="confirmationModalHeader"
+    [nzContent]="confirmationModalContent" [nzFooter]="confirmationModalFooter" nzWrapClassName="vertical-center-modal"
+    (nzOnCancel)="closeConfirmationModal()" [nzClosable]="true" [nzMaskClosable]="false">
+    <ng-template #confirmationModalHeader>
+        <div nz-row nzGutter="8">
+            <div nz-col nzSpan="24" class="gutter-row text-center">
+                <span class="color-brand-primary">
+                    Repeating Shift
+                </span>
+            </div>
+        </div>
+    </ng-template>
+    <ng-template #confirmationModalContent>
+        <p>
+            {{warningText}}
+        </p>
+    </ng-template>
+    <ng-template #confirmationModalFooter>
+        <span *ngIf="updateConfirmation">
+            <button _ngcontent-jfp-c14="" (click)="updateSchedule(true)" nz-button="" nztype="default"
+                [nzLoading]="isUpdMultiLoading" class="ant-btn btn-custom-light" nz-wave="[object Object]">
+                <span>Update upcoming shifts</span>
+            </button>
+            <button _ngcontent-jfp-c14="" (click)="updateSchedule(false)" nz-button="" nztype="default"
+                [nzLoading]="isUpdSingleLoading" class="ant-btn ant-btn-primary" nz-wave="[object Object]">
+                <span>Update this shift only</span>
+            </button>
+        </span>
+        <span *ngIf="deleteConfirmation">
+            <button _ngcontent-jfp-c14="" (click)="deleteSchedule(true)" nz-button="" nztype="default"
+                [nzLoading]="isDelMultiLoading" class="ant-btn btn-custom-light" nz-wave="[object Object]">
+                <span>Delete upcoming shifts</span>
+            </button>
+            <button _ngcontent-jfp-c14="" (click)="deleteSchedule(false)" nz-button="" nztype="default"
+                [nzLoading]="isDelSingleLoading" class="ant-btn btn-custom-danger" nz-wave="[object Object]">
+                <span>Delete this shift only</span>
+            </button>
+        </span>
+    </ng-template>
+</nz-modal>

@@ -1,0 +1,36 @@
+.count-show-container {
+    padding: 1px 10px 4px 10px;
+    background-color: #e5ddd8;
+    border-radius: 4px;
+    position: relative;
+    font-size: 14px;
+    top: -2px;
+}
+
+.sales-euro {
+    height: 15px;
+    width: auto;
+}
+
+.scroller {
+    scrollbar-color: #c1c1c1 #ffffff;
+    scrollbar-width: thin;
+    scroll-behavior: smooth;
+}
+
+.scroller::-webkit-scrollbar {
+    width: 6px;
+    background-color: #ffffff;
+    border-radius: 15px;
+}
+
+.scroller::-webkit-scrollbar-thumb {
+    background-color: #c1c1c1;
+    border-radius: 15px;
+}
+
+.scroller::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #ffffff;
+    border-radius: 15px;
+}

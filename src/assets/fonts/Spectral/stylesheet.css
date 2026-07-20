@@ -1,0 +1,182 @@
+@font-face {
+    font-family: 'Spectral';
+    src: url('Spectral-SemiBoldItalic.eot');
+    src: url('Spectral-SemiBoldItalic.eot?#iefix') format('embedded-opentype'),
+        url('Spectral-SemiBoldItalic.woff2') format('woff2'),
+        url('Spectral-SemiBoldItalic.woff') format('woff'),
+        url('Spectral-SemiBoldItalic.ttf') format('truetype'),
+        url('Spectral-SemiBoldItalic.svg#Spectral-SemiBoldItalic') format('svg');
+    font-weight: 600;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Spectral';
+    src: url('Spectral-ExtraBoldItalic.eot');
+    src: url('Spectral-ExtraBoldItalic.eot?#iefix') format('embedded-opentype'),
+        url('Spectral-ExtraBoldItalic.woff2') format('woff2'),
+        url('Spectral-ExtraBoldItalic.woff') format('woff'),
+        url('Spectral-ExtraBoldItalic.ttf') format('truetype'),
+        url('Spectral-ExtraBoldItalic.svg#Spectral-ExtraBoldItalic') format('svg');
+    font-weight: 800;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Spectral';
+    src: url('Spectral-Bold.eot');
+    src: url('Spectral-Bold.eot?#iefix') format('embedded-opentype'),
+        url('Spectral-Bold.woff2') format('woff2'),
+        url('Spectral-Bold.woff') format('woff'),
+        url('Spectral-Bold.ttf') format('truetype'),
+        url('Spectral-Bold.svg#Spectral-Bold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Spectral';
+    src: url('Spectral-BoldItalic.eot');
+    src: url('Spectral-BoldItalic.eot?#iefix') format('embedded-opentype'),
+        url('Spectral-BoldItalic.woff2') format('woff2'),
+        url('Spectral-BoldItalic.woff') format('woff'),
+        url('Spectral-BoldItalic.ttf') format('truetype'),
+        url('Spectral-BoldItalic.svg#Spectral-BoldItalic') format('svg');
+    font-weight: bold;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Spectral';
+    src: url('Spectral-MediumItalic.eot');
+    src: url('Spectral-MediumItalic.eot?#iefix') format('embedded-opentype'),
+        url('Spectral-MediumItalic.woff2') format('woff2'),
+        url('Spectral-MediumItalic.woff') format('woff'),
+        url('Spectral-MediumItalic.ttf') format('truetype'),
+        url('Spectral-MediumItalic.svg#Spectral-MediumItalic') format('svg');
+    font-weight: 500;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Spectral';
+    src: url('Spectral-SemiBold.eot');
+    src: url('Spectral-SemiBold.eot?#iefix') format('embedded-opentype'),
+        url('Spectral-SemiBold.woff2') format('woff2'),
+        url('Spectral-SemiBold.woff') format('woff'),
+        url('Spectral-SemiBold.ttf') format('truetype'),
+        url('Spectral-SemiBold.svg#Spectral-SemiBold') format('svg');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Spectral';
+    src: url('Spectral-ExtraLightItalic.eot');
+    src: url('Spectral-ExtraLightItalic.eot?#iefix') format('embedded-opentype'),
+        url('Spectral-ExtraLightItalic.woff2') format('woff2'),
+        url('Spectral-ExtraLightItalic.woff') format('woff'),
+        url('Spectral-ExtraLightItalic.ttf') format('truetype'),
+        url('Spectral-ExtraLightItalic.svg#Spectral-ExtraLightItalic') format('svg');
+    font-weight: 200;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Spectral';
+    src: url('Spectral-Regular.eot');
+    src: url('Spectral-Regular.eot?#iefix') format('embedded-opentype'),
+        url('Spectral-Regular.woff2') format('woff2'),
+        url('Spectral-Regular.woff') format('woff'),
+        url('Spectral-Regular.ttf') format('truetype'),
+        url('Spectral-Regular.svg#Spectral-Regular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Spectral';
+    src: url('Spectral-Medium.eot');
+    src: url('Spectral-Medium.eot?#iefix') format('embedded-opentype'),
+        url('Spectral-Medium.woff2') format('woff2'),
+        url('Spectral-Medium.woff') format('woff'),
+        url('Spectral-Medium.ttf') format('truetype'),
+        url('Spectral-Medium.svg#Spectral-Medium') format('svg');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Spectral';
+    src: url('Spectral-ExtraLight.eot');
+    src: url('Spectral-ExtraLight.eot?#iefix') format('embedded-opentype'),
+        url('Spectral-ExtraLight.woff2') format('woff2'),
+        url('Spectral-ExtraLight.woff') format('woff'),
+        url('Spectral-ExtraLight.ttf') format('truetype'),
+        url('Spectral-ExtraLight.svg#Spectral-ExtraLight') format('svg');
+    font-weight: 200;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Spectral';
+    src: url('Spectral-Italic.eot');
+    src: url('Spectral-Italic.eot?#iefix') format('embedded-opentype'),
+        url('Spectral-Italic.woff2') format('woff2'),
+        url('Spectral-Italic.woff') format('woff'),
+        url('Spectral-Italic.ttf') format('truetype'),
+        url('Spectral-Italic.svg#Spectral-Italic') format('svg');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Spectral';
+    src: url('Spectral-Light.eot');
+    src: url('Spectral-Light.eot?#iefix') format('embedded-opentype'),
+        url('Spectral-Light.woff2') format('woff2'),
+        url('Spectral-Light.woff') format('woff'),
+        url('Spectral-Light.ttf') format('truetype'),
+        url('Spectral-Light.svg#Spectral-Light') format('svg');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Spectral';
+    src: url('Spectral-ExtraBold.eot');
+    src: url('Spectral-ExtraBold.eot?#iefix') format('embedded-opentype'),
+        url('Spectral-ExtraBold.woff2') format('woff2'),
+        url('Spectral-ExtraBold.woff') format('woff'),
+        url('Spectral-ExtraBold.ttf') format('truetype'),
+        url('Spectral-ExtraBold.svg#Spectral-ExtraBold') format('svg');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Spectral';
+    src: url('Spectral-LightItalic.eot');
+    src: url('Spectral-LightItalic.eot?#iefix') format('embedded-opentype'),
+        url('Spectral-LightItalic.woff2') format('woff2'),
+        url('Spectral-LightItalic.woff') format('woff'),
+        url('Spectral-LightItalic.ttf') format('truetype'),
+        url('Spectral-LightItalic.svg#Spectral-LightItalic') format('svg');
+    font-weight: 300;
+    font-style: italic;
+    font-display: swap;
+}
+

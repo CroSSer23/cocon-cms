@@ -1,0 +1,323 @@
+<!-- Toast -->
+<ng2-toasty [position]="'top-right'"></ng2-toasty>
+
+<!-- Default view: show vacation table -->
+<nz-card *ngIf="!vacationFormVisible" [@slideIn]>
+    <!-- Actions -->
+    <div nz-row nzGutter="16" style="margin-bottom: 25px;">
+        <div nz-col class="gutter-row d-flex" nzSpan="7">
+            <nz-input-group [nzPrefix]="prefiXTemplate">
+                <input nz-input placeholder="Search" (keyup)="onKeyUp(searchBox.value)" [(ngModel)]="searchBoxValue"
+                    ng-model-options="{ debounce: 1000 }" #searchBox nzSize="small">
+            </nz-input-group>
+            <ng-template #prefiXTemplate>
+                <i nz-icon nzType="search" theme="outline"></i>
+            </ng-template>
+
+        </div>
+        <div nz-col class="gutter-row" nzSpan="17" style="text-align: right">
+            <button nz-button="" nztype=" primary" (click)="openVacationForm()" class="font-small-caps btn-custom"
+                nz-wave="[object Object]"><i class="fa fa-plus button-plus-icon"
+                    aria-hidden="true"></i>&nbsp;New</button>
+        </div>
+    </div>
+    <div nz-row nzGutter="16">
+        <div nz-col class="gutter-row" nzSpan='24'>
+            <nz-table #vacationTable  [nzLoading]="loadingFlag" [(nzPageIndex)]="pageIndex" [nzTemplateMode]="true"
+                [(nzPageSize)]="pageSize" nzShowSizeChanger="true" [nzPageSizeOptions]="pageSizeOptions">
+                <thead (nzSortChange)="sort($event)" nzSingleSort>
+                    <tr>
+                        <th class="font-16 font-small-caps">Staff</th>
+                        <th class="font-16 font-small-caps" nzShowSort nzSortKey="Date">Date</th>
+                        <th class="font-16 font-small-caps">Timing</th>
+                        <th class="font-16 font-small-caps" nzWidth="20%">Notes</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of vacationData" class="data-row" 
+                        [ngClass]="{'opac-half': data.Status === 3}">
+                        <td>
+                            {{data.StaffName}}
+                        </td>
+                        <td>
+                            {{data.DateString}}
+                        </td>
+                        <td>
+                            {{data.TimingString}}
+                        </td>
+                        <td>
+                            <span *ngIf="!data.Notes">-</span>
+                            <span *ngIf="data.Notes">
+                                <span *ngIf="data.NotesExtra">
+                                    <span nz-popover [nzPopoverContent]="contentNotes" nzPopoverTrigger="hover"
+                                        nzPopoverPlacement="left">
+                                        {{data.NotesShow}}
+                                    </span>
+                                </span>
+                                <span *ngIf="!data.NotesExtra">
+                                    {{data.NotesShow}}
+                                </span>
+                            </span>
+                            <ng-template #contentNotes>
+                                <div style="max-width: 300px;">
+                                    {{data.Notes}}
+                                </div>
+                            </ng-template>
+                        </td>
+                        <td>
+                            <span *ngIf="data.Status === 3">
+                                {{data.RetreatString}}
+                            </span>
+                            <span class="data-row-action">
+                                <i nz-icon nzType="rollback" class="color-brand-primary" title="Retreat"
+                                    *ngIf="data.Status !== 3" nzTheme="outline" style="cursor: pointer;" nz-popconfirm
+                                    nzPopconfirmTitle="Are you sure you want to retreat this vacation?"
+                                    (nzOnConfirm)="retreatVacation(data.StaffId, data.RequestId)"
+                                    nzPopconfirmPlacement="topRight"></i>
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </nz-table>
+        </div>
+    </div>
+</nz-card>
+
+<!-- Vacation form -->
+<nz-card *ngIf="vacationFormVisible" [@slideIn]>
+    <div nz-row nzGutter="16" class="p-l-15">
+        <div nz-col class="gutter-row" nzSpan="12">
+            <span style="font-size: 14px;font-style: italic;color: #f25865;">
+                <!-- *All fields are mandatory -->
+            </span>
+        </div>
+        <div nz-col class="gutter-row" nzSpan="12">
+            <a title="Cancel" (click)="closeVacationForm()" style="float: right;color: #a1887c;margin-bottom: 20px"><i
+                    nz-icon nzType="close" theme="outline"></i></a>
+        </div>
+    </div>
+    <form [formGroup]="vacationForm" _ngcontent-jfp-c14="" novalidate="" nz-form=""
+        class="ant-form ng-untouched ng-invalid ng-dirty ant-form-horizontal p-l-20">
+        <nz-form-item class="ant-form-item ant-row">
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="5">
+                    <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                        <label>Name</label>
+                    </nz-form-label>
+                </div>
+                <div nz-col class="gutter-row" nzSpan="1"></div>
+                <div nz-col class="gutter-row" nzSpan="5">
+                    <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                        <label>Template</label>
+                    </nz-form-label>
+                </div>
+            </div>
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="5">
+                    <nz-form-control _ngcontent-jfp-c14=""
+                        class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                        <div class="ant-form-item-control">
+                            <span class="ant-form-item-children">
+                                <nz-select nzShowSearch nzAllowClear class="ant-col-30 m-r-10" formControlName="StaffId"
+                                    nzPlaceHolder="Select Staff" nzTitle="Select Staff">
+                                    <nz-option *ngFor="let staff of staffList" [nzValue]="staff.StaffId"
+                                        [nzLabel]="staff.StaffName">
+                                    </nz-option>
+                                </nz-select>
+                                <span class="ant-form-item-children-icon">
+                                </span>
+                            </span>
+                        </div>
+                    </nz-form-control>
+                </div>
+                <div nz-col class="gutter-row" nzSpan="1"></div>
+                <div nz-col class="gutter-row" nzSpan="5">
+                    <nz-form-control _ngcontent-jfp-c14=""
+                        class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                        <div class="ant-form-item-control">
+                            <span class="ant-form-item-children">
+                                <nz-select nzShowSearch nzAllowClear class="ant-col-30 m-r-10"
+                                    formControlName="Template" nzPlaceHolder="Select Template"
+                                    nzTitle="Select Template">
+                                    <nz-option *ngFor="let template of templateList" [nzValue]="template.Template"
+                                        [nzLabel]="template.TemplateName">
+                                    </nz-option>
+                                </nz-select>
+                                <span class="ant-form-item-children-icon">
+                                </span>
+                            </span>
+                        </div>
+                    </nz-form-control>
+                </div>
+            </div>
+        </nz-form-item>
+        <nz-form-item class="ant-form-item ant-row">
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="5">
+                    <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                        <label>Start Date</label>
+                    </nz-form-label>
+                </div>
+                <div nz-col class="gutter-row" nzSpan="1"></div>
+                <div nz-col class="gutter-row" nzSpan="5">
+                    <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                        <label>End Date</label>
+                    </nz-form-label>
+                </div>
+            </div>
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="5">
+                    <nz-form-control _ngcontent-jfp-c14=""
+                        class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                        <div class="ant-form-item-control">
+                            <span class="ant-form-item-children">
+                                <nz-date-picker formControlName="StartDate" [nzShowToday]="false">
+                                </nz-date-picker>
+                                <span class="ant-form-item-children-icon">
+                                </span>
+                            </span>
+                        </div>
+                    </nz-form-control>
+                </div>
+                <div nz-col class="gutter-row" nzSpan="1"></div>
+                <div nz-col class="gutter-row" nzSpan="5">
+                    <nz-form-control _ngcontent-jfp-c14=""
+                        class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                        <div class="ant-form-item-control">
+                            <span class="ant-form-item-children">
+                                <nz-date-picker formControlName="EndDate" [nzDisabledDate]="disableEndDate"
+                                    [nzShowToday]="false">
+                                </nz-date-picker>
+                                <span class="ant-form-item-children-icon">
+                                </span>
+                            </span>
+                        </div>
+                    </nz-form-control>
+                </div>
+            </div>
+        </nz-form-item>
+        <nz-form-item class="ant-form-item ant-row" *ngIf="vacationForm.controls.Template.value === 1">
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="5">
+                    <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                        <label>Start Time</label>
+                    </nz-form-label>
+                </div>
+                <div nz-col class="gutter-row" nzSpan="1"></div>
+                <div nz-col class="gutter-row" nzSpan="5">
+                    <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                        <label>End Time</label>
+                    </nz-form-label>
+                </div>
+            </div>
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="5">
+                    <nz-form-control _ngcontent-jfp-c14=""
+                        class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                        <div class="ant-form-item-control">
+                            <span class="ant-form-item-children">
+                                <nz-time-picker formControlName="StartTime" nzPlaceHolder="Start Time" nzFormat="HH:mm">
+                                </nz-time-picker>
+                                <span class="ant-form-item-children-icon">
+                                </span>
+                            </span>
+                        </div>
+                    </nz-form-control>
+                </div>
+                <div nz-col class="gutter-row" nzSpan="1"></div>
+                <div nz-col class="gutter-row" nzSpan="5">
+                    <nz-form-control _ngcontent-jfp-c14=""
+                        class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                        <div class="ant-form-item-control">
+                            <span class="ant-form-item-children">
+                                <nz-time-picker formControlName="EndTime" nzPlaceHolder="End Time" nzFormat="HH:mm">
+                                </nz-time-picker>
+                                <span class="ant-form-item-children-icon">
+                                </span>
+                            </span>
+                        </div>
+                    </nz-form-control>
+                </div>
+            </div>
+        </nz-form-item>
+        <nz-form-item class="ant-form-item ant-row">
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="11">
+                    <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                        <label>Notes</label><span class="ng-star-inserted optional-text">optional</span>
+                    </nz-form-label>
+                </div>
+            </div>
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="11">
+                    <nz-form-control _ngcontent-jfp-c14=""
+                        class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                        <div class="ant-form-item-control">
+                            <span class="ant-form-item-children">
+                                <textarea rows="2" style="resize: none" nz-input formControlName="Notes"
+                                    placeholder="Notes" class="scroller"></textarea>
+                                <span class="ant-form-item-children-icon">
+                                </span>
+                            </span>
+                        </div>
+                    </nz-form-control>
+                </div>
+            </div>
+        </nz-form-item>
+    </form>
+    <nz-divider></nz-divider>
+    <div nz-row nzGutter="16">
+        <div nz-col class="gutter-row" nzSpan="12">
+            <button _ngcontent-jfp-c14="" (click)="resetVacationForm()" nz-button="" nztype="default"
+                class="ant-btn ant-btn-default m-l-20" nz-wave="[object Object]">
+                <span>Reset</span></button>
+        </div>
+        <div nz-col class="gutter-row" nzSpan="12" style="text-align: right;">
+            <button _ngcontent-jfp-c14="" (click)="closeVacationForm()" nz-button="" nztype="default"
+                class="ant-btn ant-btn-default m-r-15" nz-wave="[object Object]">
+                <span>Cancel</span></button>
+            <button _ngcontent-jfp-c14="" (click)="submitVacation()" nz-button="" nztype="default"
+                [disabled]="disableSubmit()" class="ant-btn ant-btn-primary" nz-wave="[object Object]">
+                Submit
+            </button>
+        </div>
+    </div>
+</nz-card>
+
+<!-- Force vacation modal  -->
+<nz-modal [(nzVisible)]="forceVacModalVisible" [nzContent]="forceVacModalContent" [nzFooter]="forceVacModalFooter"
+    nzWrapClassName="vertical-center-modal" nzMaskClosable="true" nzClosable="false"
+    (nzOnCancel)="closeForceVacModal()">
+    <!-- <ng-template #bookingConfirmModalHeader>
+        <div nz-row nzGutter="8">
+            <div nz-col nzSpan="24" class="gutter-row text-center">
+                <span class="color-brand-primary">
+                    Confirm Staff
+                </span>
+            </div>
+        </div>
+    </ng-template> -->
+    <ng-template #forceVacModalContent>
+        <div>
+            <span style="font-size: 16px;">
+                <i nz-icon nzType="question-circle" nzTheme="outline" class="color-brand-primary m-r-15"></i>
+                {{forceVacConfirmText}}
+            </span>
+        </div>
+    </ng-template>
+    <ng-template #forceVacModalFooter>
+        <div nz-row nzGutter="8">
+            <div nz-col nzSpan="24" class="gutter-row">
+                <button nz-button="" nztype=" primary" class="btn-custom-light" nz-wave="[object Object]"
+                    (click)="submitVacation(true)">
+                    Yes
+                </button>
+                <button nz-button="" nztype=" primary" class="btn-custom" nz-wave="[object Object]"
+                    (click)="closeForceVacModal()">
+                    No
+                </button>
+            </div>
+        </div>
+    </ng-template>
+</nz-modal>

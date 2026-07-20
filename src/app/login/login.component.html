@@ -1,0 +1,142 @@
+<ng2-toasty [position]="'top-right'"></ng2-toasty>
+<div class="container-fluid h-100">
+    <div class="d-flex h-100 p-v-15 flex-column justify-content-between">
+        <div class="d-none d-md-flex p-h-60">
+            <!-- <img src="assets/images/logo/logo.png" alt=""> -->
+            <img src="assets/images/logo/logo-with-text.svg" alt="">
+        </div>
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-5">
+                    <nz-card>
+                        <nz-spin [nzSpinning]="isSpinning" nzTip="Signing In...">
+                            <h2 class="m-t-20 font-small-caps">Sign In</h2>
+                            <p class="m-b-30">Enter your credential to get access</p>
+                            <form nz-form [formGroup]="loginForm" class="login-form" (ngSubmit)="submitForm()">
+                                <nz-form-item>
+                                    <nz-form-label nzRequired nzFor="Email" class="font-small-caps font-16"><span
+                                            class="font-18">Email</span></nz-form-label>
+                                    <nz-form-control>
+                                        <nz-input-group [nzPrefix]="prefixUser">
+                                            <input type="text" nz-input formControlName="Email" placeholder="Email">
+                                        </nz-input-group>
+                                        <nz-form-explain
+                                            *ngIf="loginForm.controls.Email.errors?.required && loginForm.controls.Email.touched">
+                                            Please enter your Email!</nz-form-explain>
+                                        <nz-form-explain
+                                            *ngIf="!loginForm.controls.Email.errors?.required && loginForm.controls.Email.touched && loginForm.controls.Email.errors?.email">
+                                            Invalid Email.</nz-form-explain>
+                                    </nz-form-control>
+                                </nz-form-item>
+                                <nz-form-item>
+                                    <nz-form-label nzRequired nzFor="password" class="font-small-caps"><span
+                                            class="font-18">Password</span>
+                                    </nz-form-label>
+                                    <nz-form-control>
+                                        <nz-input-group [nzPrefix]="prefixLock" [nzSuffix]="suffixTemplate">
+                                            <input type="password" [type]="passwordVisible ? 'text' : 'password'"
+                                                nz-input formControlName="Password" placeholder="Password">
+                                        </nz-input-group>
+                                        <nz-form-explain
+                                            *ngIf="loginForm.get('Password').dirty && loginForm.get('Password').errors">
+                                            Please enter your Password!</nz-form-explain>
+                                    </nz-form-control>
+                                </nz-form-item>
+                                <nz-form-item style="float: right;">
+                                    <nz-form-control>
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <button nz-button class="login-form-button" [nzLoading]="isLoggingIn"
+                                                [disabled]="loginForm.invalid===true" [nzType]="'primary'"><span
+                                                    class="font-small-caps font-16">Sign In</span></button>
+                                        </div>
+                                    </nz-form-control>
+                                </nz-form-item>
+                            </form>
+                            <ng-template #prefixUser><i nz-icon nzType="user"></i></ng-template>
+                            <ng-template #prefixLock><i nz-icon nzType="lock"></i></ng-template>
+                            <ng-template #suffixTemplate><i nz-icon [nzType]="passwordVisible ? 'eye-invisible' : 'eye'"
+                                    (click)="passwordVisible = !passwordVisible"></i></ng-template>
+                        </nz-spin>
+                    </nz-card>
+                </div>
+                <div class="offset-md-1 col-md-6 d-none d-md-block">
+                    <img class="img-fluid" src="assets/images/icons/loginbanner6.png" alt="">
+                </div>
+            </div>
+        </div>
+        <div class="d-none d-md-flex  p-h-60 justify-content-between">
+            <span class="">© 2020 COCON</span>
+            <!-- <ul class="list-inline">
+                <li class="list-inline-item">
+                    <a class="text-dark text-link" href="">Legal</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="text-dark text-link" href="">Privacy</a>
+                </li>
+            </ul> -->
+        </div>
+    </div>
+</div>
+
+
+<!-- <div class="container-fluid p-h-0 p-v-20 h-100 bg" style="background-color:#fefcfcc2;">
+    <div class="d-flex flex-column justify-content-between h-100" style="justify-content:center!important">
+        <div class="d-none d-md-block"></div>
+        <div class="container">
+            <ng2-toasty [position]="'top-right'"></ng2-toasty>
+            <div class="row align-items-center">
+                <div class="col-md-7 col-lg-5 m-h-auto">
+                    <nz-card class="m-b-100 shadow-lg" style="border-radius: 10px;">
+                        <div class="d-flex align-items-center justify-content-between m-b-30">
+                            <img class="img-fluid" alt="" src="assets/images/logo/logo.png">
+                        </div>
+                        <form nz-form [formGroup]="loginForm" class="login-form" (ngSubmit)="submitForm()">
+                            <nz-form-item>
+                                <nz-form-label nzRequired nzFor="Email" class="font-small-caps font-16"><span
+                                        class="font-18">Email</span></nz-form-label>
+                                <nz-form-control>
+                                    <nz-input-group [nzPrefix]="prefixUser">
+                                        <input type="text" nz-input formControlName="Email" placeholder="Email">
+                                    </nz-input-group>
+                                    <nz-form-explain
+                                        *ngIf="loginForm.controls.Email.errors?.required && loginForm.controls.Email.touched">
+                                        Please enter your Email!</nz-form-explain>
+                                    <nz-form-explain
+                                        *ngIf="!loginForm.controls.Email.errors?.required && loginForm.controls.Email.touched && loginForm.controls.Email.errors?.email">
+                                        Invalid Email.</nz-form-explain>
+                                </nz-form-control>
+                            </nz-form-item>
+                            <nz-form-item>
+                                <nz-form-label nzRequired nzFor="password" class="font-small-caps"><span
+                                        class="font-18">Password</span>
+                                </nz-form-label>
+                                <nz-form-control>
+                                    <nz-input-group [nzPrefix]="prefixLock" [nzSuffix]="suffixTemplate">
+                                        <input type="password" [type]="passwordVisible ? 'text' : 'password'" nz-input
+                                            formControlName="Password" placeholder="Password">
+                                    </nz-input-group>
+                                    <nz-form-explain
+                                        *ngIf="loginForm.get('Password').dirty && loginForm.get('Password').errors">
+                                        Please enter your Password!</nz-form-explain>
+                                </nz-form-control>
+                            </nz-form-item>
+                            <nz-form-item style="float: right;">
+                                <nz-form-control>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <button nz-button class="login-form-button"
+                                            [disabled]="loginForm.invalid===true" [nzType]="'primary'"><span
+                                                class="font-small-caps font-16">Sign in</span></button>
+                                    </div>
+                                </nz-form-control>
+                            </nz-form-item>
+                        </form>
+                        <ng-template #prefixUser><i nz-icon nzType="user"></i></ng-template>
+                        <ng-template #prefixLock><i nz-icon nzType="lock"></i></ng-template>
+                        <ng-template #suffixTemplate><i nz-icon [nzType]="passwordVisible ? 'eye-invisible' : 'eye'"
+                                (click)="passwordVisible = !passwordVisible"></i></ng-template>
+                    </nz-card>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> -->

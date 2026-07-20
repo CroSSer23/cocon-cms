@@ -1,0 +1,105 @@
+<perfect-scrollbar class="side-nav" sideNav>
+    <ul class="ant-menu ant-menu-root ant-menu-inline side-nav-menu" [ngClass]="{
+            'ant-menu-inline-collapsed': isFolded,
+            'ant-menu-dark' : isSideNavDark
+        }">
+        <li [ngClass]="item.submenu.length > 0?'ant-menu-submenu ant-menu-submenu-inline':'ant-menu-item'"
+            *ngFor="let item of menuItems"
+            [routerLinkActive]="item.submenu.length > 0 ? 'ant-menu-submenu-open' : 'ant-menu-item-selected'"
+            [routerLinkActiveOptions]="{exact: true}" [attr.data-path]="item.path">
+            <a href="javascript:void(0);" class="ant-menu-submenu-title" *ngIf="item.submenu.length > 0">
+                <i *ngIf="item.iconType == 'nzIcon'" nz-icon [nzType]="item.icon" [theme]="item.iconTheme"></i>
+                <img *ngIf="item.iconType == 'image'" src="assets/images/icons/{{item.icon}}.png"
+                    class="side-bar-img m-r-10" />
+                <span class="font-small-caps font-16" *ngIf="!isFolded"
+                    [ngClass]="item.iconType == 'image' ? set-pos-side : null">{{item.title}}</span>
+                <span *ngIf="item.title === 'Booking'">
+                    <span *ngIf="newBookings">
+                        <nz-badge [nzCount]="newBookings" [nzOverflowCount]="9">
+                            <div class="badge-menu-container" style="padding: 0px 3px;">
+                                &nbsp;
+                            </div>
+                        </nz-badge>
+                    </span>
+                </span>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+                
+                <i class="ant-menu-submenu-arrow" style="color: #a1887c;"></i>
+            </a>
+            <a [routerLink]="item.path" *ngIf="!item.submenu.length > 0">
+                <i *ngIf="item.iconType == 'nzIcon'" nz-icon [nzType]="item.icon" [theme]="item.iconTheme"
+                    style="font-size: 16px; color: #c1b1a9"></i>
+                <img *ngIf="item.iconType == 'image'" src="assets/images/icons/{{item.icon}}.png"
+                    class="side-bar-img m-r-10" [ngClass]="{'location-icon' : item.icon === 'location'}" />
+                <span class="font-small-caps font-16" *ngIf="!isFolded"
+                    [ngClass]="item.iconType == 'image' ? set-pos-side : null">{{item.title}}</span>
+                    
+                    <span *ngIf="item.title === 'Customer Chat'">
+                        <span *ngIf="userUnreads">
+                            <nz-badge [nzCount]="userUnreads" [nzOverflowCount]="9">
+                                <div class="badge-menu-container" style="padding: 0px 3px;">
+                                    &nbsp;
+                                </div>
+                            </nz-badge>
+                        </span>
+                        <span *ngIf="staffUnreads">
+                            <nz-badge [nzCount]="staffUnreads" [nzOverflowCount]="9"
+                                [nzStyle]="{ backgroundColor: '#f9858b' }">
+                                <div class="badge-menu-container" style="margin-left: 4px;">
+                                    &nbsp;
+                                </div>
+                            </nz-badge>
+                        </span>
+                    </span>
+            </a>
+
+            <!-- Second Level -->
+            <ul class="ant-menu ant-menu-inline ant-menu-sub dropdown-menu" *ngIf="item.submenu.length > 0">
+                <li [ngClass]="subItem.submenu.length > 0?'ant-menu-submenu ant-menu-submenu-inline':'ant-menu-item'"
+                    *ngFor="let subItem of item.submenu"
+                    [routerLinkActive]="subItem.submenu.length > 0 ? 'ant-menu-submenu-open' : 'ant-menu-item-selected'"
+                    [routerLinkActiveOptions]="{exact: true}">
+                    <a [routerLink]="subItem.path" class="p-l-30" *ngIf="!subItem.submenu.length > 0">
+                        <span>{{subItem.title}}</span>
+                        <span *ngIf="subItem.path === '/support'">
+                            <span *ngIf="userUnreads">
+                                <nz-badge [nzCount]="userUnreads" [nzOverflowCount]="9">
+                                    <div class="badge-menu-container" style="padding: 0px 3px;">
+                                        &nbsp;
+                                    </div>
+                                </nz-badge>
+                            </span>
+                            <span *ngIf="staffUnreads">
+                                <nz-badge [nzCount]="staffUnreads" [nzOverflowCount]="9"
+                                    [nzStyle]="{ backgroundColor: '#f9858b' }">
+                                    <div class="badge-menu-container" style="margin-left: 4px;">
+                                        &nbsp;
+                                    </div>
+                                </nz-badge>
+                            </span>
+                        </span>
+                        <span *ngIf="subItem.path === '/booking'">
+                            <span *ngIf="newBookings">
+                                <nz-badge [nzCount]="newBookings" [nzOverflowCount]="9">
+                                    <div class="badge-menu-container" style="padding: 0px 3px;">
+                                        &nbsp;
+                                    </div>
+                                </nz-badge>
+                            </span>
+                        </span>
+                    </a>
+
+                </li>
+            </ul>
+        </li>
+    </ul>
+    <div class="cocon-logo"*ngIf="userType==2" style="
+    position: fixed;
+    bottom: 0;
+    margin-bottom:1%;
+    text-align: center;
+    
+    background-color: #fff;
+"><img src="assets/images/logo/logo.png" style="margin-top: 8px;">
+</div>
+</perfect-scrollbar>

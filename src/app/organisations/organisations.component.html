@@ -1,0 +1,651 @@
+<!-- Toast -->
+<ng2-toasty [position]="'top-right'"></ng2-toasty>
+
+<div class="font-poppins">
+<!-- Default view: show booking table -->
+<nz-card  style="min-height: 400px;" *ngIf="!orgFormVisible">
+    <!-- Actions -->
+    <div nz-row nzGutter="16">
+       <div nz-col class="gutter-row d-flex" nzSpan="7"> 
+            <nz-input-group [nzPrefix]="prefixTemplate" [nzSuffix]="suffixTemplate">
+                <input nz-input placeholder="Press enter to search." [(ngModel)]="searchBoxValue"
+                    (keyup.enter)="onKeyUp()" ng-model-options="{ debounce: 1000 }" #searchBox nzSize="small">
+            </nz-input-group>
+            <ng-template #prefixTemplate>
+                <i nz-icon nzType="search" title="Search" class="cursor-pointer" theme="outline"
+                    (click)="onKeyUp()"></i>
+            </ng-template>
+            <ng-template #suffixTemplate>
+                <span class="font-10" style="color: #a1887c;text-decoration: underline;cursor: pointer;background-color: #ffffff;"
+                    (click)="resetSearch()">
+                    Reset
+                </span>
+            </ng-template>
+        </div>
+
+        
+
+        <div nz-col class="gutter-row" nzSpan="4" style="text-align: right ;float: right;">
+            <!-- <button nz-button="" nztype=" primary" class="font-small-caps btn-custom-light m-r-10" disabled
+                title="Export to excel" nz-wave="[object Object]" style="padding: 6px;" (click)="toggleExport()">
+                <i nz-icon nzType="file-excel" nzTheme="outline" style="font-size: 16px;"></i>
+            </button> -->
+            <button nz-button="" nztype=" primary" (click)="openOrgForm(null, true)" [nzLoading]="isLoadingData"
+                class="font-small-caps  btn-fill" nz-wave="[object Object]" >
+                <span *ngIf="!isLoadingData">
+                    <i class="fa fa-plus button-plus-icon" aria-hidden="true"></i>&nbsp;New
+                </span>
+            </button>
+        </div>
+    </div>
+
+    <div nz-row nzGutter="16" class="m-t-25">
+        <div nz-col class="gutter-row" nzSpan='24'>
+            <nz-table [nzShowPagination]="false" [nzLoading]="loadingFlag" [nzData]="organisationData " >
+                <thead>
+                    <tr>
+                        
+                        <th class="font-9 font-small-caps" >Name</th>
+                        <th class="font-9 font-small-caps" >Type</th>
+                        <th class="font-9 font-small-caps" >Contact Person</th>
+                        <th class="font-9 font-small-caps" >Address</th>
+                        <th class="font-9 font-small-caps" >Email</th>
+                        <th class="font-9 font-small-caps" >Contact Number</th>
+                        <th nzWidth="10%"></th>
+                        <!-- <th nzWidth="10%"></th>  -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-template ngFor let-data [ngForOf]="organisationData">
+                        <tr class="data-row cursor-pointer"  >
+                            <td class="font-9"> {{ data.Name }}</td>
+                            <td class="font-9"> {{ data.OrgType }}</td>
+                            <td class="font-9"> {{ data.Contact }}</td>
+                            <td class="font-9">{{ data.Address }}</td>
+                            <td class="font-9"> {{ data.Email }}</td>
+                            <td class="font-9"> {{ data.ContactNumber }}</td>
+                            <td>
+                                <span class="data-row-action">
+                                    <img src="assets/images/icons/edit-dark.png" class="editIconTable" title="Edit"
+                                        (click)="fillEditOrganisation(data)" />
+                                    <img src="assets/images/icons/delete.png" class="editIconTable" title="Delete"
+                                        nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this organisation? All the admins associated with this organisation will also be deleted."
+                                        (nzOnConfirm)="deleteOrganisation(data.OrganisationLocationId)" nzPopconfirmPlacement="topRight" />
+                                       
+                    <!-- <fa-icon [icon]="faUnlock" style="color:#a1887c" title="Reset Password"
+                                        nz-popconfirm nzPopconfirmTitle="Are you sure you want to reset password? A new password will be sent to you on this email."
+                                        (nzOnConfirm)="resetPassword(data.OrganisationLocationId)" nzPopconfirmPlacement="topRight"></fa-icon> -->
+                                    <!-- <img src="assets/images/icons/calendar.png" class="editIconTable"
+                                        title="Upcoming vacation(s)" (click)="viewUpVacations(data.StaffId)" /> -->
+                                    <!-- <i nz-icon nzType="right" nzTheme="outline" class="detailIcon" title="View Detail"
+                                        (click)="openStaffDetail(data.StaffId)"></i> -->
+                                </span>
+                            </td>
+                            <!-- <td>{{ data.GoogleEmail }}</td> -->
+                            <!-- <td>
+                                <span *ngIf="data.GoogleEmail">
+                                    <i class="far fa-envelope"
+                                        style="color:#a1887c;margin-right: 5px;"></i>{{data.GoogleEmail}}
+                                    <br />
+                                </span>
+                                <span *ngIf="data.Contact">
+                                    <i nz-icon nzType="phone" nzTheme="outline"
+                                        style="color: #a1887c; margin-right: 5px;"></i>{{data.Contact}}
+                                </span>
+                            </td>
+                            <td>
+                                <span *ngIf="data.CategoryName" nz-popover [nzPopoverContent]="contentSpeciality"
+                                    nzPopoverTrigger="hover" nzPopoverPlacement="left">
+                                    {{ data.CategoryName }}
+                                </span>
+                                <ng-template #contentSpeciality>
+                                    <div *ngFor="let category of data.Categories; let j = index">
+                                        <div style="width: fit-content;">
+                                            <div class="font-bold">
+                                                {{category.CategoryName}}
+                                                <span style="font-weight: 500; margin-left: 5px;">
+                                                    {{category.CategoryRate}} euro/hr
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div *ngFor="let product of category.Products">
+                                            <div style="width: fit-content;">
+                                                <span>
+                                                    <span style="color: #a1887c">+ </span>{{product.Name}}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <span *ngIf="data.Categories.length > 1 && j !== (data.Categories.length - 1) ">
+                                            <nz-divider
+                                                style="margin-top:5px; margin-bottom: 5px; background-color: #e5ddd8;">
+                                            </nz-divider>
+                                        </span>
+                                    </div>
+                                </ng-template>
+                                <span *ngIf="!data.CategoryName">-</span>
+                            </td>
+                            <td>
+                                <span *ngIf="data.StaffGroupName">
+                                    {{ data.StaffGroupName }}
+                                </span>
+                                <span *ngIf="!data.StaffGroupName">
+                                    -
+                                </span>
+                            </td>
+                            <td>
+                                <span *ngIf="data.Rank">
+                                    {{ data.Rank }}
+                                </span>
+                                <span *ngIf="!data.Rank">
+                                    -
+                                </span>
+                            </td>
+                            <td>{{ data.StatusName }}</td>
+                            <td>
+                                <span class="data-row-action">
+                                    <img src="assets/images/icons/edit-dark.png" class="editIconTable" title="Edit"
+                                        (click)="fillStaffForm(data)" />
+                                    <img src="assets/images/icons/delete.png" class="editIconTable" title="Delete"
+                                        nz-popconfirm nzPopconfirmTitle="Are you sure delete this staff?"
+                                        (nzOnConfirm)="deleteStaff(data.StaffId)" nzPopconfirmPlacement="topRight" />
+                                    <!-- <img src="assets/images/icons/calendar.png" class="editIconTable"
+                                        title="Upcoming vacation(s)" (click)="viewUpVacations(data.StaffId)" /> 
+                                    <!-- <i nz-icon nzType="right" nzTheme="outline" class="detailIcon" title="View Detail"
+                                        (click)="openStaffDetail(data.StaffId)"></i> 
+                                </span>
+                            </td> -->
+                        </tr>
+                    </ng-template>
+                </tbody>
+            </nz-table>
+            <!-- <nz-empty *ngIf="!organisationData.length"></nz-empty> -->
+            <div *ngIf="organisationData?.length && !searchBoxValue && orgTable.pagination" class="m-t-12" style="text-align: right;">
+                <nz-pagination [(nzPageIndex)]="orgTable.pagination.curPage" [nzTotal]="orgTable.pagination.itemCount"
+                    (nzPageIndexChange)="changePageNumber($event)" (nzPageSizeChange)="changePageSize($event)"
+                    [nzPageSizeOptions]="orgTablePageSizeOptions" nzShowSizeChanger></nz-pagination>
+            </div>
+            <!-- <div *ngIf="!organisationData?.length && !loadingFlag">
+                <nz-list [nzDataSource]="[]"></nz-list>
+            </div> -->
+        </div>
+    </div>
+</nz-card>
+
+<nz-card *ngIf="orgFormVisible" >
+    <div nz-row nzGutter="16">
+        <div nz-col class="gutter-row" nzSpan="24" style="text-align: right;width:100%;height:20px">
+            <a title="Cancel" (click)="closeOrgForm()" style="float: right;margin-bottom: 20px; color: #a1887c"><i
+                    nz-icon nzType="close" theme="outline"></i></a>
+        </div>
+    </div>
+    <!-- General details -->
+    <form [formGroup]="organisationForm" _ngcontent-jfp-c14="" novalidate="" nz-form=""
+        class="ant-form ng-untouched ng-invalid ng-dirty ant-form-horizontal p-l-20 organisationform">
+        <div nz-row nzGutter="16">
+            <div nz-col class="gutter-row" nzSpan="24">
+                <nz-form-item class="ant-form-item ant-row">
+                    <div nz-row nzGutter="16">
+                        <div nz-col class="gutter-row" nzSpan="7">
+                            <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                                <label>Name
+                                    <span style="color: #f25865;">
+                                        *
+                                    </span>
+                                </label>
+                                
+                            </nz-form-label>
+                        </div>
+                        <div nz-col class="gutter-row" nzSpan="1"></div>
+                        <div nz-col class="gutter-row" nzSpan="7">
+                            <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                                <label>Type
+                                    <span style="color: #f25865;">
+                                        *
+                                    </span>
+                                </label>
+                            </nz-form-label>
+                        </div>
+                        <div nz-col class="gutter-row" nzSpan="1"></div>
+                    </div>
+                    <div nz-row nzGutter="16">
+                        <div nz-col class="gutter-row" nzSpan="7">
+                            <nz-form-control _ngcontent-jfp-c14=""
+                                class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                                <div class="ant-form-item-control">
+                                    <span class="ant-form-item-children">
+                                        <input _ngcontent-jfp-c14="" nz-input="" formControlName="Name"
+                                            placeholder="Name" style="padding: 0.45rem 0.6rem;"
+                                            class="ant-input ng-untouched ng-pristine ng-invalid">
+                                        <span class="ant-form-item-children-icon">
+                                        </span>
+                                    </span>
+                                </div>
+                            </nz-form-control>
+                        </div>
+                        <div nz-col class="gutter-row" nzSpan="1"></div>
+                        <div nz-col class="gutter-row" nzSpan="7">
+                            <nz-form-control _ngcontent-jfp-c14=""
+                                class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                                <div class="ant-form-item-control">
+                                    <span class="ant-form-item-children">
+                                        <!-- <input _ngcontent-jfp-c14="" type="email" nz-input=""
+                                            formControlName="GoogleEmail" 
+                                            class="ant-input ng-untouched ng-pristine ng-invalid"> -->
+                                        <nz-select formControlName="Type" nzAllowClear nzPlaceHolder="Select Organisation Type"
+                                            [nzSize]="small">
+                                            <nz-option *ngFor="let orgtyp of orgType" [nzValue]="orgtyp.BusinessTypeId"
+                                                [nzLabel]="orgtyp.Name"></nz-option>
+                                        </nz-select>
+
+                                        <span class="ant-form-item-children-icon"></span>
+                                    </span>
+                                </div>
+                            </nz-form-control>
+                        </div>
+                        <div nz-col class="gutter-row" nzSpan="1"></div>
+                    </div>
+                </nz-form-item>
+                <nz-form-item class="ant-form-item ant-row">
+                    <div nz-row nzGutter="16">
+                        <div nz-col class="gutter-row" nzSpan="7">
+                            <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                                <label>Contact Person
+                                    <span style="color: #f25865;">
+                                        *
+                                    </span>
+                                </label>
+                            </nz-form-label>
+                        </div>
+                        <div nz-col class="gutter-row" nzSpan="1"></div>
+                        <div nz-col class="gutter-row" nzSpan="7">
+                            <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                                <label>Email
+                                    <span style="color: #f25865;">
+                                        *
+                                    </span>
+                                </label>
+                            </nz-form-label>
+                        </div>
+                    </div>
+                    <div nz-row nzGutter="16">
+                        <div nz-col class="gutter-row" nzSpan="7">
+                            <nz-form-control _ngcontent-jfp-c14=""
+                                class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                                <div class="ant-form-item-control">
+                                    <span class="ant-form-item-children">
+                                        <input _ngcontent-jfp-c14="" type="tel" formControlName="Contact" nz-input=""
+                                            placeholder="Contact" class="ant-input ng-untouched ng-pristine ng-invalid">
+                                        <span class="ant-form-item-children-icon"></span>
+                                    </span>
+                                </div>
+                            </nz-form-control>
+                        </div>
+                        <div nz-col class="gutter-row" nzSpan="1"></div>
+                        <div nz-col class="gutter-row" nzSpan="7">
+                            <nz-form-control _ngcontent-jfp-c14=""
+                                class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                                <div class="ant-form-item-control">
+                                    <span class="ant-form-item-children">
+                                        <input _ngcontent-jfp-c14="" type="email" nz-input=""
+                                            formControlName="Email" placeholder="Email"
+                                            class="ant-input ng-untouched ng-pristine ng-invalid">
+                                        <span class="ant-form-item-children-icon"></span>
+                                    </span>
+                                </div>
+                            </nz-form-control>
+                        </div>
+                    </div>
+                </nz-form-item>
+                <nz-form-item class="ant-form-item ant-row">
+                    <div nz-row nzGutter="16">
+                        <div nz-col class="gutter-row" nzSpan="7">
+                            <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                                <label class="f-700">Organisation Logo</label>
+                            </nz-form-label>
+                        </div>
+                        <div nz-col class="gutter-row" nzSpan="1"></div>
+                        <div nz-col class="gutter-row" nzSpan="7">
+                            <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                                <label class="f-700">Contact Number</label>
+                            </nz-form-label>
+                        </div>
+                    </div>
+                    <div nz-row nzGutter="16">
+                        <div nz-col class="gutter-row" nzSpan="4">
+                            <nz-form-control _ngcontent-jfp-c14=""
+                                class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                                <div class="ant-form-item-control">
+                                    <span class="ant-form-item-children">
+                                        <button _ngcontent-jfp-c14="" (click)="compressImage()" nz-button="" nztype="default"
+                                            class="ant-btn ant-btn-default m-r-15" nz-wave="[object Object]">
+                                            <span><i nz-icon nzType="upload"></i> Click to Upload</span>
+                                        </button>
+                                        <!-- <nz-upload nzAccept="image/*" [nzBeforeUpload]="beforeUpload">
+                                            <button nz-button><i nz-icon nzType="upload"></i>Click to Upload</button>
+                                        </nz-upload> -->
+                                        <span class="ant-form-item-children-icon">
+                                        </span>
+                                    </span>
+                                </div>
+                            </nz-form-control>
+                        </div>
+                        <div nz-col class="gutter-row" nzSpan="2" *ngIf="imageCompressing">
+                            <ng-template #indicatorTemplate><i nz-icon nzType="loading" class="color-brand-primary"></i>
+                            </ng-template>
+                            <nz-spin nzSimple [nzSpinning]="imageCompressing" style="position: relative;top:9px"
+                                [nzIndicator]="indicatorTemplate">
+                                <div class="img-uploading-div">
+                                    &nbsp;
+                                </div>
+                            </nz-spin>
+                        </div>
+                        <div nz-col class="gutter-row" nzSpan="2" *ngIf="imageUploaded">
+                            <div *ngIf="uploadedImgUrl" class="img-thumb-div">
+                                <img [src]="uploadedImgUrl" class="img-thumb" style="cursor: pointer;height: 40px;width: 35px;"
+                                    (click)="showImageModal(uploadedImgUrl)" />
+                            </div>
+                        </div>
+                        <div nz-col class="gutter-row" *ngIf="!imageUploaded && !imageCompressing " nzSpan="2">
+                            
+                        </div>
+                        <div nz-col class="gutter-row" *ngIf="!imageUploaded || !imageCompressing " nzSpan="2">
+                            
+                        </div>
+                        <div nz-col class="gutter-row" nzSpan="7">
+                            <nz-form-control _ngcontent-jfp-c14=""
+                                class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                                <div class="ant-form-item-control">
+                                    <span class="ant-form-item-children">
+                                        <input _ngcontent-jfp-c14="" nz-input="" formControlName="ContactNumber"
+                                            placeholder="Contact Number" style="padding: 0.45rem 0.6rem;"
+                                            class="ant-input ng-untouched ng-pristine ng-invalid">
+                                        <span class="ant-form-item-children-icon">
+                                        </span>
+                                    </span>
+                                </div>
+                            </nz-form-control>
+                        </div>
+                    </div>
+                    
+                    
+                </nz-form-item>
+                <nz-form-item>
+                    <div nz-row nzGutter="16">
+                        <div nz-col class="gutter-row" nzSpan="7">
+                            <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                                <label class="f-700">Profile Picture</label>
+                            </nz-form-label>
+                        </div>
+                        <div nz-col class="gutter-row" nzSpan="1"></div>
+                        
+                    </div>
+                    <div nz-row nzGutter="16">
+                        <div nz-col class="gutter-row" nzSpan="4">
+                            <nz-form-control _ngcontent-jfp-c14=""
+                                class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                                <div class="ant-form-item-control">
+                                    <span class="ant-form-item-children">
+                                        <button _ngcontent-jfp-c14="" (click)="compressProfileImage()" nz-button="" nztype="default"
+                                            class="ant-btn ant-btn-default m-r-15" nz-wave="[object Object]">
+                                            <span><i nz-icon nzType="upload"></i> Click to Upload</span>
+                                        </button>
+                                        <!-- <nz-upload nzAccept="image/*" [nzBeforeUpload]="beforeUpload">
+                                            <button nz-button><i nz-icon nzType="upload"></i>Click to Upload</button>
+                                        </nz-upload> -->
+                                        <span class="ant-form-item-children-icon">
+                                        </span>
+                                    </span>
+                                </div>
+                            </nz-form-control>
+                        </div>
+                        <div nz-col class="gutter-row" nzSpan="2" *ngIf="profileImageCompressing">
+                            <ng-template #indicatorTemplate><i nz-icon nzType="loading" class="color-brand-primary"></i>
+                            </ng-template>
+                            <nz-spin nzSimple [nzSpinning]="profileImageCompressing" style="position: relative;top:9px"
+                                [nzIndicator]="indicatorTemplate">
+                                <div class="img-uploading-div">
+                                    &nbsp;
+                                </div>
+                            </nz-spin>
+                        </div>
+                        <div nz-col class="gutter-row" nzSpan="2" *ngIf="profileImageUploaded">
+                            <div *ngIf="uploadedProfImgUrl" class="img-thumb-div">
+                                <img [src]="uploadedProfImgUrl" class="img-thumb" style="cursor: pointer;height: 40px;width: 35px;"
+                                    (click)="showImageModal(uploadedProfImgUrl)" />
+                            </div>
+                        </div> 
+                    </div>
+                </nz-form-item>
+                <nz-divider nzOrientation="left" [nzText]="addressGroupLabel"></nz-divider>
+                <ng-template #addressGroupLabel>
+                    Address 
+                </ng-template>
+                <nz-form-item class="ant-form-item ant-row">
+                    <div nz-row nzGutter="16">
+                        <div nz-col class="gutter-row" nzSpan="4">
+                            <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                                <label>Street
+                                    <span style="color: #f25865;">
+                                        *
+                                    </span>
+                                </label>
+                            </nz-form-label>
+                        </div>
+                        <div nz-col class="gutter-row" nzSpan="3">
+                            <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                                <label>House Number
+                                    <span style="color: #f25865;">
+                                        *
+                                    </span>
+                                </label>
+                            </nz-form-label>
+                        </div>
+                        <div nz-col class="gutter-row" nzSpan="1"></div>
+                        
+                        <div nz-col class="gutter-row" nzSpan="3">
+                            <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                                <label>Zip
+                                    <span style="color: #f25865;">
+                                        *
+                                    </span>
+                                </label>
+                            </nz-form-label>
+                        </div>
+                        <div nz-col class="gutter-row" nzSpan="4">
+                            <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                                <label>City
+                                    <span style="color: #f25865;">
+                                        *
+                                    </span>
+                                </label>
+                            </nz-form-label>
+                        </div>
+                    </div>
+                    <div nz-row nzGutter="16">
+                        <div nz-col class="gutter-row" nzSpan="4">
+                            <nz-form-control _ngcontent-jfp-c14=""
+                                class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                                <div class="ant-form-item-control">
+                                    <span class="ant-form-item-children">
+                                        <input _ngcontent-jfp-c14="" nz-input="" formControlName="Street"
+                                            placeholder="Street" style="padding: 0.45rem 0.6rem;"
+                                            class="ant-input ng-untouched ng-pristine ng-invalid">
+                                        <span class="ant-form-item-children-icon">
+                                        </span>
+                                        <!-- <textarea style="resize: none" rows="3" nz-input formControlName="HouseNumber"
+                                            placeholder="HouseNumber"></textarea>
+                                        <span class="ant-form-item-children-icon"></span> -->
+                                    </span>
+                                </div>
+                            </nz-form-control>
+                        </div>
+                        <div nz-col class="gutter-row" nzSpan="3">
+                            <nz-form-control _ngcontent-jfp-c14=""
+                                class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                                <div class="ant-form-item-control">
+                                    <span class="ant-form-item-children">
+                                        <input _ngcontent-jfp-c14="" nz-input="" formControlName="HouseNumber"
+                                            placeholder="HouseNumber" style="padding: 0.45rem 0.6rem;"
+                                            class="ant-input ng-untouched ng-pristine ng-invalid">
+                                        <span class="ant-form-item-children-icon">
+                                        </span>
+                                        <!-- <textarea style="resize: none" rows="3" nz-input formControlName="HouseNumber"
+                                            placeholder="HouseNumber"></textarea>
+                                        <span class="ant-form-item-children-icon"></span> -->
+                                    </span>
+                                </div>
+                            </nz-form-control>
+                        </div>
+                        <div nz-col class="gutter-row" nzSpan="1"></div>
+                        <div nz-col class="gutter-row" nzSpan="3">
+                            <nz-form-control _ngcontent-jfp-c14=""
+                                class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                                <div class="ant-form-item-control">
+                                    <span class="ant-form-item-children">
+                                        <input _ngcontent-jfp-c14="" nz-input="" formControlName="Zip" placeholder="Zip"
+                                            style="padding: 0.45rem 0.6rem;"
+                                            class="ant-input ng-untouched ng-pristine ng-invalid">
+                                        <span class="ant-form-item-children-icon">
+                                        </span>
+                                    </span>
+                                </div>
+                            </nz-form-control>
+                        </div>
+                        <div nz-col class="gutter-row" nzSpan="4">
+                            <nz-form-control _ngcontent-jfp-c14=""
+                                class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                                <div class="ant-form-item-control">
+                                    <span class="ant-form-item-children">
+                                        <input _ngcontent-jfp-c14="" nz-input="" formControlName="City"
+                                            placeholder="City" style="padding: 0.45rem 0.6rem;"
+                                            class="ant-input ng-untouched ng-pristine ng-invalid">
+                                        <span class="ant-form-item-children-icon">
+                                        </span>
+                                    </span>
+                                </div>
+                            </nz-form-control>
+                        </div>
+                        
+                    </div>
+                </nz-form-item>
+            </div>
+        </div>
+    </form>
+
+    <!-- Form footer with action buttons -->
+    <nz-divider></nz-divider>
+    <div nz-row nzGutter="16">
+        <div nz-col class="gutter-row" nzSpan="12">
+            <button _ngcontent-jfp-c14="" (click)="updateMode ? resetUpdateForm(organisationDataRaw) : resetOrganisationForm()" nz-button=""
+                nztype="default" class="ant-btn ant-btn-default m-l-20 btn-outline" nz-wave="[object Object]">
+                <span>Reset</span></button>
+        </div>
+        <div nz-col class="gutter-row" nzSpan="12" style="text-align: right;">
+            <button _ngcontent-jfp-c14="" (click)="closeOrgForm()" nz-button="" nztype="default"
+                class="ant-btn ant-btn-default m-r-15 btn-outline" nz-wave="[object Object]">
+                <span>Cancel</span></button>
+            <button _ngcontent-jfp-c14="" (click)="updateMode ? updateOrganisation() : showAddAdminModal()" nz-button=""
+                nztype="default" [disabled]="disableSubmit()" class="ant-btn btn-fill ant-btn-primary" nz-wave="[object Object]">
+                <span *ngIf="updateMode">Update</span>
+                <span *ngIf="!updateMode">Submit</span>
+            </button>
+        </div>
+    </div>
+</nz-card>
+<nz-modal [(nzVisible)]="confirmationCancelForm" 
+    [nzContent]="cancelModalContent" [nzFooter]="cancelModalFooter"
+    nzWrapClassName="vertical-center-modal"  [nzClosable]="false"
+    [nzMaskClosable]="false" >
+    <!-- <ng-template #confirmationModalHeader>
+        <div nz-row nzGutter="8">
+            <div nz-col nzSpan="24" class="gutter-row text-center">
+                <span class="color-brand-primary">
+                    Repeating Shift
+                </span>
+            </div>
+        </div>
+    </ng-template> -->
+    <ng-template #cancelModalContent>
+        <p>
+            You have unsaved data filled in the form, are you sure you want to cancel?
+        </p>
+    </ng-template>
+    <ng-template #cancelModalFooter>
+        <button _ngcontent-jfp-c14="" (click)="cancelFormCancel()" nz-button="" nztype="default"
+                 class="ant-btn btn-custom-light pop-btn-outline" nz-wave="[object Object]">
+                <span>No</span>
+            </button>
+            <button _ngcontent-jfp-c14="" (click)="cancelConfirm()" nz-button="" nztype="default"
+                class="ant-btn btn-custom-light pop-btn-fill" nz-wave="[object Object]">
+                <span>Yes</span>
+            </button>
+        
+    </ng-template>
+</nz-modal>
+<nz-modal [(nzVisible)]="showResetConfirmationAlert" 
+    [nzContent]="resetModalContent" [nzFooter]="resetModalFooter"
+    nzWrapClassName="vertical-center-modal" [nzClosable]="false"
+    [nzMaskClosable]="false" >
+    <!-- <ng-template #confirmationModalHeader>
+        <div nz-row nzGutter="8">
+            <div nz-col nzSpan="24" class="gutter-row text-center">
+                <span class="color-brand-primary">
+                    Repeating Shift
+                </span>
+            </div>
+        </div>
+    </ng-template> -->
+    <ng-template #resetModalContent>
+        <p>
+            Are you sure you want to reset the form; you will lose the data you filled in?
+        </p>
+    </ng-template>
+    <ng-template #resetModalFooter>
+        <button _ngcontent-jfp-c14="" (click)="showResetConfirmationAlert=false;" nz-button="" nztype="default"
+                 class="ant-btn btn-custom-light pop-btn-outline" nz-wave="[object Object]">
+                <span>No</span>
+            </button>
+            <button _ngcontent-jfp-c14="" (click)="showResetConfirmationAlert=false;resetFormConfirm()" nz-button="" nztype="default"
+                class="ant-btn btn-custom-light pop-btn-fill" nz-wave="[object Object]">
+                <span>Yes</span>
+            </button>
+        
+    </ng-template>
+</nz-modal>
+<nz-modal [nzVisible]="imageModel" [nzContent]="modalContent" [nzFooter]="null" (nzOnCancel)="hideImageModal()"
+    [nzBodyStyle]="imageModalStyle" [nzStyle]="{ top: '20px' }">
+    <ng-template #modalContent>
+        <img [src]="imgUrl" class="modalImage" />
+    </ng-template>
+</nz-modal>
+<nz-modal [(nzVisible)]="showAddAdminPopup" 
+    [nzContent]="addAdminContent" [nzFooter]="addAdminFooter"
+    nzWrapClassName="vertical-center-modal" [nzClosable]="false"
+    [nzMaskClosable]="false" >
+    <!-- <ng-template #confirmationModalHeader>
+        <div nz-row nzGutter="8">
+            <div nz-col nzSpan="24" class="gutter-row text-center">
+                <span class="color-brand-primary">
+                    Repeating Shift
+                </span>
+            </div>
+        </div>
+    </ng-template> -->
+    <ng-template #addAdminContent>
+        <p>
+            Do you want to create an Admin for the organsiation? Admin data can later be changed from the "Organsiation Admin" section.
+        </p>
+    </ng-template>
+    <ng-template #addAdminFooter>
+        <button _ngcontent-jfp-c14="" (click)="showAddAdminPopup=false;confirmSaveData(false)" nz-button="" nztype="default"
+                 class="ant-btn btn-custom-light pop-btn-outline" nz-wave="[object Object]">
+                <span>No</span>
+            </button>
+            <button _ngcontent-jfp-c14="" (click)="showAddAdminPopup=false;confirmSaveData(true)" nz-button="" nztype="default"
+                class="ant-btn btn-custom-light pop-btn-fill" nz-wave="[object Object]">
+                <span>Yes</span>
+            </button>
+        
+    </ng-template>
+</nz-modal>
+</div>

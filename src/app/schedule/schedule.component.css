@@ -1,0 +1,151 @@
+.custom-light {
+    background-color: #ffffff !important;
+    border: 1px solid #a2897dd6 !important;
+    color: #a2897dd6 !important;
+    transition: all 0.4s !important;
+    box-shadow: none !important;
+}
+
+.custom-light:hover {
+    box-shadow: 0px 0px 1px 1px #e5ddd8 !important;
+}
+
+.cust-pad {
+    padding: 11px 20px 7px 20px;
+}
+
+.date-schedular-header {
+    border: 1px solid #a2897dd6;
+    border-radius: 4px;
+}
+
+.schedule-tuple {
+    width: 100%;
+    padding: 1px 1px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 1px;
+}
+
+.sch-edit-modal-header-descriptor {
+    font-size: 13px;
+}
+
+.ant-table-tbody>tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected)>td, .ant-table-tbody>tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected)>td, .ant-table-thead>tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected)>td, .ant-table-thead>tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected)>td {
+    background: unset;
+}
+
+.ant-table-tbody>tr>td {
+    padding: 2px 6px;
+}
+
+.custom-date-panel {
+    border: 1px solid #a2897dd6;
+    border-radius: 4px;
+}
+
+.b-r-1 {
+    border-right: 1px solid #a2897dd6;
+}
+
+.p-t-8 {
+    padding-top: 8px;
+}
+
+.p-b-8 {
+    padding-bottom: 8px;
+}
+
+.p-8 {
+    padding: 8px;
+}
+
+.back-light {
+    background-color: #e5ddd83d;
+}
+
+.block-container {
+    max-height: 80px;
+    overflow-y: auto;
+}
+
+.block-container::-webkit-scrollbar {
+    width: 6px;
+    background-color: #F5F5F5;
+    border-radius: 15px;
+}
+
+.block-container::-webkit-scrollbar-thumb {
+    background-color: #c1c1c1;
+    border-radius: 15px;
+}
+
+.block-container::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #F5F5F5;
+    border-radius: 15px;
+}
+
+.color-theme {
+    background-image: linear-gradient(to bottom right, #e5ddd8, #9c7863);
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.single-day {
+    background-color: #9c7863;
+    color: #ffffff;
+}
+
+.spe-day {
+    background-color: #cdbcb1;
+}
+
+.ong-day {
+    background-color: #e5ddd8;
+}
+
+.schedule-type-head {
+    font-weight: 600;
+    font-size: 12px;
+    margin-right: 4px;
+}
+
+.schedule-edit-icon {
+    width: 12px;
+    height: auto;
+}
+
+.add-sch-btn {
+    padding: 1px 5px;
+    width: 100%;
+    text-align: left;
+}
+
+.bg-white {
+    background-color: #ffffff;
+}
+/* CSS to make header cells have the same width as body cells */
+:host ::ng-deep .ant-table-fixed-header .ant-table-thead th {
+    width: unset !important;
+  }
+  
+  /* CSS to make body cells have the same width as header cells */
+  :host ::ng-deep .ant-table-scroll .ant-table-thead th,
+  :host ::ng-deep .ant-table-scroll .ant-table-tbody td {
+    width: unset !important;
+  }
+  .t1 {
+    /* Styles for t1 */
+    color: #a1887c;
+  }
+  
+  .t2 {
+    /* Styles for t2 */
+    color: #e5ddd8;
+  }
+  .calendar-popover .ant-calendar-picker-container {
+    z-index: 1050 !important; /* Adjust the z-index to be higher than the popover */
+}

@@ -1,0 +1,32 @@
+.scroller {
+    scrollbar-color: #c1c1c1 #ffffff;
+    scrollbar-width: thin;
+    scroll-behavior: smooth;
+}
+
+.scroller::-webkit-scrollbar {
+    width: 6px;
+    background-color: #ffffff;
+    border-radius: 15px;
+}
+
+.scroller::-webkit-scrollbar-thumb {
+    background-color: #c1c1c1;
+    border-radius: 15px;
+}
+
+.scroller::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #ffffff;
+    border-radius: 15px;
+}
+
+::ng-deep .vertical-center-modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+::ng-deep .vertical-center-modal .ant-modal {
+    top: 0;
+}

@@ -1,0 +1,170 @@
+<div class="font-poppins">
+    <ng2-toasty [position]="'top-right'"></ng2-toasty>
+    <nz-spin [nzSpinning]="isFormSpinning">
+        <nz-card  >
+            <div nz-col>
+                <form  nzSpan="24" [formGroup]="availabilityForm" _ngcontent-jfp-c14="" novalidate="" nz-form=""
+                class="ant-form ng-untouched ng-invalid ng-dirty ant-form-horizontal availabilityform">
+                <nz-form-item class="form-item-padding ant-form-item ant-row">
+                    <div nz-row  class="color-label">
+                        
+                        <div nz-col nzSpan="4" style="padding-left:0px;">
+                            <nz-form-label _ngcontent-jfp-c14="" class="form-label-font ant-form-item-label">
+                                <label>Appointment Date</label>
+                            </nz-form-label>
+                        </div>
+                        <div nz-col nzSpan="1"></div>
+                        <div nz-col nzSpan="4" style="padding-left:0px;">
+                            <nz-form-label _ngcontent-jfp-c14="" class="form-label-font ant-form-item-label">
+                                <label>Duration</label>
+                            </nz-form-label>
+                        </div>
+                        <div nz-col nzSpan="1"></div>
+                        <div nz-col nzSpan="5" style="padding-left:0px;">
+                            <nz-form-label _ngcontent-jfp-c14="" class="form-label-font ant-form-item-label">
+                                <label>Therapist Preference</label>
+                            </nz-form-label>
+                        </div>
+                        <div nz-col nzSpan="1"></div>
+                        <div nz-col nzSpan="5" style="padding-left:0px;">
+                            
+                        </div>
+                    </div>
+                    <div nz-row >
+                        
+                        <div nz-col  nzSpan="4" style="padding-left:0px;">
+                            <nz-form-control _ngcontent-jfp-c14=""
+                                class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                                <nz-date-picker id="appointmentDate"
+                                      nzFormat="EEE, dd-MM-yyy"
+                                    nzAllowClear="false" nzPlaceHolder="Select Appointment Date"
+                                    formControlName="Date" name="Date" [nzDisabledDate]="disableBookingDate" class="form-control-font">
+                                </nz-date-picker>
+                                <span class="ant-form-item-children-icon"> </span>
+                            </nz-form-control>
+                        </div>
+                        <div nz-col nzSpan="1"></div>
+                        <div nz-col nzSpan="4" style="padding-left:0px;">
+                            <nz-form-control _ngcontent-jfp-c14=""
+                                class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24 availabilityformSelect">
+                                <nz-select formControlName="Duration" nzPlaceHolder="Select Duration">
+                                                            <nz-option *ngFor="let duration of allDurations" [nzValue]="duration.Value"
+                                                                [nzLabel]="duration.Name"></nz-option>
+                                                        </nz-select>
+                                <span class="ant-form-item-children-icon"> </span>
+                            </nz-form-control>
+                        </div>
+                        <div nz-col nzSpan="1"></div>
+                        <div nz-col  nzSpan="5" style="padding-left:0px;">
+                            <nz-form-control _ngcontent-jfp-c14=""
+                                class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                                <nz-radio-group  [nzButtonStyle]="'solid'" formControlName="Therapist">
+                                    <label nz-radio-button *ngFor="let therapist of prefTherapistList" [nzValue]="therapist.value"  class="font-10 font-semibold"><span>{{therapist.text}}</span></label>
+                                    <!-- <label nz-radio-button nzValue=1 class="font-10 font-semibold">Male</label>
+                                    <label nz-radio-button nzValue=2 class="font-10 font-semibold">Female</label> -->
+                                </nz-radio-group>
+                                <span class="ant-form-item-children-icon"> </span>
+                            </nz-form-control>
+                        </div>
+                        <div nz-col nzSpan="1"></div>
+                        <div nz-col  nzSpan="7" style="padding-left:0px;">
+                            <button _ngcontent-jfp-c14=""  nz-button="" (click)="checkAvailability()"
+                    nztype="default" class="ant-btn ant-btn-default m-l-20 btn-fill" nz-wave="[object Object]">
+                    <span>Refresh</span></button>
+                    <a title="View Instructions" (click)="showInstructions=true;" class="form-anchor" style="cursor:pointer;color: #EE6D1D; padding-left: 10px ;"><i
+                        nz-icon nzType="info-circle" theme="outline"></i> View Instructions</a>
+                        </div>
+                        <div nz-col nzSpan="1"></div>
+                        
+    
+    
+                    </div>
+                </nz-form-item>
+            </form>
+            </div>
+           
+
+        <nz-divider></nz-divider>
+
+        <nz-table #fixedTable  nzTemplateMode  [nzScroll]="{x: tablewidth, y:tableHeight}" >
+            <thead>
+              <tr>
+                
+                <th nzAlign='center' style="width: 115px !important; max-width: 115px !important;" nzWidth="115px" nzLeft="0px" class="font-9">Time</th>
+                <th nzAlign='center'  style="width: 112px !important; max-width: 112px !important;" nzWidth="112px" nzLeft="115px" class="font-9" >Total Therapists</th>
+                <th nzAlign='center' style="width: 115px !; max-width: 115px !important;" [ngStyle]="{ 'background': dataProduct.ColorCode+'80' }" nzWidth="115px" class="font-9" *ngFor="let dataProduct of availabilityData.Products "> {{dataProduct.Translations[0].Name}} </th>
+               
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let data of availabilityData.StaffAvailability | keyvalue">
+                 <!-- {{data.key}} -->
+                <td nzAlign='center' style="width: 115px !important; max-width: 115px !important;" nzWidth="115px" nzLeft="0px" class="font-9"   nzLeft="0px">{{ data.key }}</td>
+                <td nzAlign='center' style=" width: 112px !important; max-width: 112px !important;" nzWidth="112px" nzLeft="115px" class="font-9">
+                <span *ngIf="!data.value.TotalStaff.length">
+                    {{ data.value.TotalStaff.length}}
+                </span>
+                <span *ngIf="data.value.TotalStaff.length">
+                    {{ data.value.TotalStaff.length}} 
+                    <br>
+                    (M-{{ data.value.GenderWiseData.Male}}, F-{{ data.value.GenderWiseData.Female}})
+                </span>
+                </td>
+                <td  nzWidth="115px"  style="width: 115px !important; max-width: 115px !important;" [ngClass]="{'staff-block': objectKeys(data.value.ProductWiseStaff).includes(dataProduct.ProductId.toString())==true}" nzAlign='center' class="font-9"  *ngFor="let dataProduct of availabilityData.Products">
+                    <!-- {{dataProduct.ProductId}} -->
+                    <span class="font-9" *ngIf="!objectKeys(data.value.ProductWiseStaff).length">
+                        0
+                    </span>
+                    <span  *ngIf="objectKeys(data.value.ProductWiseStaff).length">
+                       <!-- {{ objectKeys(data.value.ProductWiseStaff) |json}}
+                       {{ dataProduct.ProductId}}
+                       {{objectKeys(data.value.ProductWiseStaff).includes(dataProduct.ProductId.toString())}} -->
+                        <span title="M-{{data.value.ProductWiseGender[dataProduct.ProductId.toString()].Male}}, F-{{data.value.ProductWiseGender[dataProduct.ProductId.toString()].Female}}" class="font-9 " *ngIf="objectKeys(data.value.ProductWiseStaff).includes(dataProduct.ProductId.toString())">
+                            {{data.value.ProductWiseStaff[dataProduct.ProductId.toString()].length}}
+                        </span>
+                        <span class="font-9" *ngIf="!objectKeys(data.value.ProductWiseStaff).includes(dataProduct.ProductId.toString())">
+                            0
+                        </span>
+                        <!-- <span  *ngFor="let productStaff of data.value.ProductWiseStaff | keyvalue"> -->
+                            <!-- {{productStaff.value}} -->
+                           
+                            <!-- <span class="font-9"  *ngIf="dataProduct.ProductId==productStaff.key">{{productStaff.value.length }}</span>
+                            <span class="font-9" *ngIf="dataProduct.ProductId!=productStaff.key">88</span> -->
+                        <!-- </span> -->
+                    </span>
+                    
+                </td>
+                <!-- <td class="font-9"nzLeft="150px">{{ data.value.TotalStaff.length }}</td> -->
+                
+                
+              </tr>
+            </tbody>
+          </nz-table>
+
+
+        </nz-card>
+    </nz-spin>
+    
+</div>
+<nz-modal [(nzVisible)]="showInstructions" nzClassName="instruction-modal" [nzContent]="instructionsContent" [nzFooter]="null" (nzOnCancel)="cancelModal()"
+nzWrapClassName="vertical-center-modal" nzMaskClosable="false" nzClosable="true" style="z-index: 2000;" >
+<!-- <ng-template #serviceModalHeader>
+    <div nz-row nzGutter="8">
+        <div nz-col nzSpan="24" class="gutter-row text-center">
+            <span class="color-brand-primary">
+                Confirm service area restriction
+            </span>
+        </div>
+    </div>
+</ng-template> -->
+<ng-template #instructionsContent >
+    <nz-card style="margin:15px;" >
+        <div *ngIf="InstructionsData !=''" [innerHTML]="InstructionsData" class="font-poppins">
+            
+        </div>
+    <nz-skeleton *ngIf="InstructionsData ==''"></nz-skeleton>
+        
+    </nz-card>
+    
+</ng-template>
+</nz-modal>

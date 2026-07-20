@@ -1,0 +1,355 @@
+<div nz-row nzGutter="16" style="margin-top: 0px;">
+    <!-- Left Panel shows user list -->
+    <div nz-col class="gutter-row" nzXs="24" nzSm="24" nzMd="9" nzLg="9"
+        *ngIf="(smallDevice && !chatWindowVisible) || !smallDevice" [@slideIn]>
+        <nz-card class="detail-left">
+            <!-- <button nz-button="" nztype="primary" style="max-height: 34px;" (click)="updateUserData()"
+                            [disabled]="" class="font-small-caps btn-custom"
+                           >Update User Data</button> -->
+            <nz-tabset>
+                <nz-tab [nzTitle]="userTabTitle">
+                    <ng-template #userTabTitle>
+                        <nz-badge [nzCount]="userUnreads" [nzOverflowCount]="9" nzCustomFilter>
+                            <span class="tab-title-container">
+                                User
+                            </span>
+                            <i
+                            nz-th-extra
+                            class=" ant-table-filter-icon"
+                               
+                            nz-icon
+                            nz-dropdown
+                            #dropdown="nzDropdown"
+                            nzType="filter"
+                            nzTheme="fill"
+                            [nzDropdownMenu]="menu"
+                            [class.ant-table-filter-open]="dropdown.nzVisible"
+                            nzTrigger="click"
+                            nzPlacement="bottomRight"
+                            [nzClickHide]="false"
+                            [(nzVisible)]="visible"
+                            nzTableFilter
+                            [ngStyle]="{'color': (dateRange.length>0) ? '#1890ff' : 'inherit'}"
+                          ></i>
+                        </nz-badge>
+                    </ng-template>
+                    <nz-spin [nzSpinning]="isSpinning" style="min-height: 25vh;">
+                        <div *ngFor="let data of newUserList" class="user-row" (click)="openChatWindow(data.UserId)"
+                            [ngClass]="{'left-panel-row-selected': data.UserId === this.selectedUserId}">
+                            <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
+                                <div nz-col class="gutter-row" nzXs="4" nzSm="6" nzMd="6" nzLg="4" nzXl="3" nzXXl="3">
+                                    <span *ngIf="data.ImagePath">
+                                        <nz-avatar nzSize="default" nzIcon="user" [nzSrc]="data.ImageURL">
+                                        </nz-avatar>
+                                    </span>
+                                   
+                                    <span *ngIf="!data.ImagePath">
+                                        <nz-avatar nzIcon="user"></nz-avatar>
+                                    </span>
+                                </div>
+                                <div nz-col class="gutter-row" nzXs="20" nzSm="18" nzMd="18" nzLg="20" nzXl="21"
+                                    nzXXl="21">
+                                    <span class="font-bold">
+                                        {{data.Name}}
+                                    </span>
+                                    <span style="float: right;" *ngIf="data.LastMessageData">
+                                        {{data.LastMessageData.timestamp | date:'mediumDate'}}
+                                    </span>
+                                    <br />
+                                    <span *ngIf="data.LastMessageData">
+                                        {{data.LastMessageData.textToShow}}
+                                    </span>
+                                    <span class="unread-message" *ngIf="data.isRead === false">
+                                        New
+                                    </span>
+                                </div>
+                            </div>
+                            <nz-divider style="margin-top:12px;margin-bottom: 0px;">
+                            </nz-divider>
+                        </div>
+                    </nz-spin>
+                    
+                </nz-tab>
+                <nz-dropdown-menu #menu="nzDropdownMenu">
+                    <div class="">
+                      <nz-range-picker nzAllowClear="false"
+                      [(ngModel)]="dateRange"
+                          nzFormat="yyyy-MM-dd"></nz-range-picker>
+                      <!-- <button nz-button nzSize="small" nzType="primary" (click)="changeDateFilter(listTab.dateRange)" class="search-button">Filter</button>
+                      <button nz-button nzSize="small" (click)="resetDate(listTab);changeDateFilter(listTab.dateRange)">Reset</button> -->
+                    </div>
+                    <div class="ant-table-filter-dropdown-btns">
+                        <a class="ant-table-filter-dropdown-link confirm" (click)="visible=false;resetDateFilter('week');"><span>Last 7 days</span></a>
+                        <a style="margin-left:15px;" class="ant-table-filter-dropdown-link confirm" (click)="visible=false;resetDateFilter('month');"><span>Last 30 days</span></a>
+                      
+                      <a class="ant-table-filter-dropdown-link clear" (click)="visible=false;resetDateFilter();"><span>Reset</span></a>
+                      <a style="margin-right:15px;"  [attr.disabled]="(dateRange.length ==0 )? true : null" class="ant-table-filter-dropdown-link clear" (click)="visible=false;changeDateFilter(dateRange)"><span>OK</span></a>
+                  </div>
+                  
+                </nz-dropdown-menu>
+                <nz-tab [nzTitle]="staffTabTitle">
+                    <ng-template #staffTabTitle>
+                        <nz-badge [nzCount]="staffUnreads" [nzOverflowCount]="9"
+                            [nzStyle]="{ backgroundColor: '#f9858b' }">
+                            <span class="tab-title-container">
+                                Staff
+                            </span>
+                            <i
+                            nz-th-extra
+                            class=" ant-table-filter-icon"
+                               
+                            nz-icon
+                            nz-dropdown
+                            #dropdown="nzDropdown"
+                            nzType="filter"
+                            nzTheme="fill"
+                            [nzDropdownMenu]="staffmenu"
+                            [class.ant-table-filter-open]="dropdown.nzVisible"
+                            nzTrigger="click"
+                            nzPlacement="bottomRight"
+                            [nzClickHide]="false"
+                            [(nzVisible)]="staffVisible"
+                            nzTableFilter
+                            [ngStyle]="{'color': (staffDateRange.length>0) ? '#1890ff' : 'inherit'}"
+                          ></i>
+                        </nz-badge>
+                    </ng-template>
+                    <nz-spin [nzSpinning]="isSpinningStaff" style="min-height: 25vh;">
+                        <div *ngFor="let data of staffList" class="user-row" (click)="openChatWindowStaff(data.StaffId)"
+                            [ngClass]="{'left-panel-row-selected': data.StaffId === this.selectedStaffId}">
+                            <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
+                                <div nz-col class="gutter-row" nzXs="4" nzSm="6" nzMd="6" nzLg="4" nzXl="3" nzXXl="3">
+                                    <span *ngIf="data.ImagePath">
+                                        <nz-avatar nzSize="default" nzIcon="user" [nzSrc]="data.ImageURL">
+                                        </nz-avatar>
+                                    </span>
+                                    <span *ngIf="!data.ImagePath">
+                                        <nz-avatar nzIcon="user"></nz-avatar>
+                                    </span>
+                                </div>
+                                <div nz-col class="gutter-row" nzXs="20" nzSm="18" nzMd="18" nzLg="20" nzXl="21"
+                                    nzXXl="21">
+                                    <span class="font-bold">
+                                        {{data.Name}}
+                                    </span>
+                                    <span style="float: right;" *ngIf="data.LastMessageData">
+                                        {{data.LastMessageData.timestamp | date:'mediumDate'}}
+                                    </span>
+                                    <br />
+                                    <span *ngIf="data.LastMessageData">
+                                        {{data.LastMessageData.textToShow}}
+                                    </span>
+                                    <span class="unread-message" *ngIf="data.isRead === false">
+                                        New
+                                    </span>
+                                </div>
+                            </div>
+                            <nz-divider style="margin-top:12px;margin-bottom: 0px;">
+                            </nz-divider>
+                        </div>
+                    </nz-spin>
+                </nz-tab>
+                <nz-dropdown-menu #staffmenu="nzDropdownMenu">
+                    <div class="">
+                      <nz-range-picker nzAllowClear="false"
+                      [(ngModel)]="staffDateRange"
+                          nzFormat="yyyy-MM-dd"></nz-range-picker>
+                      <!-- <button nz-button nzSize="small" nzType="primary" (click)="changeDateFilter(listTab.dateRange)" class="search-button">Filter</button>
+                      <button nz-button nzSize="small" (click)="resetDate(listTab);changeDateFilter(listTab.dateRange)">Reset</button> -->
+                    </div>
+                    <div class="ant-table-filter-dropdown-btns">
+                        <a [ngStyle]="{'color': (staffWeekSelected == 1) ? '#594840!important' : '#a1887c!important'}" class="ant-table-filter-dropdown-link confirm" (click)="staffWeekSelected=1;staffVisible=false;resetStaffDateFilter('week');"><span>Last 7 days</span></a>
+                        <a [ngStyle]="{'color': (staffMonthSelected == 1) ? '#594840!important' : '#a1887c!important'}" style="margin-left:15px;" class="ant-table-filter-dropdown-link confirm" (click)="staffMonthSelected=1;staffVisible=false;resetStaffDateFilter('month');"><span>Last 30 days</span></a>
+
+                        
+                        <a class="ant-table-filter-dropdown-link clear" (click)="staffWeekSelected=0;staffMonthSelected=1;staffVisible=false;resetStaffDateFilter();"><span>Reset</span></a>
+                        <a style="margin-right:15px;" [attr.disabled]="(staffDateRange.length ==0 )? true : null" class="ant-table-filter-dropdown-link clear " (click)="staffWeekSelected=0;staffMonthSelected=0;staffVisible=false;changeStaffDateFilter(staffDateRange)"><span>OK</span></a>
+                  </div>
+                   
+                </nz-dropdown-menu>
+            </nz-tabset>
+        </nz-card>
+    </div>
+
+    <!-- Right Panel chat window -->
+    <div nz-col class="gutter-row" nzXs="24" nzSm="24" nzMd="15" nzLg="15"
+        *ngIf="(smallDevice && chatWindowVisible) || !smallDevice" [@slideIn]>
+        <nz-card [nzBodyStyle]="{'padding':'0px'}" class="detail-right">
+            <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" *ngIf="!selectedChatUser"
+                style="padding-top: 1.5rem;">
+                <nz-result [nzIcon]="smileicon" [nzTitle]="'Please select a user to chat!'">
+                </nz-result>
+                <ng-template #smileicon>
+                    <!-- <i nz-icon nzType="smile" [nzTwotoneColor]="'#d4c9c4'" nzTheme="twotone"></i> -->
+                    <i nz-icon nzType="smile" nzTheme="outline" style="color:#afa098"></i>
+                </ng-template>
+            </div>
+            <span *ngIf="selectedChatUser === 'user'">
+                <div class="chat-window">
+                    <div class="chat-window-header">
+                        <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
+                            <div nz-col class="gutter-row" nzSpan="24">
+                                <span *ngIf="userDetails.ImagePath">
+                                    <nz-avatar *ngIf="userDetails.ImagePath" nzSize="default" nzIcon="user"
+                                        [nzSrc]="userDetails.ImageURL">
+                                    </nz-avatar>
+                                </span>
+                                <span *ngIf="!userDetails.ImagePath">
+                                    <nz-avatar nzIcon="user"></nz-avatar>
+                                </span>
+                                <span class="font-bold" style="font-size: 20px;position: relative;top: 4px;">
+                                    {{userDetails.Name}}
+                                </span>
+                                <a title="Close" (click)="closeChatWindow()" style="float: right;color: #a1887c" *ngIf="smallDevice
+                                        "><i nz-icon nzType="close" theme="outline"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <nz-divider style="margin-top:8px; margin-bottom: 0px;"></nz-divider>
+                    <div class="chat-messages-container" id="chatContainerUser" #chatContainerUser>
+                        <nz-spin [nzSpinning]="isLoadingChat">
+                            <div *ngFor="let groups of userMessages">
+                                <nz-divider nzDashed [nzText]="text">
+                                    <ng-template #text>{{groups.DateString}}</ng-template>
+                                </nz-divider>
+                                <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }"
+                                    *ngFor="let messages of groups.Messages">
+                                    <div *ngIf="messages.sender === 0">
+                                        <div nz-col class="gutter-row" nzXs="20" nzSm="20" nzMd="16" nzLg="16" nzXl="16"
+                                            nzXXl="16">
+                                            <div class="sender-user">
+                                                <span style="white-space: pre-line">
+                                                    {{messages.text}}
+                                                </span>
+                                                <br />
+                                                <span class="date-span-left text-muted">{{messages.timestamp |
+                                                    date:'shortTime'}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="messages.sender === 1">
+                                        <div nz-col class="gutter-row" nzXs="4" nzSm="4" nzMd="8" nzLg="8" nzXl="8"
+                                            nzXXl="8">
+                                            &nbsp;
+                                        </div>
+                                        <div nz-col class="gutter-row" nzXs="20" nzSm="20" nzMd="16" nzLg="16" nzXl="16"
+                                            nzXXl="16">
+                                            <div class="sender-admin">
+                                                <span style="white-space: pre-line">
+                                                    {{messages.text}}
+                                                </span>
+                                                <br />
+                                                <span class="date-span-right text-muted">{{messages.timestamp |
+                                                    date:'shortTime'}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </nz-spin>
+                    </div>
+                    <div class="chat-window-footer">
+                        <textarea rows="2" style="resize: none; margin-right: 10px;" nz-input
+                            (keydown)="keyDownUser($event)" [(ngModel)]="messageInput" class="scroller"
+                            placeholder="Write message here"></textarea>
+                        <button nz-button="" nztype="primary" style="max-height: 34px;" (click)="sendMessageToUser()"
+                            [disabled]="!messageInput" class="font-small-caps btn-custom"
+                            nz-wave="[object Object]">Send</button>
+                        <!-- <nz-input-group [nzSuffix]="suffixTemplate">
+                                    <textarea rows="2" style="resize: none;" nz-input [(ngModel)]="messageInput"
+                                        (keydown.enter)="sendMessageToUser();$event.preventDefault()" class="scroller"
+                                        placeholder="Write message here"></textarea>
+                                </nz-input-group>
+                                <ng-template #suffixTemplate>
+                                    <i class="far fa-paper-plane disabled-icon" *ngIf="!messageInput"></i>
+                                    <i class="far fa-paper-plane enabled-icon" (click)="sendMessageToUser()" title="Send"
+                                        *ngIf="messageInput"></i>
+                                </ng-template> -->
+                    </div>
+                </div>
+            </span>
+            <span *ngIf="selectedChatUser === 'staff'">
+                <div class="chat-window-header">
+                    <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
+                        <div nz-col class="gutter-row" nzSpan="24">
+                            <span *ngIf="staffDetails.ImagePath">
+                                <nz-avatar *ngIf="staffDetails.ImagePath" nzSize="default" nzIcon="user"
+                                    [nzSrc]="staffDetails.ImageURL">
+                                </nz-avatar>
+                            </span>
+                            <span *ngIf="!staffDetails.ImagePath">
+                                <nz-avatar nzIcon="user"></nz-avatar>
+                            </span>
+                            <span class="font-bold" style="font-size: 20px;position: relative;top: 4px;">
+                                {{staffDetails.Name}}
+                            </span>
+                            <a title="Close" (click)="closeChatWindow()" style="float: right;color: #a1887c" *ngIf="smallDevice
+                                "><i nz-icon nzType="close" theme="outline"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <nz-divider style="margin-top:8px; margin-bottom: 0px;"></nz-divider>
+                <div class="chat-messages-container" id="chatContainerStaff" #chatContainerStaff>
+                    <nz-spin [nzSpinning]="isLoadingChat">
+                        <div *ngFor="let groups of staffMessages">
+                            <nz-divider nzDashed [nzText]="text">
+                                <ng-template #text>{{groups.DateString}}</ng-template>
+                            </nz-divider>
+                            <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }"
+                                *ngFor="let messages of groups.Messages">
+                                <div *ngIf="messages.sender === 0">
+                                    <div nz-col class="gutter-row" nzXs="20" nzSm="20" nzMd="16" nzLg="16" nzXl="16"
+                                        nzXXl="16">
+                                        <div class="sender-user">
+                                            <span style="white-space: pre-line">
+                                                {{messages.text}}
+                                            </span>
+                                            <br />
+                                            <span class="date-span-left text-muted">{{messages.timestamp |
+                                                date:'shortTime'}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div *ngIf="messages.sender === 1">
+                                    <div nz-col class="gutter-row" nzXs="4" nzSm="4" nzMd="8" nzLg="8" nzXl="8"
+                                        nzXXl="8">
+                                        &nbsp;
+                                    </div>
+                                    <div nz-col class="gutter-row" nzXs="20" nzSm="20" nzMd="16" nzLg="16" nzXl="16"
+                                        nzXXl="16">
+                                        <div class="sender-admin">
+                                            <span style="white-space: pre-line">
+                                                {{messages.text}}
+                                            </span>
+                                            <br />
+                                            <span class="date-span-right text-muted">{{messages.timestamp |
+                                                date:'shortTime'}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </nz-spin>
+                </div>
+                <div class="chat-window-footer">
+                    <textarea rows="2" style="resize: none; margin-right: 10px;" nz-input
+                        (keydown)="keyDownStaff($event)" [(ngModel)]="messageInput" class="scroller"
+                        placeholder="Write message here"></textarea>
+                    <button nz-button="" nztype="primary" style="max-height: 34px;" (click)="sendMessageToStaff()"
+                        [disabled]="!messageInput" class="font-small-caps btn-custom"
+                        nz-wave="[object Object]">Send</button>
+                    <!-- <nz-input-group [nzSuffix]="suffixTemplate">
+                            <textarea rows="1" style="resize: none" nz-input [(ngModel)]="messageInput"
+                                placeholder="Write message here"></textarea>
+                        </nz-input-group>
+                        <ng-template #suffixTemplate>
+                            <i class="far fa-paper-plane disabled-icon" *ngIf="!messageInput"></i>
+                            <i class="far fa-paper-plane enabled-icon" (click)="sendMessageToStaff()" title="Send"
+                                *ngIf="messageInput"></i>
+                        </ng-template> -->
+                </div>
+            </span>
+            <!-- </nz-spin> -->
+        </nz-card>
+    </div>
+</div>

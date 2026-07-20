@@ -1,0 +1,306 @@
+<!-- Toast -->
+<ng2-toasty [position]="'top-right'"></ng2-toasty>
+
+<!-- Default view: show promo-code table -->
+<nz-card *ngIf="!messageFormVisible" [@slideIn]>
+    <!-- Actions -->
+    <div nz-row nzGutter="16" style="margin-bottom: 25px;">
+        <div nz-col class="gutter-row d-flex" nzSpan="7">
+            <nz-input-group [nzPrefix]="prefixTemplate" [nzSuffix]="suffixTemplate">
+                <input nz-input placeholder="Press enter to search." [(ngModel)]="searchBoxValue"
+                    (keyup.enter)="onKeyUp()" ng-model-options="{ debounce: 1000 }" #searchBox nzSize="small">
+            </nz-input-group>
+            <ng-template #prefixTemplate>
+                <i nz-icon nzType="search" title="Search" class="cursor-pointer" theme="outline"
+                    (click)="onKeyUp()"></i>
+            </ng-template>
+            <ng-template #suffixTemplate>
+                <span style="color: #a1887c;font-size: 12px;text-decoration: underline;cursor: pointer;background-color: #ffffff;"
+                    (click)="resetSearch()">
+                    Reset
+                </span>
+            </ng-template>
+        </div>
+        <div nz-col class="gutter-row" nzSpan="11">&nbsp;</div>
+        <div nz-col class="gutter-row" nzSpan="3">
+            <nz-select nzPlaceHolder="View" nzDropdownClassName="border-less" (ngModelChange)="changeView($event)"
+                class="border-less" [(ngModel)]="selectedType" nzSize="small" style="margin-right: 10px;">
+                <nz-option *ngFor="let type of this.messageTypeList" [nzValue]="type.Type" [nzLabel]="type.Name">
+                </nz-option>
+            </nz-select>
+        </div>
+        <div nz-col class="gutter-row" nzSpan="3" style="text-align: right">
+            <button nz-button="" nztype=" primary" class="font-small-caps btn-custom-light" title="Delete"
+                *ngIf="anyChecked" nz-wave="[object Object]" nz-popconfirm
+                nzPopconfirmTitle="Are you sure delete selected message(s)?" (nzOnConfirm)="deleteMessage(null, true)"
+                nzPopconfirmPlacement="topRight" style="margin-right: 10px;">
+                <img src="assets/images/icons/delete.png" class="deleted-icon-button" />
+            </button>
+            <button nz-button="" nztype=" primary" (click)="openMessageForm()" class="font-small-caps btn-custom"
+                nz-wave="[object Object]"><i class="fa fa-plus button-plus-icon"
+                    aria-hidden="true"></i>&nbsp;New</button>
+        </div>
+    </div>
+    <div nz-row nzGutter="16">
+        <div nz-col class="gutter-row" nzSpan='24'>
+            <nz-table [nzLoading]="loadingFlag" [nzTemplateMode]="true">
+                <thead (nzSortChange)="sort($event)" nzSingleSort>
+                    <tr>
+                        <th nzShowCheckbox [(nzChecked)]="allChecked" (nzCheckedChange)="checkAll($event)"></th>
+                        <th class="font-16 font-small-caps">Title</th>
+                        <th class="font-16 font-small-caps">Description</th>
+                        <th nzCustomFilter class="font-16 font-small-caps" nzShowSort nzSortKey="Date">Date
+                            <i
+                                        nz-th-extra
+                                        class=" ant-table-filter-icon"
+                                           
+                                        nz-icon
+                                        nz-dropdown
+                                        #dropdown="nzDropdown"
+                                        nzType="filter"
+                                        nzTheme="fill"
+                                        [nzDropdownMenu]="menu"
+                                        [class.ant-table-filter-open]="dropdown.nzVisible"
+                                        nzTrigger="click"
+                                        nzPlacement="bottomRight"
+                                        [nzClickHide]="false"
+                                        [(nzVisible)]="visible"
+                                        nzTableFilter
+                                        [ngClass]="{'ant-table-filter-selected': (dateRange.length>0) ? true : false}"
+                                      ></i>
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of messageData" class="data-row">
+                        <td nzShowCheckbox [(nzChecked)]="data.checked" (nzCheckedChange)="refreshStatus()"></td>
+                        <td>{{data.Title}}</td>
+                        <td>{{data.Description}}</td>
+                        <td>{{data.DateShow}}</td>
+                        <td>
+                            <span class="data-row-action">
+                                <img src="assets/images/icons/edit-dark.png" class="editIconTable" title="Edit"
+                                    (click)="fillMessageForm(data)" />
+                                <img src="assets/images/icons/delete.png" class="editIconTable" title="Delete"
+                                    nz-popconfirm nzPopconfirmTitle="Are you sure delete this message?"
+                                    (nzOnConfirm)="deleteMessage(data.MessageId)" nzPopconfirmPlacement="topRight" />
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </nz-table>
+            <nz-dropdown-menu #menu="nzDropdownMenu">
+                <div class="">
+                  <nz-range-picker nzAllowClear="false"
+                  [(ngModel)]="dateRange"
+                      nzFormat="yyyy-MM-dd"></nz-range-picker>
+                  <!-- <button nz-button nzSize="small" nzType="primary" (click)="changeDateFilter(listTab.dateRange)" class="search-button">Filter</button>
+                  <button nz-button nzSize="small" (click)="resetDate(listTab);changeDateFilter(listTab.dateRange)">Reset</button> -->
+                </div>
+                <div class="ant-table-filter-dropdown-btns">
+                  <a [attr.disabled]="(dateRangeCalled.length==0 && dateRange.length ==0 )? true : null" class="ant-table-filter-dropdown-link confirm" (click)="visible=false;changeDateFilter(dateRange)"><span>OK</span></a>
+                  <a class="ant-table-filter-dropdown-link clear" (click)="visible=false;resetDateFilter();changeDateFilter(dateRange)"><span>Reset</span></a>
+              </div>
+              
+            </nz-dropdown-menu>
+            <div *ngIf="messageData?.length && !searchBoxValue && messageTable.pagination" class="m-t-12" style="text-align: right;">
+                <nz-pagination [(nzPageIndex)]="messageTable.pagination.curPage" [nzTotal]="messageTable.pagination.itemCount"
+                    (nzPageIndexChange)="changePageNumber($event)" (nzPageSizeChange)="changePageSize($event)"
+                    [nzPageSizeOptions]="messageTablePageSizeOptions" nzShowSizeChanger></nz-pagination>
+            </div>
+            <div *ngIf="!messageData?.length && !loadingFlag">
+                <nz-list [nzDataSource]="[]"></nz-list>
+            </div>
+        </div>
+    </div>
+</nz-card>
+
+
+<!-- New Message Form -->
+<nz-card *ngIf="messageFormVisible" [@slideIn]>
+    <div nz-row nzGutter="16" class="p-l-15">
+        <div nz-col class="gutter-row" nzSpan="12">
+            <span style="font-size: 14px;font-style: italic;color: #f25865;">
+                *All fields are mandatory
+            </span>
+        </div>
+        <div nz-col class="gutter-row" nzSpan="12">
+            <a title="Cancel" (click)="closeMessageForm()" style="float: right; color: #a1887c"><i nz-icon
+                    nzType="close" theme="outline"></i></a>
+        </div>
+    </div>
+    <form [formGroup]="messageForm" _ngcontent-jfp-c14="" novalidate="" nz-form=""
+        class="ant-form ng-untouched ng-invalid ng-dirty ant-form-horizontal p-l-15">
+        <nz-form-item class="ant-form-item ant-row">
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="8">
+                    <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                        <label>Type</label>
+                    </nz-form-label>
+                    <span *ngIf="applyFilter" style="float:right;position:relative;right:-25px">
+                        <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                            <label nz-checkbox formControlName="ApplyFilter">Apply Filter</label>
+                        </nz-form-label>    
+                    </span>
+                </div>
+                <!-- <div nz-col *ngIf="applyFilter" class="gutter-row" nzSpan="3" nzOffset="1">
+                    <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                        <label nz-checkbox formControlName="ApplyFilter">Apply Filter</label>
+                    </nz-form-label>
+                </div> -->
+                <div nz-col *ngIf="applyFilter && showFilters" class="gutter-row" nzSpan="8" nzOffset="1">
+                    <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                        <label>Filter type</label>
+                    </nz-form-label>
+                </div>
+            </div>
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="8">
+                    <nz-form-control _ngcontent-jfp-c14=""
+                        class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted">
+                        <div class="ant-form-item-control">
+                            <span class="ant-form-item-children">
+                                <nz-select nzShowSearch class="ant-col-30" formControlName="Type"
+                                    nzPlaceHolder="Type" nzTitle="Select Type">
+                                    <nz-option *ngFor="let type of messageTypeList" [nzValue]="type.Type"
+                                        [nzLabel]="type.Name">
+                                    </nz-option>
+                                </nz-select>
+                                <span class="ant-form-item-children-icon"> </span>
+                            </span>
+                        </div>
+                    </nz-form-control>
+                </div>
+                <div nz-col *ngIf="applyFilter && showFilters" class="gutter-row" nzSpan="8" nzOffset="1">
+                    <nz-form-control _ngcontent-jfp-c14=""
+                        class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted">
+                        <div class="ant-form-item-control">
+                            <span class="ant-form-item-children">
+                                <nz-select nzShowSearch class="ant-col-30" formControlName="FilterType"
+                                    nzPlaceHolder="Type" nzTitle="Filter Type">
+                                    <nz-option *ngFor="let type of filterTypeList" [nzValue]="type.Type"
+                                        [nzLabel]="type.Name">
+                                    </nz-option>
+                                </nz-select>
+                                <span class="ant-form-item-children-icon"> </span>
+                            </span>
+                        </div>
+                    </nz-form-control>
+                </div>
+            </div>
+        </nz-form-item>
+        <nz-form-item class="ant-form-item ant-row">
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="8">
+                    <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                        <label>Title</label>
+                    </nz-form-label>
+                </div>
+                <div nz-col *ngIf="applyFilter && showFilters && showRangeSelector" class="gutter-row" nzSpan="8" nzOffset="1">
+                    <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                        <label>Start Date - End Date</label>
+                    </nz-form-label>
+                </div>
+            </div>
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="8">
+                    <nz-form-control _ngcontent-jfp-c14=""
+                        class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                        <div class="ant-form-item-control">
+                            <span class="ant-form-item-children">
+                                <input _ngcontent-jfp-c14="" nz-input="" formControlName="Title"
+                                    placeholder="Enter message title" style="padding: 0.45rem 0.6rem;"
+                                    class="ant-input ng-untouched ng-pristine ng-invalid">
+                                <span class="ant-form-item-children-icon">
+                                </span>
+                            </span>
+                        </div>
+                    </nz-form-control>
+                </div>
+                <div nz-col *ngIf="applyFilter && showFilters && showRangeSelector" class="gutter-row" nzSpan="8" nzOffset="1">
+                    <nz-range-picker formControlName="DateRange">
+                    </nz-range-picker>
+                </div>
+            </div>
+        </nz-form-item>
+        <nz-form-item class="ant-form-item ant-row">
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="8">
+                    <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                        <label class="f-700">Description
+                            <span class="text-muted desc-fade f-500">(chars left: {{descChars}})</span>
+                        </label>
+                    </nz-form-label>
+                </div>
+                <div nz-col *ngIf="applyFilter && showFilters && showCategorySelector" class="gutter-row" nzSpan="8" nzOffset="1">
+                    <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                        <label>Select Category</label>
+                    </nz-form-label>
+                </div>
+            </div>
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="8">
+                    <nz-form-control _ngcontent-jfp-c14=""
+                        class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                        <div class="ant-form-item-control">
+                            <span class="ant-form-item-children">
+                                <textarea rows="5" style="resize: none" maxlength="150" nz-input
+                                    formControlName="Description" placeholder="Describe the Message"
+                                    class="scroller"></textarea>
+                                <span class="ant-form-item-children-icon"> </span>
+                            </span>
+                        </div>
+                    </nz-form-control>
+                </div>
+                <div nz-col *ngIf="applyFilter && showFilters && showCategorySelector" class="gutter-row" nzSpan="8" nzOffset="1">
+                    <nz-form-control _ngcontent-jfp-c14=""
+                        class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                        <div class="ant-form-item-control">
+                            <span class="ant-form-item-children">
+                                <nz-select nzShowSearch nzAllowClear class="ant-col-30 m-r-10" nzMode="multiple"
+                                    formControlName="Categories" nzPlaceHolder="Select Category"
+                                    nzTitle="Select Category">
+                                    <nz-option *ngFor="let cat of categoryList" [nzValue]="cat.CategoryId"
+                                        [nzLabel]="cat.Name">
+                                    </nz-option>
+                                </nz-select>
+                                <span class="ant-form-item-children-icon">
+                                </span>
+                            </span>
+                        </div>
+                    </nz-form-control>
+                </div>
+            </div>
+        </nz-form-item>
+    </form>
+    <nz-divider></nz-divider>
+    <div nz-row nzGutter="16">
+        <div nz-col class="gutter-row" nzSpan="12">
+            <button *ngIf="!updateMode" _ngcontent-jfp-c14="" (click)="resetMessageForm()" nz-button="" nztype="default"
+                class="ant-btn ant-btn-default m-l-15" nz-wave="[object Object]">
+                <!----><span>Reset</span>
+            </button>
+            <button *ngIf="updateMode" _ngcontent-jfp-c14="" (click)="resetUpdateForm()" nz-button="" nztype="default"
+                class="ant-btn ant-btn-default m-l-15" nz-wave="[object Object]">
+                <!----><span>Reset</span>
+            </button>
+        </div>
+        <div nz-col class="gutter-row" nzSpan="12" style="text-align: right;">
+            <button _ngcontent-jfp-c14="" (click)="closeMessageForm()" nz-button="" nztype="default"
+                class="ant-btn ant-btn-default m-r-15" nz-wave="[object Object]">
+                <!----><span>Cancel</span>
+            </button>
+            <button _ngcontent-jfp-c14="" (click)="submitMessage()" nz-button="" nztype="default"
+                class="ant-btn ant-btn-primary" *ngIf="!updateMode" [disabled]="!messageForm.valid"
+                nz-wave="[object Object]">
+                <!----><span>Submit</span>
+            </button>
+            <button _ngcontent-jfp-c14="" (click)="updateMessage()" nz-button="" nztype="default"
+                class="ant-btn ant-btn-primary" *ngIf="updateMode" [disabled]="!messageForm.valid"
+                nz-wave="[object Object]">
+                <!----><span>Update</span>
+            </button>
+        </div>
+    </div>
+</nz-card>

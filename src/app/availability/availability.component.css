@@ -1,0 +1,16 @@
+.font-poppins select *, ::ng-deep .ant-select-dropdown-menu .ant-select-dropdown-menu-item{
+    font-family: Poppins !important;
+  }
+
+
+::ng-deep .ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled), ::ng-deep .ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover{
+background-color: #000000;
+color: white !important;
+}
+
+
+::ng-deep .ant-select-dropdown-menu .ant-select-dropdown-menu-item
+{
+  font-size: 9px !important;
+
+}

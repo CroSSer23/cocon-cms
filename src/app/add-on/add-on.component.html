@@ -1,0 +1,251 @@
+<!-- Toast -->
+<ng2-toasty [position]="'top-right'"></ng2-toasty>
+
+<!-- Default view: show add-on table -->
+<nz-card *ngIf="!addOnFormVisible" [@slideIn]>
+    <!-- Actions -->
+    <div nz-row nzGutter="16" style="margin-bottom: 25px;">
+        <div nz-col class="gutter-row d-flex" nzSpan="7">
+            <nz-input-group [nzPrefix]="prefiXTemplate">
+                <input nz-input placeholder="Search" (keyup)="onKeyUp(searchBox.value)"
+                    ng-model-options="{ debounce: 1000 }" #searchBox nzSize="small">
+            </nz-input-group>
+            <ng-template #prefiXTemplate>
+                <i nz-icon nzType="search" theme="outline"></i>
+            </ng-template>
+
+        </div>
+        <div nz-col class="gutter-row" nzSpan="17" style="text-align: right">
+            <!-- <button nz-button="" nztype=" primary" class="font-small-caps btn-custom-light m-r-10" title="Refresh"
+                nz-wave="[object Object]" (click)="refreshList()" style="width: 35px;">
+                <i nz-icon nzType="reload" nzTheme="outline" class="color-brand-primary"></i>
+            </button> -->
+            <button nz-button="" nztype=" primary" class="font-small-caps btn-custom-light" title="Delete"
+                *ngIf="anyChecked" nz-wave="[object Object]" nz-popconfirm
+                nzPopconfirmTitle="Are you sure delete selected add-ons?" (nzOnConfirm)="deleteAddOn(null, true)"
+                nzPopconfirmPlacement="topRight" style="margin-right: 10px;">
+                <img src="assets/images/icons/delete.png" class="deleted-icon-button" />
+            </button>
+            <button nz-button="" nztype=" primary" (click)="openAddOnForm()" class="font-small-caps btn-custom"
+                nz-wave="[object Object]"><i class="fa fa-plus button-plus-icon"
+                    aria-hidden="true"></i>&nbsp;New</button>
+        </div>
+    </div>
+    <div nz-row nzGutter="16">
+        <div nz-col class="gutter-row" nzSpan='24'>
+            <nz-table #addOnTable [nzData]="addOnData" [nzLoading]="loadingFlag">
+                <thead (nzSortChange)="sort($event)" nzSingleSort>
+                    <tr>
+                        <th nzShowCheckbox [(nzChecked)]="allChecked" (nzCheckedChange)="checkAll($event)">
+                        </th>
+                        <th nzShowSort nzSortKey="Name" class="font-16 font-small-caps">Name</th>
+                        <th nzShowSort nzSortKey="Category" [nzShowFilter]="categoryFilterList.length !== 0"
+                            [nzFilters]="categoryFilterList" nzFilterMultiple="true"
+                            (nzFilterChange)="changeFilter($event)" class="font-16 font-small-caps">Category
+                        </th>
+                        <th nzShowSort nzSortKey="Duration" class="font-16 font-small-caps">Duration <span
+                                class="text-muted">(mins)</span></th>
+                        <th nzShowSort nzSortKey="Amount" class="font-16 font-small-caps">Value <img
+                                src="assets/images/icons/euro-dark.png" class=" editIconTable" />
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody cdkDropList (cdkDropListDropped)="reorder($event)">
+                    <tr *ngFor="let data of addOnTable.data" class="data-row cursor-move" cdkDrag>
+                        <td nzShowCheckbox [(nzChecked)]="data.checked" (nzCheckedChange)="refreshStatus()"></td>
+                        <td>{{data.Name}}</td>
+                        <td>{{data.CategoryNames}}</td>
+                        <td>{{data.Duration}}</td>
+                        <td>{{data.Amount}}</td>
+                        <td>
+                            <span class="data-row-action">
+                                <img src="assets/images/icons/edit-dark.png" class="editIconTable" title="Edit"
+                                    (click)="fillAddOnForm(data)" />
+                                <img src="assets/images/icons/delete.png" class="editIconTable" title="Delete"
+                                    nz-popconfirm nzPopconfirmTitle="Are you sure delete this add-on?"
+                                    (nzOnConfirm)="deleteAddOn(data.AddOnId)" nzPopconfirmPlacement="topRight" />
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </nz-table>
+        </div>
+    </div>
+</nz-card>
+
+<!-- New Add-on Form -->
+<nz-card *ngIf="addOnFormVisible" [@slideIn]>
+    <div nz-row nzGutter="16" class="p-l-15">
+        <div nz-col class="gutter-row" nzSpan="12">
+            <span style="font-size: 14px;font-style: italic;color: #f25865;">
+                *All fields are mandatory
+            </span>
+        </div>
+        <div nz-col class="gutter-row" nzSpan="12">
+            <a title="Cancel" (click)="closeAddOnForm()" style="float: right; color: #a1887c"><i nz-icon nzType="close"
+                    theme="outline"></i></a>
+        </div>
+    </div>
+    <form [formGroup]="addOnForm" _ngcontent-jfp-c14="" novalidate="" nz-form=""
+        class="ant-form ng-untouched ng-invalid ng-dirty ant-form-horizontal p-l-15">
+        <nz-form-item class="ant-form-item ant-row">
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="24">
+                    <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                        <label>Name</label>
+                    </nz-form-label>
+                </div>
+            </div>
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="8">
+                    <nz-form-control _ngcontent-jfp-c14=""
+                        class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                        <div class="ant-form-item-control">
+                            <span class="ant-form-item-children">
+                                <input _ngcontent-jfp-c14="" nz-input="" formControlName="Name" placeholder="Name"
+                                    style="padding: 0.45rem 0.6rem;"
+                                    class="ant-input ng-untouched ng-pristine ng-invalid"><span
+                                    class="ant-form-item-children-icon">
+                                </span></span>
+                        </div>
+                    </nz-form-control>
+                </div>
+            </div>
+        </nz-form-item>
+        <nz-form-item class="ant-form-item ant-row">
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="24">
+                    <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                        <label>Category</label>
+                    </nz-form-label>
+                </div>
+            </div>
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="8">
+                    <nz-form-control _ngcontent-jfp-c14=""
+                        class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                        <div class="ant-form-item-control">
+                            <span class="ant-form-item-children">
+                                <nz-select nzShowSearch nzAllowClear class="ant-col-30 m-r-10" nzMode="multiple"
+                                    [(ngModel)]="selectedCategories" [ngModelOptions]="{standalone: true}"
+                                    nzPlaceHolder="Add-on Belongs To" nzTitle="Select Category">
+                                    <nz-option *ngFor="let cat of categoryList" [nzValue]="cat.CategoryId"
+                                        [nzLabel]="cat.Name" [nzDisabled]="UpdateDisabled">
+                                    </nz-option>
+                                </nz-select>
+                                <span class="ant-form-item-children-icon"> </span>
+                            </span>
+                        </div>
+                    </nz-form-control>
+                </div>
+            </div>
+        </nz-form-item>
+        <nz-form-item class="ant-form-item ant-row">
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="24">
+                    <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                        <label>Duration <span class="text-muted">(mins)</span></label>
+                    </nz-form-label>
+                </div>
+            </div>
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="8">
+                    <nz-form-control _ngcontent-jfp-c14=""
+                        class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted">
+                        <div class="ant-form-item-control">
+                            <span class="ant-form-item-children">
+                                <nz-select nzShowSearch [nzDropdownRender]="renderTemplate" formControlName="Duration"
+                                    nzPlaceHolder="Duration" nzTitle="Select Duration" style="width: 100%;">
+                                    <nz-option *ngFor="let item of durationList" [nzLabel]="item.Duration"
+                                        [nzValue]="item.Duration">
+                                    </nz-option>
+                                </nz-select>
+                                <ng-template #renderTemplate>
+                                    <nz-divider style="margin: 4px 0px;"></nz-divider>
+                                    <div style="padding: 8px;">
+                                        <nz-input-group [nzSuffix]="suffixIconPlus" style="width: 100%;" nzSize="small">
+                                            <input _ngcontent-jfp-c14="" type="number" min="0" [(ngModel)]="newDuration"
+                                                [ngModelOptions]="{standalone: true}"
+                                                (ngModelChange)="checkNewDuration($event)"
+                                                oninput="this.value = Math.abs(this.value)" nz-input=""
+                                                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                                                placeholder="New Duration"
+                                                class="ant-input ng-untouched ng-pristine ng-invalid">
+                                        </nz-input-group>
+                                        <ng-template #suffixIconPlus>
+                                            <i nz-icon nzType="plus" (click)="addNewDuration()" *ngIf="newDurValid"
+                                                title="Add" style="color: #a1887c; cursor: pointer;"
+                                                nzTheme="outline"></i>
+                                            <i nz-icon nzType="plus" *ngIf="!newDurValid"
+                                                style="color: #a1887c; cursor: not-allowed;" nzTheme="outline"></i>
+                                        </ng-template>
+                                    </div>
+                                </ng-template>
+                                <span class="ant-form-item-children-icon"> </span>
+                            </span>
+                        </div>
+                    </nz-form-control>
+                </div>
+            </div>
+        </nz-form-item>
+        <nz-form-item class="ant-form-item ant-row">
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="24">
+                    <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                        <label>Value</label>
+                    </nz-form-label>
+                </div>
+            </div>
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="8">
+                    <nz-form-control _ngcontent-jfp-c14=""
+                        class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted">
+                        <div class="ant-form-item-control">
+                            <span class="ant-form-item-children">
+                                <nz-input-group [nzPrefix]="prefixTemplate">
+                                    <input _ngcontent-jfp-c14="" type="number" min="0" formControlName="Amount"
+                                        id="valueInput" #valueInput oninput="this.value = Math.abs(this.value)"
+                                        pattern="^\d+(?:\.\d{1,2})?$" nz-input="" placeholder="Cost"
+                                        class="ant-input ng-untouched ng-pristine ng-invalid">
+                                </nz-input-group>
+                                <ng-template #prefixTemplate><img src="assets/images/icons/euro-dark.png"
+                                        style="height:16px; width:12px;" />
+                                </ng-template>
+                                <span class="ant-form-item-children-icon"> </span>
+                            </span>
+                        </div>
+                    </nz-form-control>
+                </div>
+            </div>
+        </nz-form-item>
+    </form>
+    <nz-divider></nz-divider>
+    <div nz-row nzGutter="16">
+        <div nz-col class="gutter-row" nzSpan="12">
+            <button *ngIf="!updateMode" _ngcontent-jfp-c14="" (click)="resetAddOnForm()" nz-button="" nztype="default"
+                class="ant-btn ant-btn-default m-l-15" nz-wave="[object Object]">
+                <!----><span>Reset</span>
+            </button>
+            <button *ngIf="updateMode" _ngcontent-jfp-c14="" (click)="resetUpdateForm()" nz-button="" nztype="default"
+                class="ant-btn ant-btn-default m-l-15" nz-wave="[object Object]">
+                <!----><span>Reset</span>
+            </button>
+        </div>
+        <div nz-col class="gutter-row" nzSpan="12" style="text-align: right;">
+            <button _ngcontent-jfp-c14="" (click)="closeAddOnForm()" nz-button="" nztype="default"
+                class="ant-btn ant-btn-default m-r-15" nz-wave="[object Object]">
+                <!----><span>Cancel</span>
+            </button>
+            <button _ngcontent-jfp-c14="" (click)="submitAddOn()" nz-button="" nztype="default"
+                class="ant-btn ant-btn-primary" *ngIf="!updateMode"
+                [disabled]="!addOnForm.valid || selectedCategories.length === 0" nz-wave="[object Object]">
+                <!----><span>Submit</span>
+            </button>
+            <button _ngcontent-jfp-c14="" (click)="updateAddOn()" nz-button="" nztype="default"
+                class="ant-btn ant-btn-primary" *ngIf="updateMode"
+                [disabled]="!addOnForm.valid || selectedCategories.length === 0" nz-wave="[object Object]">
+                <!----><span>Update</span>
+            </button>
+        </div>
+    </div>
+</nz-card>

@@ -1,0 +1,32 @@
+.tableActionItem {
+    color: #A1887C;
+    margin: 4px;
+}
+
+.tableActionItem:hover {
+    color: #A1887C;
+    cursor: pointer;
+}
+
+.customAddButton {
+    border-color: #e5ddd8 !important;
+    background-color: #e5ddd8 !important;
+}
+
+.tabset-block {
+    border: 1px solid rgba(245, 243, 242, 1);
+    border-radius: 5px;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+}
+
+::ng-deep .cdk-drag-preview {
+    display: table;
+}
+
+::ng-deep .cdk-drag-placeholder {
+    opacity: 0;
+}
+.org-dropdown ::ng-deep .ant-input-suffix {
+    right: 10% !important;
+  }

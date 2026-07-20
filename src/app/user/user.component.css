@@ -1,0 +1,107 @@
+.provider-icon {
+    width: 15px;
+    height: auto;
+    margin-right: 10px;
+}
+
+.detailIcon {
+    color: #a1887c;
+    cursor: pointer;
+}
+
+.chat-icon {
+    height: auto;
+    width: 13px;
+    margin-right: 8px;
+    cursor: pointer;
+}
+
+.detail-left {
+    height: 75vh;
+    margin-bottom: 0px;
+    overflow-y: auto;
+}
+
+.detail-left::-webkit-scrollbar {
+    width: 6px;
+    background-color: #F5F5F5;
+    border-radius: 15px;
+}
+
+.detail-left::-webkit-scrollbar-thumb {
+    background-color: #c1c1c1;
+    border-radius: 15px;
+}
+
+.detail-left::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #F5F5F5;
+    border-radius: 15px;
+}
+
+.detail-right {
+    height: 75vh;
+    margin-bottom: 0px;
+    overflow-y: auto;
+}
+
+.detail-right::-webkit-scrollbar {
+    width: 6px;
+    background-color: #F5F5F5;
+    border-radius: 15px;
+}
+
+.detail-right::-webkit-scrollbar-thumb {
+    background-color: #c1c1c1;
+    border-radius: 15px;
+}
+
+.detail-right::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #F5F5F5;
+    border-radius: 15px;
+}
+
+.left-panel-row {
+    padding: 5px 8px 0px 8px;
+    transition: all .3s;
+}
+
+.left-panel-row:hover {
+    background-color: rgba(245, 243, 242, 0.36);
+    cursor: pointer;
+}
+
+.left-panel-row-selected {
+    background-color: rgba(245, 243, 242, 1);
+}
+
+.scroller-cocon-notes {
+    margin-bottom: 0px;
+    overflow-y: auto;
+}
+
+.scroller-cocon-notes::-webkit-scrollbar {
+    width: 6px;
+    background-color: #F5F5F5;
+    border-radius: 15px;
+}
+
+.scroller-cocon-notes::-webkit-scrollbar-thumb {
+    background-color: #c1c1c1;
+    border-radius: 15px;
+}
+
+.scroller-cocon-notes::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #F5F5F5;
+    border-radius: 15px;
+}
+
+.panel-sticky {
+    position: sticky;
+    top: 0px;
+    padding-top: 1.5rem;
+    background: #ffffff;
+    z-index: 1;
+}

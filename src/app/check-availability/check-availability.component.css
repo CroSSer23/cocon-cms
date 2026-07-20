@@ -1,0 +1,144 @@
+.font-poppins select *, ::ng-deep .ant-select-dropdown-menu .ant-select-dropdown-menu-item{
+    font-family: Poppins !important;
+  }
+  
+  
+
+::ng-deep .ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled), ::ng-deep .ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover{
+background-color: #000000;
+color: white !important;
+}
+
+
+
+/* ::ng-deep .ant-select-dropdown-menu .ant-select-dropdown-menu-item
+{
+  font-size: 9px !important;
+
+} */
+.nz-table-cell[nzLeftFixed] {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background-color: white;
+  width: 100px; /* set the width of the left fixed columns */
+}
+.nz-table-header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: white;
+}
+
+::ng-deep .ant-table-header{
+  background-color: #fff;
+  /* overflow: auto !important; */
+  padding-bottom: 0px !important;
+}
+/* td:has(.staff-block){
+  background-color: #d9ebca!important;
+} */
+
+.staff-block{
+  background-color: #d9ebca!important;
+}
+
+
+
+::ng-deep .ant-table-tbody > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td{
+  background:rgb(243, 241, 241) !important;
+
+}
+
+@media screen and (max-width: 1500px) {
+
+ 
+
+ 
+  ::ng-deep .ant-select-dropdown-menu .ant-select-dropdown-menu-item
+   {
+    font-size: 9px !important;
+
+  }
+
+}
+@media screen and (max-width: 1500px) {
+
+ 
+
+ 
+  ::ng-deep .ant-select-dropdown-menu .ant-select-dropdown-menu-item
+   {
+    font-size: 9px !important;
+
+  }
+
+}
+
+/* 1500 -  1700 px */
+@media screen and (max-width: 1700px) and (min-width: 1501px) {
+
+  ::ng-deep .ant-select-dropdown-menu .ant-select-dropdown-menu-item {
+    font-size: 10.4px !important;
+
+  }
+}
+
+/* 1701 -  1900 px */
+@media screen and (max-width: 1900px) and (min-width: 1701px) {
+  ::ng-deep .ant-select-dropdown-menu .ant-select-dropdown-menu-item {
+    font-size: 11.7px !important;
+
+  }
+}
+
+/* 1901-2100 px */
+@media screen and (max-width: 2100px) and (min-width: 1901px) {
+  ::ng-deep .ant-select-dropdown-menu .ant-select-dropdown-menu-item {
+    font-size: 13px !important;
+
+  }
+}
+
+/* 2100-2300 px */
+@media screen and (max-width: 2300px) and (min-width: 2101px) {
+  ::ng-deep .ant-select-dropdown-menu .ant-select-dropdown-menu-item {
+    font-size: 14.3px !important;
+
+  }
+}
+
+/* 2300-2500 px */
+@media screen and (max-width: 2500px) and (min-width: 2301px) {
+  ::ng-deep .ant-select-dropdown-menu .ant-select-dropdown-menu-item {
+    font-size: 15.6px !important;
+
+  }
+}
+
+/* 2500 and above px */
+@media screen and (min-width: 2501px) {
+  ::ng-deep .ant-select-dropdown-menu .ant-select-dropdown-menu-item {
+    font-size: 18.2px !important;
+
+  }
+}
+@media screen and (min-width: 1700px) {
+  .btn-outline,.btn-fill, .ant-select, ::ng-deep.ant-radio-group, ::ng-deep.ant-calendar-picker-input, ::ng-deep.ant-select-selection__rendered, ::ng-deep.ant-select-selection {
+      height: 2.083vw!important;}
+      
+      
+      
+}
+
+/* CSS to make header cells have the same width as body cells */
+:host ::ng-deep .ant-table-fixed-header .ant-table-thead th {
+  width: unset !important;
+}
+
+/* CSS to make body cells have the same width as header cells */
+:host ::ng-deep .ant-table-scroll .ant-table-thead th,
+:host ::ng-deep .ant-table-scroll .ant-table-tbody td {
+  width: unset !important;
+}
+

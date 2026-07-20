@@ -1,0 +1,460 @@
+<!-- Toast -->
+<ng2-toasty [position]="'top-right'"></ng2-toasty>
+
+<!-- Default view: show booking table -->
+<nz-card  [@slideIn] style="min-height: 400px;" *ngIf="!detailVisible && !visibleBooking">
+    <!-- Actions -->
+    <div nz-row nzGutter="16">
+        <div nz-col class="gutter-row d-flex" nzSpan="6">
+            <nz-input-group [nzPrefix]="prefixTemplate" [nzSuffix]="suffixTemplate">
+                <input nz-input placeholder="Press enter to search." [(ngModel)]="searchBox1Value"
+                    (keyup.enter)="onKeyUp()" ng-model-options="{ debounce: 1000 }" #searchBox nzSize="small">
+            </nz-input-group>
+            <ng-template #prefixTemplate>
+                <i nz-icon nzType="search" title="Search" class="cursor-pointer" theme="outline"
+                    (click)="onKeyUp()"></i>
+            </ng-template>
+            <ng-template #suffixTemplate>
+                <!-- <i nz-icon nz-tooltip class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle"
+                    *ngIf="searchBox1Value" (click)="resetSearch()"></i> -->
+                <span style="color: #a1887c;font-size: 12px;text-decoration: underline;cursor: pointer;background-color: #ffffff;"
+                    (click)="resetSearch()">
+                    Reset
+                </span>
+            </ng-template>
+        </div>
+        <div nz-col class="gutter-row d-flex" nzSpan="11">
+
+        </div>
+        <div nz-col class="gutter-row text-right" nzSpan="6" >
+            <a title="View Instructions" (click)="showInstructions=true;" class="form-anchor" style="cursor:pointer;color: #EE6D1D; padding-left: 10px ;"><i
+                nz-icon nzType="info-circle" theme="outline"></i> View Instructions</a>
+        </div>
+      
+
+        
+
+       
+    </div>
+
+    <div nz-row nzGutter="16" class="m-t-25">
+        <div nz-col class="gutter-row" nzSpan='24'>
+          
+            <nz-table [nzLoading]="isLoading" [nzTemplateMode]="true">
+                <!-- [nzScroll]="{ y: 'calc(100vh - 400px)' }" -->
+                <thead (nzSortChange)="sortTable($event)" nzSingleSort>
+                    <tr>
+                        <th class="font-16 font-small-caps">
+                            Booking
+                        </th>
+                        <!-- <th class="font-16 font-small-caps">User</th> -->
+                        
+                        <th nzCustomFilter  [nzShowSort]="bookinglist.length ? true : false" nzSortKey="DateTime"
+                            class="font-16 font-small-caps" >Date
+                            <i
+                                        nz-th-extra
+                                        class=" ant-table-filter-icon"
+                                           
+                                        nz-icon
+                                        nz-dropdown
+                                        #dropdown="nzDropdown"
+                                        nzType="filter"
+                                        nzTheme="fill"
+                                        [nzDropdownMenu]="menu"
+                                        [class.ant-table-filter-open]="dropdown.nzVisible"
+                                        nzTrigger="click"
+                                        nzPlacement="bottomRight"
+                                        [nzClickHide]="false"
+                                        [(nzVisible)]="showDropDown"
+                                        nzTableFilter
+                                        [ngClass]="{'ant-table-filter-selected':dateRange.length ? true : false}"
+                                      ></i></th>
+                        <th class="font-16 font-small-caps">Treatment</th>
+                        <!-- <th class="font-16 font-small-caps">For</th> -->
+                        <th  [nzShowSort]="bookinglist.length ? true : false" nzSortKey="Duration"
+                            class="font-16 font-small-caps">Duration<span class="text-muted"> (mins)</span>
+                        </th>
+                        <th class="font-16 font-small-caps">
+                            Therapist
+                        </th>
+                        <th  [nzShowSort]="false" 
+                            class="font-16 font-small-caps">Status
+                        </th>
+                       
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of bookinglist" class="data-row cursor-pointer" (mousedown)="clearSelection()" (click)="openDetailView(data.BookingId, null, $event)"
+                    title="Click to view detail"  [ngStyle]="{'background-color': (data.Archive==1) ? '#FFEBEE' : null}">
+                        <td>
+                            {{data.BookingIdShow}}
+                            <i nz-icon nzType="info-circle"
+                                style="color: #ff0000;position: relative;top: 2px;" nzTheme="outline"
+                                *ngIf="data.StaffVacConflict" nz-tooltip
+                                nzTooltipTitle="Staff seems to be on vacation on booking date, please see and resolve conflict."
+                                nzTooltipPlacement="right"></i>
+                        </td>
+                        <!-- <td [nz-tooltip]="(data.Archive==1? 'User no longer exists': null)" >
+                            {{(data.UserName)?data.UserName:"-"}}
+                            
+                        </td> -->
+                        
+                        <td>{{data.dateString}}</td>
+                        <td>
+                            <span nz-popover [nzPopoverContent]="contentProduct" nzPopoverTrigger="hover"
+                                nzPopoverPlacement="right">
+                                {{data.productToShow}}
+                            </span>
+                        </td>
+                        <!-- <td>
+                            <span nz-popover [nzPopoverContent]="contentUser" nzPopoverTrigger="hover"
+                                nzPopoverPlacement="right" *ngIf="data.userList.length > 1">
+                                {{data.userNameToShow}}
+                            </span>
+                            <span *ngIf="data.userList.length === 1">
+                                {{data.userNameToShow}}
+                            </span>
+                        </td> -->
+                        <td>{{data.Duration}}</td>
+                        <td>
+                            <span nz-popover [nzPopoverContent]="contentTherStatus" nzPopoverTrigger="hover"
+                                nzPopoverPlacement="right" *ngIf="data.TherapistString">
+                                {{data.TherapistString}}
+                            </span>
+                            <span *ngIf="!data.TherapistString">
+                                -
+                            </span>
+                        </td>
+                        
+                        <td  [title]="data.statusToShow" class="status-confirm" *ngIf="data.statusToShow=='Confirmed'">{{data.statusToShow}}</td>
+                        <td  [title]="data.statusToShow" class="status-unfilled" *ngIf="data.statusToShow=='Unfilled - No Therapist'">{{data.statusToShow}}</td>
+                        <td  [title]="data.statusToShow" class="status-unfilled" *ngIf="data.statusToShow=='Partially Filled'">{{data.statusToShow}}</td>
+                        <td  [title]="data.statusStringToShowFull" class="status-cancel" *ngIf="data.statusToShow=='Cancelled'">{{data.statusStringToShow}}</td>
+                        <td  [title]="data.statusToShow" class="status-completed" *ngIf="data.statusToShow=='Completed'">{{data.statusToShow}}</td>
+                        
+                        <ng-template #contentTherStatus>
+                            <div *ngFor="let thera of data.Products">
+                                <span *ngIf="thera.StaffId">
+                                    <img src="assets/images/icons/profile.png"
+                                        style="height: auto;width: 15px;margin-right: 5px;position: relative;top: -2px;" />
+                                    {{thera.StaffName}}
+                                </span>
+                                <span *ngIf="!thera.StaffId">
+                                    <img src="assets/images/icons/profile.png"
+                                        style="height: auto;width: 15px;margin-right: 5px;position: relative;top: -2px;" />
+                                    Not Assigned
+                                </span>
+                            </div>
+                        </ng-template>
+                        <ng-template #contentProduct>
+                            <div *ngFor="let product of data.Products; let j = index">
+                                <div style="width: fit-content;">
+                                    <div>
+                                        <span class="font-bold">
+                                            {{product.Product}}
+                                        </span>
+                                        <!-- <span style="margin-left: 4px;">
+                                            <img src="assets/images/icons/profile.png"
+                                                style="height: auto;width: 14px;margin-right: 3px;position: relative;top: -2px;" />
+                                            {{product.Guest ? product.Guest : data.UserName}}
+                                        </span> -->
+                                    </div>
+                                </div>
+                                <div *ngFor="let addOn of product.AddOns">
+                                    <div style="width: fit-content;">
+                                        <span>
+                                            <span style="color: #a1887c">+ </span>{{addOn.AddOn}}
+                                        </span>
+                                    </div>
+                                </div>
+                                <span *ngIf="data.Products.length > 1 && j !== (data.Products.length - 1) ">
+                                    <nz-divider
+                                        style="margin-top:5px; margin-bottom: 5px; background-color: #e5ddd8;">
+                                    </nz-divider>
+                                </span>
+                            </div>
+                        </ng-template>
+                        <!-- <ng-template #contentTherStatus>
+                            <div *ngFor="let thera of data.Products">
+                                <span>
+                                    <img src="assets/images/icons/profile.png"
+                                        style="height: auto;width: 15px;margin-right: 5px;position: relative;top: -2px;" />
+                                    {{thera.StaffName}} - {{thera.StatusName}}
+                                </span>
+                            </div>
+                        </ng-template> -->
+                        <ng-template #contentUser>
+                            <div *ngFor="let user of data.userList">
+                                <span>
+                                    <img src="assets/images/icons/profile.png"
+                                        style="height: auto;width: 15px;margin-right: 5px;position: relative;top: -2px;" />
+                                    {{user}}
+                                </span>
+                            </div>
+                        </ng-template>
+                        <ng-template #contentPrice>
+                            <div>
+                                <div style="display: inline-block;width: 25px;">
+                                    <img src="assets/images/icons/euro-dark.png"
+                                        style="height:auto; width:11px;margin-right: 2px" />
+                                </div>
+                                <div style="text-align: right; display: inline-block; width: 30px;">
+                                    {{data.Amount}}
+                                </div>
+                            </div>
+                            <div>
+                                <div style="display: inline-block;width: 25px;">
+                                    <img src="assets/images/icons/promo-code.png"
+                                        style="height: auto;width: 15px;margin-right: 2px" />
+                                </div>
+                                <div style="text-align: right;display: inline-block; width: 30px;">
+                                    -{{data.PromoAmount}}
+                                </div>
+                            </div>
+                        </ng-template>
+                    </tr>
+                </tbody>
+               
+            </nz-table>
+            <nz-dropdown-menu #menu="nzDropdownMenu">
+                <div class="">
+                  <nz-range-picker nzAllowClear="false"
+                  [(ngModel)]="dateRange"
+                      nzFormat="yyyy-MM-dd"></nz-range-picker>
+                  <!-- <button nz-button nzSize="small" nzType="primary" (click)="changeDateFilter(listTab.dateRange)" class="search-button">Filter</button>
+                  <button nz-button nzSize="small" (click)="resetDate(listTab);changeDateFilter(listTab.dateRange)">Reset</button> -->
+                </div>
+                <div class="ant-table-filter-dropdown-btns">
+                  <a  [attr.disabled]="(dateRange.length==0 && dateRangeCalled.length==0)? true : null"  class="ant-table-filter-dropdown-link confirm" (click)="showDropDown=false;changeDateFilter(dateRange)"><span>OK</span></a>
+                  <a class="ant-table-filter-dropdown-link clear" (click)="showDropDown=false;resetDate();changeDateFilter(dateRange)"><span>Reset</span></a>
+              </div>
+              
+            </nz-dropdown-menu>
+            
+            <div *ngIf="bookinglist.length" class="m-t-12"
+                                        style="text-align: right;">
+                                        <nz-pagination [(nzPageIndex)]="pagination.curPage"
+                                            [nzTotal]="pagination.itemCount"
+                                            (nzPageIndexChange)="changePageNumber($event, null)"
+                                            (nzPageSizeChange)="changePageSize($event,null)"
+                                            [nzPageSizeOptions]="bookingTablePageSizeOptions" nzShowSizeChanger></nz-pagination>
+                                    </div>
+                                    <div *ngIf="!bookinglist.length && !isLoading">
+                                        <nz-list [nzDataSource]="[]"></nz-list>
+                                    </div>
+        
+           
+        </div>
+    </div>
+</nz-card>
+
+<!-- Booking Detail -->
+<div nz-row nzGutter="16" *ngIf="detailVisible && !visibleBooking" style="margin-top: 0px;">
+    <!-- Booking Detail Right Panel -->
+    <div>
+        <div nz-col class="gutter-row" nzSpan="24">
+            <!-- <button title="Go Back" (click)="closeDetail()" nz-button nzType="default" style="width: fit-content;"></button> -->
+            <nz-spin [nzSpinning]="isSpinning">
+                <nz-card class="detail-right" [nzBodyStyle]="{'padding-top':'0px'}">
+                    <div *ngIf="bookingDetail">
+                        <div class="panel-sticky">
+                            <div nz-row nzGutter="16" style="margin-bottom: 24px;">
+                                <div nz-col nzSpan="1" class="gutter-row">
+                                    <i nz-icon nzType="arrow-left" class="cursor-pointer" (click)="closeDetail()"
+                                        title="Show list" nzTheme="outline"></i>
+                                </div>
+                                <div nz-col nzSpan="9" class="gutter-row">
+                                    <!-- <img src="assets/images/logo/logo_new.png" style="margin-top: 8px;" /> -->
+                                    <!-- <img src="assets/images/logo/logo.png" style="margin-top: 8px;" /> -->
+                                </div>
+                                <div nz-col nzSpan="14" class="gutter-row text-right">
+                                    <span>
+                                        Booking <span class="font-bold">#{{bookingDetail.BookingId}} </span>
+                                        <span class="color-brand-primary">
+                                            {{bookingDetail.StatusName}}
+                                        </span>
+                                        <br />
+                                        
+                                        <!-- <span  *ngIf="bookingDetail.statusToShow!='Cancelled'" class="color-brand-primary">
+                                            {{bookingDetail.statusToShow}}
+                                        </span>
+                                        <span  *ngIf="bookingDetail.statusToShow=='Cancelled'" class="color-brand-primary">
+                                            {{bookingDetail.statusStringToShow}}
+                                        </span> -->
+                                        
+                                    
+
+                                    </span>
+                                    <span  class="show-ellipses" *ngIf="bookingDetail.CancelBookingReason!=null">
+                                        Reason-
+                                            {{bookingDetail.CancelBookingReasonString}} <span title="{{bookingDetail.CancelBookingNotes}}" *ngIf="bookingDetail.CancelBookingNotes && bookingDetail.CancelBookingNotes!=''"> &nbsp;({{bookingDetail.CancelBookingNotes}})</span>
+                                            <br />    
+                                    </span>
+                                    
+                                    
+                                    <span class="font-bold">
+                                       
+                                        {{(bookingDetail.UserName)?bookingDetail.UserName:"-"}}
+                                        <!-- <br *ngIf="bookingDetail.Archive === 1"/> -->
+                                        <!-- <span *ngIf="bookingDetail.Archive==1" >
+                                            (User name not available as the user no longer exists)
+                                        </span> -->
+                                    </span>
+                                    
+                                    <br />
+                                    <span style="font-weight: bold;">Dt. </span>
+                                    <span>{{bookingDetail.dateString}}</span>
+                                    <span style="font-style: italic;">, </span>
+                                    <span class="font-bold">{{bookingDetail.Duration}}</span>
+                                    <span class="text-muted"> mins</span>
+                                </div>
+                            </div>
+                            <div nz-row nzGutter="16" class="detail-div font-bold">
+                                <div nz-col class="gutter-row" nzSpan="8"><span>Treatment</span></div>
+                                <div nz-col class="gutter-row" nzSpan="4"><span>For</span></div>
+                                <div nz-col class="gutter-row" nzSpan="4"><span>Therapist</span></div>
+                                <div nz-col class="gutter-row text-center" nzSpan="8">
+                                    <span>Duration</span>
+                                    <span class="text-muted">(mins)</span>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div *ngFor="let product of bookingDetail.Products; let i = index" class="detail-product">
+                            <div nz-row nzGutter="16">
+                                <div nz-col class="gutter-row" nzSpan="8">
+                                    <span class="font-bold">{{i+1}}. </span>
+                                    
+                                    <span>
+                                        {{product.ProductName}}
+                                    </span>
+                                </div>
+                                <div nz-col class="gutter-row" nzSpan="4">
+                                    <span *ngIf="product.Guest">
+                                        {{product.Guest.Name}}
+                                        <span *ngIf="product.Guest.Notes">
+                                            <span nz-popover [nzPopoverContent]="guestNotes" nzPopoverTrigger="hover"
+                                                nzPopoverPlacement="right">
+                                                <img src="assets/images/icons/my_booking.png" class="detail-notes-icon">
+                                            </span>
+                                            <ng-template #guestNotes>
+                                                <span>
+                                                    {{product.Guest.Notes}}
+                                                </span>
+                                            </ng-template>
+                                        </span>
+                                    </span>
+                                    <span *ngIf="!product.Guest">
+                                        {{(bookingDetail.UserName)? bookingDetail.UserName: "-"}}
+                                        <span *ngIf="bookingDetail.UserNotes">
+                                            <span nz-popover [nzPopoverContent]="userNotes" nzPopoverTrigger="hover"
+                                                nzPopoverPlacement="right">
+                                                <img src="assets/images/icons/my_booking.png" class="detail-notes-icon">
+                                            </span>
+                                            <ng-template #userNotes>
+                                                <span>
+                                                    {{bookingDetail.UserNotes}}
+                                                </span>
+                                            </ng-template>
+                                        </span>
+                                    </span>
+                                </div>
+                                <div nz-col class="gutter-row" nzSpan="4">
+                                    <span *ngIf="product.StaffId">
+                                        {{product.StaffName}}
+                                        <span *ngIf="product.StaffNotes">
+                                            <span nz-popover [nzPopoverContent]="staffNotes" nzPopoverTrigger="hover"
+                                                nzPopoverPlacement="right">
+                                                <img src="assets/images/icons/my_booking.png" class="detail-notes-icon">
+                                            </span>
+                                            <ng-template #staffNotes>
+                                                <span>
+                                                    {{product.StaffNotes}}
+                                                </span>
+                                            </ng-template>
+                                        </span>
+                                        <i nz-icon nzType="info-circle" style="color: #ff0000;" nzTheme="outline"
+                                            *ngIf="product.StaffVacConflict" nz-tooltip
+                                            nzTooltipTitle="Staff seems to be on vacation on booking date, please see and resolve conflict."
+                                            nzTooltipPlacement="right"></i>
+                                    </span>
+                                    <span *ngIf="!product.StaffId">
+                                        Not Assigned.
+                                    </span>
+    
+                                </div>
+                                <div nz-col class="gutter-row text-center" nzSpan="8">
+                                    <span>{{product.Duration}}</span>
+                                </div>
+                               
+                            </div>
+                           
+                            <div nz-row nzGutter="16">
+                                <div nz-col class="gutter-row" nzSpan="16">
+                                    
+                                </div>
+                                <div nz-col class="gutter-row text-center" nzSpan="8">
+                                    ({{product.timeString}})
+                                </div>
+                                <div nz-col class="gutter-row" nzSpan="4">
+                                </div>
+                            </div>
+
+                            <div nz-row nzGutter="16" *ngIf="product.ExtrasShow">
+                                <div nz-col class="gutter-row" nzSpan="24">
+                                    <span style="margin-left: 13px;">
+                                        <img src="assets/images/icons/my_booking.png" class="detail-notes-icon">
+                                        {{product.ExtrasShow}}
+                                    </span>
+                                </div>
+                            </div>
+                            <p class="detail-add-on-head" *ngIf="product.AddOns.length !== 0">Add-on</p>
+                            <div nz-row nzGutter="16" *ngFor="let addOn of product.AddOns; let j = index;"
+                                [ngClass]="{'opac-half': addOn.ExtraAddOn && (addOn.RequestStatus === 0 || addOn.RequestStatus === 3)}">
+                                <div nz-col class="gutter-row" nzSpan="16"
+                                    [ngClass]="{'line-through': addOn.ExtraAddOn && addOn.RequestStatus === 2}">
+                                    <span style="margin-left: 13px;">
+                                        <span style="color: #a1887c">+ </span>
+                                        {{addOn.AddOn}}
+                                    </span>
+                                </div>
+                                <div nz-col class="gutter-row text-center" nzSpan="8"
+                                    [ngClass]="{'line-through': addOn.ExtraAddOn && addOn.RequestStatus === 2}">
+                                    <span>{{addOn.Duration}}</span>
+                                </div>
+                                
+                            </div>
+                            
+                        </div>
+                        
+                       
+                        
+                       
+                    </div>
+                </nz-card>
+            </nz-spin>
+        </div>
+    </div>
+</div>
+<nz-modal [(nzVisible)]="showInstructions" nzClassName="instruction-modal" [nzContent]="instructionsContent" [nzFooter]="null" (nzOnCancel)="cancelModal()"
+nzWrapClassName="vertical-center-modal" nzMaskClosable="false" nzClosable="true" style="z-index: 2000;" >
+<!-- <ng-template #serviceModalHeader>
+    <div nz-row nzGutter="8">
+        <div nz-col nzSpan="24" class="gutter-row text-center">
+            <span class="color-brand-primary">
+                Confirm service area restriction
+            </span>
+        </div>
+    </div>
+</ng-template> -->
+<ng-template #instructionsContent >
+    <nz-card style="margin:15px;" >
+        <div *ngIf="InstructionsData !=''" [innerHTML]="InstructionsData" class="font-poppins">
+            
+        </div>
+    <nz-skeleton *ngIf="InstructionsData ==''"></nz-skeleton>
+        
+    </nz-card>
+    
+</ng-template>
+</nz-modal>

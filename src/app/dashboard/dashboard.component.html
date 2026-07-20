@@ -1,0 +1,228 @@
+<!-- Toast -->
+<ng2-toasty [position]="'top-right'"></ng2-toasty>
+
+<!-- 
+    Dashboard Head
+    1. Orders booked today
+    2. Client retention rate
+    3. Today's bookings
+    4. Customers
+ -->
+<div class="row">
+    <div class="col-md-6 col-lg-3">
+        <nz-card [nzBodyStyle]="{'padding-bottom':'17px'}">
+            <div class="media align-items-center">
+                <div style="padding-top: 2px;">
+                    <span style="font-weight: 600;">
+                        Select range
+                    </span>
+                    <br />
+                    <nz-range-picker nzAllowClear="false" [(ngModel)]="selectedRange" style="margin-top: 4px;"
+                        nzFormat="dd-MM-yyyy" (ngModelChange)="onRangeChange($event)"></nz-range-picker>
+                    <!-- <nz-month-picker nzAllowClear="false" nzPlaceHolder="Select month" style="margin-top: 4px;"
+                        (ngModelChange)="changeGlobalMonth($event)" [(ngModel)]="globalMonth" nzFormat="MMM yyyy">
+                    </nz-month-picker> -->
+                </div>
+            </div>
+        </nz-card>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <nz-card>
+            <div class="media align-items-center">
+                <nz-avatar [nzSize]="50" nzIcon="profile" class="ant-avatar-blue">
+                </nz-avatar>
+                <div class="m-l-15">
+                    <h2 class="m-b-0" *ngIf="bookedToday === undefined">...</h2>
+                    <h2 class="m-b-0" *ngIf="bookedToday !== undefined">{{bookedToday}}</h2>
+                    <p class="m-b-0 text-muted">Orders booked today</p>
+                </div>
+            </div>
+        </nz-card>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <nz-card>
+            <div class="media align-items-center">
+                <nz-avatar [nzSize]="50" nzIcon="profile" class="ant-avatar-gold"></nz-avatar>
+                <div class="m-l-15">
+                    <h2 class="m-b-0" *ngIf="bookedToday === undefined">...</h2>
+                    <h2 class="m-b-0" *ngIf="bookedToday !== undefined">{{bookingServeToday}}</h2>
+                    <p class="m-b-0 text-muted">Today's bookings</p>
+                </div>
+            </div>
+        </nz-card>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <nz-card>
+            <div class="media align-items-center">
+                <nz-avatar [nzSize]="50" nzIcon="line-chart" class="ant-avatar-cyan"></nz-avatar>
+                <div class="m-l-15" style="min-height: 20px;">
+                    <nz-spin [nzSpinning]="retenLoading">
+                        <div nz-row nzType="flex" nzAlign="middle" nzJustify="space-between">
+                            <div nz-col nzSpan="24">
+                                <h2 class="m-b-0">{{clientRetentionRate}}%</h2>
+                            </div>
+                            <!-- <div nz-col nzSpan="14">
+                                <nz-month-picker nzAllowClear="false" nzPlaceHolder="Select month" nzSize="small"
+                                    (ngModelChange)="changeRetentionMonth($event)" [(ngModel)]="selectedRetentionMonth"
+                                    nzFormat="MMM yyyy">
+                                </nz-month-picker>
+                            </div> -->
+                        </div>
+                    </nz-spin>
+                    <p class="m-b-0 text-muted">Client retention rate</p>
+                </div>
+            </div>
+        </nz-card>
+    </div>
+</div>
+
+<!-- Booking & user analytics -->
+<div class="row">
+    <div class="col-md-12 col-lg-8">
+        <nz-card>
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="color-brand-primary">Bookings
+                    <span class="count-show-container" *ngIf="bookingsShow">
+                        {{bookingsShow}}
+                    </span>
+                </h4>
+                <div>
+                    <nz-week-picker [(ngModel)]="bookingAnalyticsMonth" nzAllowClear="false" nzShowToday="false"
+                        *ngIf="bookingChartFormat === '0'" (ngModelChange)="changeBookingWeek($event)"
+                        [nzDisabledDate]="disableBookingWeek" nzPlaceHolder="Select week" nzFormat="dd MMM yyyy">
+                    </nz-week-picker>
+                    <!-- <nz-month-picker [(ngModel)]="bookingAnalyticsMonth" nzAllowClear="false"
+                        *ngIf="bookingChartFormat === '1'" (ngModelChange)="changeBookingMonth($event)"
+                        nzPlaceHolder="Select month" nzFormat="MMM yyyy">
+                    </nz-month-picker> -->
+                </div>
+                <div>
+                    <!-- <h4 class="color-brand-primary">
+                        <span class="count-show-container" *ngIf="bookingsShow">
+                            {{bookingsShow}}
+                        </span>
+                    </h4> -->
+                    <!-- <nz-radio-group [(ngModel)]="bookingChartFormat" (ngModelChange)="changeBookingAnalyticsFormat()">
+                        <label nz-radio-button nzValue="0">Week</label>
+                        <label nz-radio-button nzValue="1">Month</label>
+                    </nz-radio-group> -->
+                </div>
+            </div>
+            <nz-spin [nzSpinning]="isBookingSpinning">
+                <div class="m-t-50" style="height: 330px">
+                    <canvas ngChartjs [datasets]="bookingAnalyticsChartData" [labels]="bookingAnalyticsChartLabels"
+                        [options]="bookingAnalyticsChartOptions" [colors]="bookingAnalyticsChartColors" [legend]="false"
+                        [chartType]="bookingAnalyticsChartType" id="bookingChart">
+                    </canvas>
+                </div>
+            </nz-spin>
+        </nz-card>
+    </div>
+    <div class="col-md-12 col-lg-4">
+        <nz-card>
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="m-b-0 color-brand-primary">Users</h4>
+                <div>
+                    <button nz-button nzType="default" nzSize="small" (click)="seeAllUsers()"
+                        class="color-brand-primary">View All</button>
+                </div>
+            </div>
+            <nz-spin [nzSpinning]="isUserSpinning">
+                <div class="m-v-60 text-center" style="height: 200px">
+                    <canvas ngChartjs [data]="customersChartData" [labels]="customersChartLabels"
+                        [chartType]="customersChartType" [colors]="customersChartColors"
+                        [options]="customersChartOptions" [legend]="false">
+                    </canvas>
+                </div>
+                <div class="row border-top p-t-25">
+                    <div class="col-6">
+                        <div class="d-flex justify-content-center">
+                            <div class="media align-items-center">
+                                <nz-badge nzStatus="default" [nzColor]="purple"></nz-badge>
+                                <div class="m-l-5">
+                                    <h4 class="m-b-0">{{signedUpUsers}}</h4>
+                                    <p class="m-b-0 muted">Fresh users</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex justify-content-center">
+                            <div class="media align-items-center">
+                                <nz-badge nzStatus="default" [nzColor]="cyan"></nz-badge>
+                                <div class="m-l-5">
+                                    <h4 class="m-b-0">{{customers}}</h4>
+                                    <p class="m-b-0 muted">Customers</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nz-spin>
+        </nz-card>
+    </div>
+</div>
+
+<!-- Product and sales analytics -->
+<div class="row">
+    <div class="col-md-12 col-lg-4">
+        <nz-card>
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="color-brand-primary">Top Products</h4>
+                <div>
+                    <button nz-button nzType="default" nzSize="small" (click)="seeAllProducts()"
+                        class="color-brand-primary">View All</button>
+                </div>
+            </div>
+            <nz-spin [nzSpinning]="isProductSpinning">
+                <div class="m-t-30 scroller" style="height: 360px; overflow: auto;">
+                    <nz-table #productTable [nzData]="productList" [nzShowPagination]="false" class="no-border-last">
+                        <tbody>
+                            <tr *ngFor="let item of productTable.data">
+                                <td>{{item.Product}}</td>
+                                <td>{{item["count(`Product`)"]}}</td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
+            </nz-spin>
+        </nz-card>
+    </div>
+    <div class="col-md-12 col-lg-8">
+        <nz-card>
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="color-brand-primary">Sales
+                    <span class="count-show-container" *ngIf="salesShow">
+                        <img src="assets/images/icons/euro-dark.png" class="sales-euro" />
+                        {{salesShow}}
+                    </span>
+                </h4>
+                <div>
+                    <nz-week-picker [(ngModel)]="salesAnalyticsMonth" nzAllowClear="false" nzShowToday="false"
+                        *ngIf="salesChartFormat === '0'" (ngModelChange)="changeSalesWeek($event)"
+                        [nzDisabledDate]="disableSalesWeek" nzPlaceHolder="Select week" nzFormat="dd MMM yyyy">
+                    </nz-week-picker>
+                    <!-- <nz-month-picker [(ngModel)]="salesAnalyticsMonth" nzAllowClear="false"
+                        *ngIf="salesChartFormat === '1'" (ngModelChange)="changeSalesMonth($event)"
+                        nzPlaceHolder="Select month" nzFormat="MMM yyyy">
+                    </nz-month-picker> -->
+                </div>
+                <div>
+                    <!-- <nz-radio-group [(ngModel)]="salesChartFormat" (ngModelChange)="changeSalesAnalyticsFormat()"
+                        class="m-l-10">
+                        <label nz-radio-button nzValue="0">Week</label>
+                        <label nz-radio-button nzValue="1">Month</label>
+                    </nz-radio-group> -->
+                </div>
+            </div>
+            <nz-spin [nzSpinning]="isSalesSpinning">
+                <div class="m-t-50" style="height: 330px">
+                    <canvas ngChartjs [datasets]="salesAnalyticsChartData" [labels]="salesAnalyticsChartLabels"
+                        [options]="salesAnalyticsChartOptions" [colors]="salesAnalyticsChartColors"
+                        [legend]="salesAnalyticsChartLegend" [chartType]="salesAnalyticsChartType">
+                    </canvas>
+                </div>
+            </nz-spin>
+        </nz-card>
+    </div>
+</div>

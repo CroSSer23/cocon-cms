@@ -1,0 +1,637 @@
+<!-- Toast -->
+<ng2-toasty [position]="'top-right'"></ng2-toasty>
+
+<!-- Default view: show categories table -->
+<nz-card *ngIf="!formVisible" [@slideIn]>
+    <!-- Actions -->
+    <div nz-row nzGutter="16" style="margin-bottom: 25px;">
+        <div nz-col class="gutter-row d-flex" nzSpan="7">
+            <nz-input-group [nzPrefix]="prefiXTemplate">
+                <input nz-input placeholder="Search" (keyup)="onKeyUp(searchBox.value)" [(ngModel)]="searchBoxValue"
+                    ng-model-options="{ debounce: 1000 }" #searchBox nzSize="small">
+            </nz-input-group>
+            <ng-template #prefiXTemplate>
+                <i nz-icon nzType="search" theme="outline"></i>
+            </ng-template>
+
+        </div>
+        <div nz-col class="gutter-row" nzSpan="12">&nbsp;</div>
+        <div nz-col class="gutter-row" nzSpan="3">
+            <nz-select nzPlaceHolder="View" nzDropdownClassName="border-less" (ngModelChange)="changeView($event)"
+                class="border-less" [(ngModel)]="selectedView" nzSize="small">
+                <nz-option *ngFor="let view of this.views" [nzValue]="view.value" [nzLabel]="view.label">
+                </nz-option>
+            </nz-select>
+        </div>
+        <div nz-col class="gutter-row" nzSpan="2" style="text-align: right">
+            <!-- <button nz-button="" nztype=" primary" class="font-small-caps btn-custom-light m-r-10" title="Refresh"
+                nz-wave="[object Object]" (click)="refreshList()" style="width: 35px;">
+                <i nz-icon nzType="reload" nzTheme="outline" class="color-brand-primary"></i>
+            </button> -->
+            <!-- <nz-switch [nzCheckedChildren]="checkedTemplate" (click)="changeView()"
+                        [nzUnCheckedChildren]="unCheckedTemplate"></nz-switch>
+                    <ng-template #checkedTemplate><i nz-icon nzType="tablet" class="toggleIconPosition"
+                            nzTheme="outline"></i></ng-template>
+                    <ng-template #unCheckedTemplate><i nz-icon nzType="table" class="toggleIconPosition"
+                            nzTheme="outline"></i></ng-template> -->
+
+            <button nz-button="" nztype=" primary" (click)="openCategory()" class="font-small-caps btn-custom"
+                nz-wave="[object Object]"><i class="fa fa-plus button-plus-icon"
+                    aria-hidden="true"></i>&nbsp;New</button>
+            <!-- <button nz-button="" nztype=" primary" (click)="changeView()" class="ant-btn ant-btn-default"
+                    style="margin-right: 10px" nz-wave="[object Object]">Toggle View</button> -->
+        </div>
+    </div>
+    <!-- Card view -->
+    <div nz-row nzGutter="16" *ngIf="!tableVisible" class="fade" [@fadeInOut]>
+        <div nz-col class="gutter-row" nzSpan="6" *ngFor="let data of categoryData; let i=index">
+            <!-- <nz-card [nzCover]="cover" class="categoryCard" [nzActions]="[actionEdit]">
+                    <nz-card-meta [nzTitle]="data.Name" [nzDescription]="data.Description"></nz-card-meta>
+                </nz-card> -->
+            <nz-card [nzBodyStyle]="cardViewStyle" class="categoryCard">
+                <div class="coverImageDiv">
+                    <img alt="Catgory Banner" [src]="data.ImageURL" class="coverImage" />
+                </div>
+                <div style="padding: 24px;">
+                    <div>
+                        <span style="font-weight: bold; font-size:18px;">
+                            {{data.Name}}
+                        </span>
+                        <span style="float: right;" class="cardEditIcon">
+                            <img src="assets/images/icons/edit-dark.png" class="editIconTable" title="Edit"
+                                (click)="fillEditCategory(data)" />
+                        </span>
+                    </div>
+                    <perfect-scrollbar class="card-description">
+                        <p style="text-align: justify;">
+                            {{data.Description}}
+                        </p>
+                    </perfect-scrollbar>
+                    <!-- <div class="scroller overflowHidden" style="margin-top: 12px;">
+                            <p style="text-align: justify;">
+                                {{data.Description}}
+                            </p>
+                        </div> -->
+                </div>
+            </nz-card>
+            <ng-template #cover>
+                <img alt="example" class="coverImage" [src]="data.ImageURL" />
+            </ng-template>
+            <ng-template #actionEdit>
+                <img src="assets/images/icons/edit-dark.png" class="editIconTable" (click)="fillEditCategory(data)" />
+            </ng-template>
+        </div>
+    </div>
+    <!-- Table view -->
+    <div nz-row nzGutter="16" *ngIf="tableVisible" class="fade" [@fadeInOut]>
+        <div nz-col class="gutter-row" nzSpan='24'>
+            <nz-table #categoryTable [nzData]="categoryData" [nzLoading]="loadingFlag" [nzPageSize]="10" (nzPageIndexChange)="onPageChange($event)">
+                <thead (nzSortChange)="sort($event)" nzSingleSort>
+                    <tr>
+                        <th nzShowSort nzSortKey="Name" nzWidth="20%" class="font-16 font-small-caps">Name</th>
+                        <th class="font-16 font-small-caps">Description</th>
+                        <th class="font-16 font-small-caps">Banner</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody cdkDropList (cdkDropListDropped)="reorder($event)">
+                    <tr *ngFor="let data of categoryTable.data" class="data-row cursor-move" cdkDrag>
+                        <td>
+                            {{data.Name}}
+                        </td>
+                        <td>{{data.Description}}</td>
+                        <td>
+                            <div class="table-img-thumb-div">
+                                <img *ngIf="data.ImagePath" [src]="data.ImageURL" class="img-thumb" (click)="showImageModal(data.ImageURL)"
+                                    title="Click to Enlarge" />
+                            </div>
+                        </td>
+                        <td>
+                            <img src="assets/images/icons/edit-dark.png" class="data-row-action editIconTable"
+                                title="Edit" (click)="fillEditCategory(data)" />
+                            <!-- <i nz-icon nzType="edit" title="Edit" nzTheme="outline" class="tableActionItem"></i> -->
+                        </td>
+                    </tr>
+                </tbody>
+            </nz-table>
+        </div>
+    </div>
+</nz-card>
+
+<!-- New Category Form -->
+<nz-card *ngIf="formVisible" [@slideIn]>
+    <div nz-row nzGutter="16" class="p-l-15">
+        <div nz-col class="gutter-row" nzSpan="12">
+            <span style="font-size: 14px;font-style: italic;color: #f25865;">
+                *All fields are mandatory
+            </span>
+        </div>
+        <div nz-col class="gutter-row" nzSpan="12">
+            <a title="Cancel" (click)="closeCategory()" style="float: right;color: #a1887c"><i nz-icon nzType="close"
+                    theme="outline"></i></a>
+        </div>
+    </div>
+    <form [formGroup]="newCategoryForm" _ngcontent-jfp-c14="" novalidate="" nz-form=""
+        class="ant-form ng-untouched ng-invalid ng-dirty ant-form-horizontal p-l-15">
+        <nz-form-item class="ant-form-item ant-row">
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="24">
+                    <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                        <label class="f-700">Name</label>
+                    </nz-form-label>
+                </div>
+            </div>
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="9">
+                    <nz-form-control _ngcontent-jfp-c14=""
+                        class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                        <div class="ant-form-item-control">
+                            <span class="ant-form-item-children">
+                                <input _ngcontent-jfp-c14="" nz-input="" formControlName="Name" placeholder="Name"
+                                    style="padding: 0.45rem 0.6rem;"
+                                    class="ant-input ng-untouched ng-pristine ng-invalid">
+                                <span class="ant-form-item-children-icon"></span>
+                            </span>
+                        </div>
+                    </nz-form-control>
+                </div>
+            </div>
+        </nz-form-item>
+        <nz-form-item class="ant-form-item ant-row">
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="24">
+                    <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                        <label class="f-700">Description
+                            <!-- <span *ngIf="descChars === 150" class="text-muted desc-fade f-500">(max chars - 150)</span> -->
+                            <span class="text-muted desc-fade f-500">(chars left: {{descChars}})</span>
+                        </label>
+                    </nz-form-label>
+                </div>
+            </div>
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="9">
+                    <nz-form-control _ngcontent-jfp-c14=""
+                        class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                        <div class="ant-form-item-control">
+                            <span class="ant-form-item-children">
+                                <textarea rows="5" style="resize: none" maxlength="150" nz-input
+                                    formControlName="Description" placeholder="Describe the Category"
+                                    class="scroller"></textarea>
+                                <span class="ant-form-item-children-icon"> </span>
+                            </span>
+                        </div>
+                    </nz-form-control>
+                </div>
+            </div>
+        </nz-form-item>
+        <nz-form-item class="ant-form-item ant-row">
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="24">
+                    <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                        <label class="f-700">Banner<span class="ng-star-inserted optional-text"> optional </span> <span class="text-muted f-500">(recommended: 1242 x
+                                2688)</span></label>
+                    </nz-form-label>
+                </div>
+            </div>
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="4">
+                    <nz-form-control _ngcontent-jfp-c14=""
+                        class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                        <div class="ant-form-item-control">
+                            <span class="ant-form-item-children">
+                                <button _ngcontent-jfp-c14="" (click)="compressImage()" nz-button="" nztype="default"
+                                    class="ant-btn ant-btn-default m-r-15" nz-wave="[object Object]">
+                                    <span><i nz-icon nzType="upload"></i> Click to Upload</span>
+                                </button>
+                                <!-- <nz-upload nzAccept="image/*" [nzBeforeUpload]="beforeUpload">
+                                    <button nz-button><i nz-icon nzType="upload"></i>Click to Upload</button>
+                                </nz-upload> -->
+                                <span class="ant-form-item-children-icon">
+                                </span>
+                            </span>
+                        </div>
+                    </nz-form-control>
+                </div>
+                <div nz-col class="gutter-row" nzSpan="2" *ngIf="imageCompressing">
+                    <ng-template #indicatorTemplate><i nz-icon nzType="loading" class="color-brand-primary"></i>
+                    </ng-template>
+                    <nz-spin nzSimple [nzSpinning]="imageCompressing" style="position: relative;top:9px"
+                        [nzIndicator]="indicatorTemplate">
+                        <div class="img-uploading-div">
+                            &nbsp;
+                        </div>
+                    </nz-spin>
+                </div>
+                <div nz-col class="gutter-row" nzSpan="2" *ngIf="imageUploaded">
+                    <div class="img-thumb-div">
+                        <img *ngIf="uploadedImgUrl" [src]="uploadedImgUrl" class="img-thumb" style="cursor: pointer;height: 40px;width: 35px;"
+                            (click)="showImageModal(uploadedImgUrl)" />
+                    </div>
+                </div>
+            </div>
+        </nz-form-item>
+        <nz-form-item class="ant-form-item ant-row">
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="24">
+                    <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                        <label class="f-700">Hourly Rate</label>
+                    </nz-form-label>
+                </div>
+            </div>
+            <div nz-row nzGutter="16" >
+                
+                <div nz-col class="gutter-row" nzSpan="20">
+                    <nz-table [nzTemplateMode]="true" [nzLoading]="loading"  
+                    >
+                            <thead >
+                                <tr>
+                                    <th nzAlign='center'>Start Time</th>
+                                    <th nzAlign='center'>End Time</th>
+                                    <th nzAlign='center'>Monday</th>
+                                    <th nzAlign='center'>Tuesday</th>
+                                    <th nzAlign='center'>Wednesday</th>
+                                    <th nzAlign='center'>Thursday</th>
+                                    <th nzAlign='center'>Friday</th>
+                                    <th nzAlign='center'>Saturday</th>
+                                    <th nzAlign='center'>Sunday</th>
+                                    <th nzAlign='center'></th>
+                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of newCategoryForm.get('HourlyRate')['controls']; let i = index">
+                                    <td nzAlign='center'>{{ formatDate(item.get('StartTime').value) }}</td>
+                                    <td nzAlign='center'>{{ formatDate(item.get('EndTime').value) }}</td>
+                                    <td nzAlign='center'>{{ item.get('MondayRate').value }}</td>
+                                    <td nzAlign='center'>{{ item.get('TuesdayRate').value }}</td>
+                                    <td nzAlign='center'>{{ item.get('WednesdayRate').value }}</td>
+                                    <td nzAlign='center'>{{ item.get('ThursdayRate').value }}</td>
+                                    <td nzAlign='center'>{{ item.get('FridayRate').value }}</td>
+                                    <td nzAlign='center'>{{ item.get('SaturdayRate').value }}</td>
+                                    <td nzAlign='center'>{{ item.get('SundayRate').value }}</td>
+                                    <td nzAlign='center'>
+                                        <span class="data-row-action">
+                                            <img src="assets/images/icons/edit-dark.png" class="editIconTable" title="Edit"
+                                                (click)="editRate(i)" />
+                                            <img src="assets/images/icons/delete.png" class="editIconTable" title="Delete"
+                                                nz-popconfirm nzPopconfirmTitle="Are you sure delete this rate?"
+                                                (nzOnConfirm)="deleteRate(i)"
+                                                nzPopconfirmPlacement="topRight" />
+                                        </span>
+                                    </td>
+                                    
+                                </tr>
+                            </tbody>
+                        </nz-table>
+                        <div *ngIf="newCategoryForm.get('HourlyRate')['controls'].length==0">
+                            <nz-list [nzDataSource]="[]"></nz-list>
+                            
+                        </div>
+                    
+                </div>
+               
+
+
+            </div>
+            <div style="margin-top: 10px;" nz-row nzGutter="16">
+                <div nz-col nzSpan="24">
+                    <a (click)="openRateForm()"
+                        class="extra-label" style="text-decoration: underline;">
+                        <i nz-icon nzType="plus" theme="outline"></i> Add Rate
+                    </a>
+                </div>
+            </div>
+        </nz-form-item>
+    </form>
+    <nz-divider></nz-divider>
+    <div nz-row nzGutter="16">
+        <div nz-col class="gutter-row" nzSpan="12">
+            <button _ngcontent-jfp-c14="" (click)="resetCategoryForm()" nz-button="" nztype="default"
+                *ngIf="!updateMode" class="ant-btn ant-btn-default m-l-15" nz-wave="[object Object]">
+                <!----><span>Reset</span>
+            </button>
+            <button _ngcontent-jfp-c14="" (click)="resetUpdateForm()" nz-button="" nztype="default" *ngIf="updateMode"
+                class="ant-btn ant-btn-default m-l-15" nz-wave="[object Object]">
+                <!----><span>Reset</span>
+            </button>
+        </div>
+        <div nz-col class="gutter-row" nzSpan="12" style="text-align: right;">
+            <button _ngcontent-jfp-c14="" (click)="closeCategory()" nz-button="" nztype="default"
+                class="ant-btn ant-btn-default m-r-15" nz-wave="[object Object]">
+                <!----><span>Cancel</span>
+            </button>
+            <button _ngcontent-jfp-c14="" (click)="submitCategory()" nz-button="" *ngIf="!updateMode" nztype="default"
+                class="ant-btn ant-btn-primary" [disabled]="!newCategoryForm.valid" nz-wave="[object Object]">
+                <!----><span>Submit</span>
+            </button>
+            <button _ngcontent-jfp-c14="" (click)="updateCategory()" nz-button="" *ngIf="updateMode" nztype="default"
+                class="ant-btn ant-btn-primary" [disabled]="!newCategoryForm.valid" nz-wave="[object Object]">
+                <!----><span>Update</span>
+            </button>
+        </div>
+    </div>
+</nz-card>
+
+<!-- Image Modal -->
+<nz-modal [nzVisible]="imageModel" [nzContent]="modalContent" [nzFooter]="null" (nzOnCancel)="hideImageModal()"
+    [nzBodyStyle]="imageModalStyle" [nzStyle]="{ top: '20px' }">
+    <ng-template #modalContent>
+        <img [src]="imgUrl" class="modalImage" />
+    </ng-template>
+</nz-modal>
+
+<!--Hourly Rate Modal-->
+<nz-modal [(nzVisible)]="isRateFormOpen" [nzTitle]="rateFormModalHeader" [nzContent]="rateFormModalContent" nzClosable="true"
+[nzFooter]="rateFormModalFooter" (nzOnCancel)="closeRateForm(); resetRateForm();" [nzStyle]="{ top: '20px' }">
+<ng-template #rateFormModalHeader>
+<div nz-row nzGutter="8">
+    <div nz-col nzSpan="24" class="gutter-row text-center">
+        <span>
+            ADD HOURLY RATE
+        </span>
+    </div>
+</div>
+</ng-template>
+<ng-template #rateFormModalContent>
+
+    <form [formGroup]="rateForm" _ngcontent-jfp-c14="" novalidate="" nz-form=""
+        class="ant-form ng-untouched ng-invalid ng-dirty ant-form-horizontal">
+        <nz-form-item class="ant-form-item ant-row">
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="12">
+                    <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                        <label>Start Time</label>
+                    </nz-form-label>
+                </div>
+                <div nz-col class="gutter-row" nzSpan="12">
+                    <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                        <label>End Time</label>
+                    </nz-form-label>
+                </div>
+            </div>
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="12">
+                    <nz-form-control _ngcontent-jfp-c14=""
+                        class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                        <div class="ant-form-item-control">
+                            <span class="ant-form-item-children">
+                                <nz-time-picker formControlName="StartTime"
+                                                        nzPlaceHolder="Start Time" nzFormat="HH:mm" nzSize="small">
+                                                    </nz-time-picker>
+                                <span class="ant-form-item-children-icon"> </span>
+                            </span>
+                        </div>
+                    </nz-form-control>
+                </div>
+                <div nz-col class="gutter-row" nzSpan="12">
+                    <nz-form-control _ngcontent-jfp-c14=""
+                        class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                        <div class="ant-form-item-control">
+                            <span class="ant-form-item-children">
+                                <nz-time-picker formControlName="EndTime"
+                                                        nzPlaceHolder="End Time" nzFormat="HH:mm" nzSize="small">
+                                                    </nz-time-picker>
+                                <span class="ant-form-item-children-icon"> </span>
+                            </span>
+                        </div>
+                    </nz-form-control>
+                </div>
+            </div>
+        </nz-form-item>
+        <nz-form-item class="ant-form-item ant-row">
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="12">
+                    <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                        <label>Monday Rate</label>
+                    </nz-form-label>
+                </div>
+
+            </div>
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="12">
+                    <nz-form-control _ngcontent-jfp-c14=""
+                        class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                        <div class="ant-form-item-control">
+                            <span class="ant-form-item-children">
+                                <!-- <input _ngcontent-jfp-c14="" type="text" nz-input="" formControlName="MondayRate"
+                                    nzSize="small" placeholder=""
+                                    class="ant-input ng-untouched ng-pristine ng-invalid"> -->
+                                    <nz-input-number  style="width: 100% !important;" [nzMin]="1" [nzStep]="1"  nz-input="" formControlName="MondayRate"
+                                                    [nzSize]="'small'" [nzPlaceHolder]="'Euro/hr'"
+                                                    ></nz-input-number>
+                                <span class="ant-form-item-children-icon"> </span>
+                            </span>
+                        </div>
+                    </nz-form-control>
+                </div>
+              
+            </div>
+        </nz-form-item>
+        <nz-form-item class="ant-form-item ant-row">
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="12">
+                    <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                        <label>Tuesday Rate</label>
+                    </nz-form-label>
+                </div>
+
+            </div>
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="12">
+                    <nz-form-control _ngcontent-jfp-c14=""
+                        class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                        <div class="ant-form-item-control">
+                            <span class="ant-form-item-children">
+                                <!-- <input _ngcontent-jfp-c14="" type="text" nz-input="" formControlName="TuesdayRate"
+                                    nzSize="small" placeholder=""
+                                    class="ant-input ng-untouched ng-pristine ng-invalid"> -->
+                                    <nz-input-number  style="width: 100% !important;" [nzMin]="1" [nzStep]="1"  nz-input="" formControlName="TuesdayRate"
+                                                    [nzSize]="'small'" [nzPlaceHolder]="'Euro/hr'"
+                                                    ></nz-input-number>
+                                <span class="ant-form-item-children-icon"> </span>
+                            </span>
+                        </div>
+                    </nz-form-control>
+                </div>
+              
+            </div>
+        </nz-form-item>
+        <nz-form-item class="ant-form-item ant-row">
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="12">
+                    <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                        <label>Wednesday Rate</label>
+                    </nz-form-label>
+                </div>
+
+            </div>
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="12">
+                    <nz-form-control _ngcontent-jfp-c14=""
+                        class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                        <div class="ant-form-item-control">
+                            <span class="ant-form-item-children">
+                                <!-- <input _ngcontent-jfp-c14="" type="text" nz-input="" formControlName="WednesdayRate"
+                                    nzSize="small" placeholder=""
+                                    class="ant-input ng-untouched ng-pristine ng-invalid"> -->
+                                    <nz-input-number  style="width: 100% !important;" [nzMin]="1" [nzStep]="1"  nz-input="" formControlName="WednesdayRate"
+                                    [nzSize]="'small'" [nzPlaceHolder]="'Euro/hr'"
+                                    ></nz-input-number>
+                                <span class="ant-form-item-children-icon"> </span>
+                            </span>
+                        </div>
+                    </nz-form-control>
+                </div>
+              
+            </div>
+        </nz-form-item>
+        <nz-form-item class="ant-form-item ant-row">
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="12">
+                    <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                        <label>Thursday Rate</label>
+                    </nz-form-label>
+                </div>
+
+            </div>
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="12">
+                    <nz-form-control _ngcontent-jfp-c14=""
+                        class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                        <div class="ant-form-item-control">
+                            <span class="ant-form-item-children">
+                                <!-- <input _ngcontent-jfp-c14="" type="text" nz-input="" formControlName="ThursdayRate"
+                                    nzSize="small" placeholder=""
+                                    class="ant-input ng-untouched ng-pristine ng-invalid"> -->
+                                    <nz-input-number  style="width: 100% !important;" [nzMin]="1" [nzStep]="1"  nz-input="" formControlName="ThursdayRate"
+                                    [nzSize]="'small'" [nzPlaceHolder]="'Euro/hr'"
+                                    ></nz-input-number>
+                                <span class="ant-form-item-children-icon"> </span>
+                            </span>
+                        </div>
+                    </nz-form-control>
+                </div>
+              
+            </div>
+        </nz-form-item>
+        <nz-form-item class="ant-form-item ant-row">
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="12">
+                    <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                        <label>Friday Rate</label>
+                    </nz-form-label>
+                </div>
+
+            </div>
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="12">
+                    <nz-form-control _ngcontent-jfp-c14=""
+                        class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                        <div class="ant-form-item-control">
+                            <span class="ant-form-item-children">
+                                <!-- <input _ngcontent-jfp-c14="" type="text" nz-input="" formControlName="FridayRate"
+                                    nzSize="small" placeholder=""
+                                    class="ant-input ng-untouched ng-pristine ng-invalid"> -->
+                                    <nz-input-number  style="width: 100% !important;" [nzMin]="1" [nzStep]="1"  nz-input="" formControlName="FridayRate"
+                                    [nzSize]="'small'" [nzPlaceHolder]="'Euro/hr'"
+                                    ></nz-input-number>
+                                <span class="ant-form-item-children-icon"> </span>
+                            </span>
+                        </div>
+                    </nz-form-control>
+                </div>
+              
+            </div>
+        </nz-form-item>
+        <nz-form-item class="ant-form-item ant-row">
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="12">
+                    <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                        <label>Saturday Rate</label>
+                    </nz-form-label>
+                </div>
+
+            </div>
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="12">
+                    <nz-form-control _ngcontent-jfp-c14=""
+                        class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                        <div class="ant-form-item-control">
+                            <span class="ant-form-item-children">
+                                <!-- <input _ngcontent-jfp-c14="" type="text" nz-input="" formControlName="SaturdayRate"
+                                    nzSize="small" placeholder=""
+                                    class="ant-input ng-untouched ng-pristine ng-invalid"> -->
+                                    <nz-input-number  style="width: 100% !important;" [nzMin]="1" [nzStep]="1"  nz-input="" formControlName="SaturdayRate"
+                                    [nzSize]="'small'" [nzPlaceHolder]="'Euro/hr'"
+                                    ></nz-input-number>
+                                <span class="ant-form-item-children-icon"> </span>
+                            </span>
+                        </div>
+                    </nz-form-control>
+                </div>
+              
+            </div>
+        </nz-form-item>
+        <nz-form-item class="ant-form-item ant-row">
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="12">
+                    <nz-form-label _ngcontent-jfp-c14="" class="ant-form-item-label">
+                        <label>Sunday Rate</label>
+                    </nz-form-label>
+                </div>
+
+            </div>
+            <div nz-row nzGutter="16">
+                <div nz-col class="gutter-row" nzSpan="12">
+                    <nz-form-control _ngcontent-jfp-c14=""
+                        class="ng-tns-c16-67 ant-form-item-control-wrapper ng-star-inserted ant-col-24">
+                        <div class="ant-form-item-control">
+                            <span class="ant-form-item-children">
+                                <!-- <input _ngcontent-jfp-c14="" type="text" nz-input="" formControlName="SundayRate"
+                                    nzSize="small" placeholder=""
+                                    class="ant-input ng-untouched ng-pristine ng-invalid"> -->
+                                    <nz-input-number  style="width: 100% !important;" [nzMin]="1" [nzStep]="1"  nz-input="" formControlName="SundayRate"
+                                    [nzSize]="'small'" [nzPlaceHolder]="'Euro/hr'"
+                                    ></nz-input-number>
+                                <span class="ant-form-item-children-icon"> </span>
+                            </span>
+                        </div>
+                    </nz-form-control>
+                </div>
+              
+            </div>
+            <input type="hidden" ngDefaultControl formControlName="Index" name="Index"
+                                        
+                                        nz-input ng-model-options="{ debounce: 1000 }" nzSize="small">
+        </nz-form-item>
+ 
+    </form>
+
+</ng-template>
+<ng-template #rateFormModalFooter>
+    <div nz-row nzGutter="16">
+        <div nz-col class="gutter-row" nzSpan="24">
+            <span *ngIf="this.showInvalidRateMessage" style="color: #f55753; float: left; text-align: left;">
+                The time range appears to be invalid. Please verify if it overlaps with any existing time ranges.
+            </span>
+            <span *ngIf="this.startEndInvalid" style="color: #f55753; float: left; text-align: left;">
+                The time range appears to be invalid. Please check start and end time.
+            </span>
+        </div>
+        <div nz-col class="gutter-row" nzSpan="24">
+            <button _ngcontent-jfp-c14="" (click)="resetRateForm()" nz-button="" nztype="default"
+            class="ant-btn btn-outline_pop ant-btn-default" nz-wave="[object Object]">
+            <span>Reset</span></button>
+        <button _ngcontent-jfp-c14="" (click)="saveRate()" nz-button="" nztype="default"
+        [disabled]="!rateForm.valid" [nzLoading]="isUserLoading" class="ant-btn ant-btn-primary btn-fill-pop"
+            nz-wave="[object Object]">
+            <span>Submit</span>
+        </button>
+        </div>
+    </div>
+    
+   
+    
+
+</ng-template>
+</nz-modal>

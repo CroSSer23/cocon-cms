@@ -1,0 +1,1680 @@
+.cal-header-container {
+    padding: 24px;
+}
+
+.today-btn {
+    margin-right: 10px;
+}
+
+.single-day-shift {
+    margin: 0px 6px;
+    width: 38px;
+    height: 36px;
+    position: relative;
+    top: 1px;
+}
+
+.container-p-fixer {
+    padding: 8px;
+}
+
+.cal-outer {
+    background-color: #ffffff;
+}
+
+.cal-timeline-head {
+    background-color: #ffffff;
+    position: sticky;
+    top: 0px;
+    z-index: 3;
+    height: 3rem;
+}
+
+.zoom-container {
+    text-align: right;
+}
+
+.cal-ther-label {
+    display: inline-block;
+    padding: 14px;
+    width: 11rem;
+    text-align: center;
+    position: fixed;
+    background-color: #ffffff;
+    z-index: 4;
+}
+
+.cal-head-filler {
+    display: block;
+    padding: 14px;
+    width: 12rem;
+    position: fixed;
+    background-color: #ffffff;
+    z-index: 5;
+}
+
+.ther-list-container {
+    padding: 0px 0px;
+    padding-left: 10px;
+    font-size: 16px;
+    width: 12rem;
+    position: sticky;
+    background-color: #ffffff;
+    /* top: 3rem; */
+    left: 0px;
+    display: inline-block;
+    z-index: 3;
+}
+
+.cal-timeline {
+    position: relative;
+    background-color: #fafafa;
+    max-height: calc(100vh - 205px);
+    max-width: 100%;
+    overflow: auto;
+    white-space: nowrap;
+    width: auto;
+    min-height: 150px;
+    border: none;
+}
+
+/* .cal-timeline::-webkit-scrollbar { 
+    display: none;
+} */
+
+.cal-container {
+    background-color: #ffffff;
+    max-height: calc(100vh - 205px);
+    max-width: 100%;
+    overflow: scroll;
+    white-space: nowrap;
+    width: 100%;
+    min-height: 300px;
+    border: none;
+}
+
+.cal-grid-background {
+    position: relative;
+    display: inline-block;
+    top: -5px;
+}
+
+.cal-view {
+    background-color: antiquewhite;
+}
+
+.cal-hours-con {
+    position: absolute;
+    top: 0px;
+    left: 12rem;
+    background-color: white;
+    display: inline-block;
+}
+
+.grid-hour-block {
+    display: inline-block;
+    height: 100px;
+    border-left: 1px dotted #979797;
+    border-bottom: 1px dotted #979797;
+    padding: 0px !important;
+    background-color: #fafafa;
+}
+
+.min-hour-block {
+    height: 100px;
+    border-right: 1px dotted #979797;
+    padding: 0px !important;
+    background-color: #fafafa;
+}
+
+.hour-container {
+    display: inline-block;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 11px;
+    padding: 14px 14px 0px 0px;
+    /* background-color: #E24A4A; */
+}
+
+.hour-zoom-1 {
+    width: 100px;
+}
+
+.hour-zoom-2 {
+    width: 200px;
+}
+
+.hour-zoom-3 {
+    width: 300px;
+}
+
+.min-zoom-1-15 {
+    width: 25px;
+}
+
+.min-zoom-2-15 {
+    width: 50px;
+}
+
+.min-zoom-3-15 {
+    width: 75px;
+}
+
+.min-zoom-1-10 {
+    width: 16.66px;
+}
+
+.min-zoom-2-10 {
+    width: 33.33px;
+}
+
+.min-zoom-3-10 {
+    width: 50px;
+}
+
+.min-zoom-1-05 {
+    width: 8.33px;
+}
+
+.min-zoom-2-05 {
+    width: 16.66px;
+}
+
+.min-zoom-3-05 {
+    width: 25px;
+}
+
+.ther-prof {
+    height: 100px;
+    /* padding-top: 8px; */
+    align-items: center;
+    display: flex;
+    border-bottom: 1px dotted #979797;
+    /* padding-left: 10px; */
+    width: 100% !important;
+}
+
+.ther-name {
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0;
+    color: black;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    align-self: stretch;
+    line-height: 1.5;
+}
+
+.ther-category {
+    margin: 0;
+    color: black;
+    font-size: 12px;
+    line-height: 1.5;
+    font-weight: 500;
+}
+
+.ther-group {
+    margin: 0;
+    color: black;
+    font-size: 12px;
+    line-height: 1.5;
+    font-weight: 500;
+}
+
+.cal-grid-row {
+    max-height: 100px;
+}
+
+.schedule-working {
+    background-color: #ffffff;
+    position: absolute;
+    top: 0px;
+    height: 100px;
+    border: 1px dotted #f0f0f0;
+}
+
+.booking-card {
+    background-color: #ffffff;
+    position: absolute;
+    top: 3px;
+    height: 94px;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 1px 1px 5px 2px #eaeaea;
+}
+
+.block-time-container {
+    /* display: inline-block; */
+    position: absolute;
+    top: 0px;
+    height: 100px;
+    /* border-left: 1px solid #c29d8b; */
+    background-color: #e5ddd8;
+    background-image: repeating-linear-gradient(60deg, #e5ddd8 12px, #e5ddd8 1px, #e5ddd8 5px, #EBE5E1 16px, #EBE5E1 2px);
+    z-index: 2;
+}
+
+.block-time-container:active {
+    border: 1px dashed #d0cbc9;
+    box-shadow: 1px 1px 5px 2px #eaeaea;
+    cursor: move;
+}
+
+.block-time-container:hover .resize-bar {
+    opacity: 1;
+}
+
+.row-container {
+    position: relative;
+}
+
+.vertical-timeline {
+    position: absolute;
+    min-height: 35px;
+    width: 0px;
+    border-right: 1.5px solid #ee6d1c;
+    top: 15px;
+    left: 11rem;
+}
+
+.vertical-timeline-label {
+    position: absolute;
+    top: 0px;
+    left: 11rem;
+    min-height: 30px;
+    max-height: 30px;
+    font-size: 10px;
+    width: 49px;
+}
+
+.blocks-row {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+}
+
+.grid-min-block {
+    display: inline-block;
+    border-right: 1px dotted #97979733;
+    height: 100px;
+}
+
+.grid-min {
+    opacity: 0;
+    width: 93%;
+    background-color: #ee6d1c26;
+    border-radius: 3px;
+    text-align: center;
+    color: #ee6d1c;
+    cursor: pointer;
+    height: 96%;
+    position: relative;
+    top: 1px;
+    left: 1px;
+}
+
+.grid-min span {
+    /* transform: rotate(270deg) translate(-100%, -25%); */
+    transform: rotate(-90deg) translate(-110%, 0%);
+    display: inline-block;
+    align-self: center;
+}
+
+.grid-min:hover {
+    opacity: 1;
+}
+
+.schedule-min {
+    /* background-color: #ee6d1c26; */
+    border-radius: 3px;
+    position: absolute;
+    text-align: center;
+    color: #ee6d1c;
+    cursor: pointer;
+    opacity: 1;
+    height: 100px;
+    border-right: 1px dotted #f0f0f0;
+}
+
+.schedule-min:hover {
+    opacity: 1;
+}
+
+.resize-bar {
+    opacity: 0;
+    color: #a1887c;
+    display: flex;
+    float: right;
+    cursor: w-resize;
+    height: 100px;
+    text-align: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.resize-bar:active {
+    background-color: #a1888a38;
+    border-radius: 0px 6px 6px 0px;
+}
+
+/* 
+.block-time-container[title]:hover::after {
+    content: attr(title);
+    display: inline-block;
+    background-color: #e5ddd8;
+    padding: 8px;
+    color: #a1887c;
+    position: relative;
+    right: 1px;
+    top: -27px;
+    left: -2px;
+    border-radius: 4px;
+} */
+.block-container {
+    max-height: 110px;
+    overflow-y: auto;
+}
+
+.block-container::-webkit-scrollbar {
+    width: 6px;
+    background-color: #F5F5F5;
+    border-radius: 15px;
+}
+
+.block-container::-webkit-scrollbar-thumb {
+    background-color: #c1c1c1;
+    border-radius: 15px;
+}
+
+.block-container::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #F5F5F5;
+    border-radius: 15px;
+}
+
+.show-ellipses {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+}
+
+.show-ellipses-inline {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+}
+
+.duration-radio {
+    height: 40px;
+    width: 84px !important;
+    max-width: 84px !important;
+}
+
+.ther-det {
+    padding-right: 0px !important;
+    padding-left: 22px !important;
+}
+
+.zoomBtn-active {
+    background-color: black;
+    color: white;
+}
+
+.block-bar span {
+    /* transform: rotate(270deg) translate(-100%, -25%); */
+    transform: rotate(-90deg) translate(-107%, -20%);
+    display: inline-block;
+}
+
+.block-bar:hover {
+    opacity: 1;
+}
+
+.block-bar {
+    /* opacity: 0; */
+}
+
+.staff-drag-placeholder {
+    background: #ccc;
+    border: dotted 1px #999;
+    min-height: 100px;
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cdk-drag-preview {
+    box-sizing: border-box;
+    border-radius: 4px;
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+        0 8px 10px 1px rgba(0, 0, 0, 0.14),
+        0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-animating {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.ther-draggable {
+    cursor: move;
+}
+
+.resize-block-copy {
+    background-color: #a1887c;
+    border: 1px dotted black;
+    position: absolute;
+    top: 0px;
+    color: red;
+}
+
+/* #dateSelection{
+    width: 50%!important;
+    
+} */
+/* #dateSelection ant-calendar-picker{
+    color: red;
+} */
+/* nz-picker{
+    width: 100%;
+    display: inline-block;
+    
+} */
+.ant-calendar-picker>span {
+    width: 100% !important;
+}
+
+.timeDuration {
+    opacity: 0;
+    color: #a1887c;
+    display: flex;
+    float: right;
+    cursor: w-resize;
+    height: 100px;
+    text-align: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+[nz-radio] {
+    display: block;
+    /* height: 30px;
+    line-height: 1rem */
+}
+
+.popover-no-margin .ant-popover-inner-content {
+    padding: 0px;
+}
+
+.filter-selected {
+    /* border-radius: 7px;
+      
+      margin-left: 8px; */
+    color: rgb(255, 85, 0) !important;
+    background-color: transparent !important;
+    border-color: rgb(255, 85, 0) !important;
+    border-style: dashed;
+}
+
+.cal-euro {
+    height: 15px;
+    width: auto;
+}
+
+.cal-euro-small {
+    height: 6px;
+    width: auto;
+}
+
+
+.font-poppins select * {
+    font-family: Poppins !important;
+    font-size: 10px;
+    /* height: 24px !important; */
+}
+
+.font-poppins textarea * {
+    font-family: Poppins !important;
+    font-size: 10px;
+    /* height: 24px !important; */
+}
+
+.font-poppins .ant-select-dropdown-menu-item {
+    /* height: 30px; */
+    margin: 4px;
+    font-family: Poppins !important;
+    font-size: 10px;
+}
+
+.font-poppins input[type=text] {
+    height: 35.8px;
+}
+
+.font-poppins input[type=number] {
+    height: 35.8px;
+}
+
+.font-poppins input[type=number] {
+    height: 35.8px;
+}
+
+.font-poppins textarea {
+    height: 35.8px;
+}
+
+/* .analytic-font *:not(.fa){
+    font-size: 10px;
+    font-weight: 500;
+  } */
+/* .booking-history *:not(.ant-tag){
+    font-size: 10px;
+    font-weight: 500;
+  } */
+
+.duration-label .ant-radio-button-checked {
+    background-color: #030303;
+    color: #ffffff !important;
+}
+
+.duration-label label {
+    color: #030303;
+    background-color: #ffffff;
+}
+
+.duration-palceholderlabel label {
+    color: #030303;
+    background-color: #ffffff;
+}
+
+.user-list-email {
+    margin-left: 5px;
+    opacity: 0.5;
+}
+
+.ant-radio-checked .ant-radio-inner {
+    border-color: red !important;
+}
+
+.ant-radio-checked .ant-radio-inner:after {
+    background-color: red;
+}
+
+.ant-radio:hover .ant-radio-inner {
+    border-color: red;
+}
+
+.analytic-data {
+    color: #000000 !important;
+}
+
+.add-customer-btn {
+    color: rgb(255, 85, 0) !important;
+    font-weight: 600;
+    font-size: 10px;
+    height: 22px;
+    margin: 6px !important;
+    font-family: Poppins !important;
+    font-size: 10px;
+    cursor: pointer;
+
+}
+
+.ant-radio-button-wrapper-checked {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+}
+
+.form-item-padding {
+    padding-left: 45px;
+    padding-right: 45px;
+}
+
+.labelStyle {
+    text-align: left;
+    left: 0;
+}
+
+.therInput {
+    color: black;
+    background-color: white;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    width: 85%;
+    height: 40px;
+    font-size: 12px;
+    border-right: 0px;
+}
+
+.therBtn {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    margin-left: -1px;
+    border-left: 0px;
+}
+.org-parent ::ng-deep .ant-input-suffix {
+    right: 8% !important;
+  }
+  .customer-name-parent ::ng-deep .ant-input-suffix {
+    right: 8% !important;
+  }
+.staff-parent ::ng-deep .ant-input-suffix {
+    right: 17% !important;
+  }
+/* ::ng-deep .ant-input-suffix{
+    right: 8% !important;
+} */
+
+.therBtnIcn {
+    display: inline-block;
+    font-size: 12px;
+    padding-bottom: 3px;
+    color: rgba(0, 0, 0, .25);
+}
+
+.cal-btn:hover {
+    box-shadow: 0px 0px 1px 1px rgb(255, 85, 0) !important;
+}
+
+.cal-btn:active {
+    box-shadow: 0px 0px 1px 1px rgb(255, 85, 0) !important;
+}
+
+.detail-divider {
+    width: 392px;
+    left: -16px;
+    margin: 0px;
+    display: inline-block;
+}
+
+.detail-dotted-divider {
+    width: 100%;
+    margin: 0px;
+    display: inline-block;
+}
+
+.font-black {
+    color: #000000 !important;
+}
+
+.ellipses-detail-pop {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    /* max-width: 97%; */
+
+}
+
+.color-grey {
+    color: #312C29 !important;
+}
+
+.booking-detail-icon-grey {
+    color: #8B8B8B
+}
+
+.staff-filter-popover {
+    max-width: 200px;
+}
+
+.v-timeline-tag {
+    font-weight: 500;
+    width: 100%;
+    font-size: 11px;
+    border-radius: 9px;
+    padding: 2px 0px;
+    text-align: center;
+    letter-spacing: 0.8px;
+    line-height: 1.1 !important;
+    height: 1.2rem !important;
+    background-color: rgb(255 85 0);
+    color: #ffffff;
+}
+
+/* ::ng-deep .ant-popover {
+    max-width: 25em;
+} */
+
+.strikethrough {
+    text-decoration: line-through;
+}
+
+.promoTextInput {
+    color: #EE6D1D !important;
+    background-color: #fff !important;
+}
+
+.promoTextInput:disabled {
+    color: #EE6D1D !important;
+    background-color: #fff !important;
+}
+
+.promoTextSpan {
+    color: #53535f !important;
+    /* background-color: #fff !important; */
+}
+
+::ng-deep .cal-select-option-font {
+    font-family: Poppins !important;
+
+}
+
+::ng-deep .cal-option-height {
+    height: 20px !important;
+    ;
+}
+
+::ng-deep .ant-form-item-control {
+    line-height: 24px !important;
+    ;
+}
+::ng-deep .ant-modal-content {
+    font-family: Poppins !important;
+}
+
+/* Start */
+
+
+.font-10,
+::ng-deep .ant-select-selection-selected-value,
+::ng-deep .ant-select-selection__choice,
+::ng-deep .ant-select-selection__placeholder,
+::ng-deep .ant-input,
+::ng-deep .ant-input:placeholder-shown,
+.address-div,.analytic-detail span,.stats-head,.analytic-count-icon,.analytic-count-data,.booking-history-label,.booking-history-data,.history-treatment-data,.btn-fill,.btn-outline
+,.booking-history-staff,.analytic-head {
+    font-size: 10px !important;
+
+}
+
+.font-9,.bookingform label,.bookingform .error-msg,.extra-label,.analytic-detail fa,.analytic-detail i, .filter-by{
+    font-size: 9px !important;
+
+}
+
+.font-6,.payment-tag,.paid-amt {
+    font-size: 6px;
+}
+
+.font-18,.amount-show-container {
+    font-size: 18px;
+}
+
+.analytic-avatar {
+    width: 60px !important;
+    height: 60px !important;
+}
+
+.font-20,
+.analytic-name {
+    font-size: 20px;
+}
+
+.font-15,
+.stats-data,.trash-icon {
+    font-size: 15px;
+}
+
+.font-12{
+    font-size: 12px;
+}
+.font-9-5,.filter-by,.filter-group-btn,.filter-skill-btn{
+    font-size: 9.5px;
+}
+.analytic-detail {
+    color: #000000;
+  }
+  .filter-search-box-booking{margin-left: -1rem!important; margin-right: -1rem!important;}
+  .svg-icon-color{color: #898989!important;}
+  .filter-by{padding-left: 0px!important;}
+  ::ng-deep.font-poppins input[type=text],.font-poppins textarea,.therBtn,.therInput{border:1px solid #d9d9d9 !important}
+  ::ng-deep.ant-select{border: none!important;}
+  .amount-btn-padding{padding-top: 0px;}
+
+
+/* Upto 1500 px */
+@media screen and (max-width: 1500px) {
+    .address-div-outer{top:18px;}
+    .amount-btn-padding{padding-top: 5px!important;}
+    
+    ::ng-deep.ant-popover .popover-filter-booking{width:310px; max-width: unset!important;}
+    ::ng-deep.ant-popover .select-group-popover-booking, ::ng-deep.ant-popover .select-skill-popover-booking{width:210px;}
+    .font-10,
+    
+    ::ng-deep.showemailmodel .ant-btn-primary,::ng-deep.showemailmodel .ant-btn-default,
+::ng-deep .ant-select-selection-selected-value,
+::ng-deep .ant-select-selection__choice,
+::ng-deep .ant-select-selection__placeholder,
+::ng-deep .ant-input,
+::ng-deep .ant-input:placeholder-shown,
+::ng-deep .ant-select-dropdown-menu-item,
+.address-div,.analytic-detail span,.stats-head,.analytic-count-icon,.analytic-count-data,.booking-history-label,.booking-history-data,.history-treatment-data,.btn-fill,.btn-outline
+,.booking-history-staff,.analytic-head,.ther-filter-radiogroup * {
+    font-size: 10px !important;
+
+}
+
+.font-9,.add-customer-btn,.invoicelink-label,.invoicelink-email-label,.error-msg-red,.error-msg-grey,.bookingform label,.bookingform .error-msg,.extra-label,.analytic-detail fa,.analytic-detail i {
+    font-size: 9px !important;
+
+}
+
+.font-6,.payment-tag,.paid-amt {
+    font-size: 6px;
+}
+
+.font-18,.amount-show-container {
+    font-size: 18px;
+}
+
+.analytic-avatar {
+    width: 60px !important;
+    height: 60px !important;
+    font-size: 40px;
+}
+
+.font-20,.analytic-name {
+    font-size: 20px;
+}
+
+.font-15,.stats-data,.trash-icon {
+    font-size: 15px;
+}
+
+.font-12 {
+    font-size: 12px;
+}
+
+
+}
+/* End */
+
+
+/* 1500 -  1700 px */
+@media screen and (max-width: 1700px) and (min-width: 1501px) {
+    .address-div-outer{top:18px;}
+    .amount-btn-padding{padding-top: 3px!important;}
+    ::ng-deep.ant-popover .popover-filter-booking{width:340px; max-width: unset!important;}
+    ::ng-deep.ant-popover .select-group-popover-booking, ::ng-deep.ant-popover .select-skill-popover-booking{width:210px;}
+    .font-10,
+    
+    ::ng-deep.showemailmodel .ant-btn-primary,::ng-deep.showemailmodel .ant-btn-default,
+::ng-deep .ant-select-selection-selected-value,
+::ng-deep .ant-select-selection__choice,
+::ng-deep .ant-select-selection__placeholder,
+::ng-deep .ant-input,
+::ng-deep .ant-input:placeholder-shown,
+::ng-deep .ant-select-dropdown-menu-item,
+.address-div,.analytic-detail span,.stats-head,.analytic-count-icon,.analytic-count-data,.booking-history-label,.booking-history-data,.history-treatment-data,.btn-fill,.btn-outline
+,.booking-history-staff,.analytic-head,.ther-filter-radiogroup * {
+    font-size: 11.5px !important;
+
+}
+
+.font-9,.add-customer-btn,.invoicelink-label,.invoicelink-email-label,.error-msg-red,.error-msg-grey,.bookingform label,.bookingform .error-msg,.extra-label,.analytic-detail fa,.analytic-detail i {
+    font-size: 10.4px !important;
+
+}
+
+.font-6,.payment-tag,.paid-amt {
+    font-size: 6.93px;
+}
+
+.font-18,.amount-show-container {
+    font-size: 20.8px;
+}
+
+.analytic-avatar {
+    width: 69.52px !important;
+    height: 69.52px !important;
+    font-size: 45px;
+}
+
+.font-20,
+.analytic-name {
+    font-size: 23.1px;
+}
+
+.font-15,
+.stats-data,.trash-icon {
+    font-size: 17.3px;
+}
+
+.font-12 {
+    font-size: 12px;
+}
+}
+/* End */
+
+/* 1701 -  1900 px */
+@media screen and (max-width: 1900px) and (min-width: 1701px) {
+    .address-div-outer{top:18px;}
+    .amount-btn-padding{padding-top: 3px!important;}
+    .add-customer-btn{height: 23px;}
+    ::ng-deep.ant-popover .popover-filter-booking{width:360px; max-width: unset!important;}
+    ::ng-deep.ant-popover .select-group-popover-booking, ::ng-deep.ant-popover .select-skill-popover-booking{width:210px;}
+    .font-10,
+    
+    ::ng-deep.showemailmodel .ant-btn-primary,::ng-deep.showemailmodel .ant-btn-default,
+::ng-deep .ant-select-selection-selected-value,
+::ng-deep .ant-select-selection__choice,
+::ng-deep .ant-select-selection__placeholder,
+::ng-deep .ant-input,
+::ng-deep .ant-input:placeholder-shown,
+::ng-deep .ant-select-dropdown-menu-item,
+.address-div,.analytic-detail span,.stats-head,.analytic-count-icon,.analytic-count-data,.booking-history-label,.booking-history-data,.history-treatment-data,.btn-fill,.btn-outline
+,.booking-history-staff,.analytic-head,.ther-filter-radiogroup *{
+    font-size: 13px !important;
+
+}
+
+.font-9,.add-customer-btn,.invoicelink-label,.invoicelink-email-label,.error-msg-red,.error-msg-grey,.bookingform label,.bookingform .error-msg,.extra-label,.analytic-detail fa,.analytic-detail i {
+    font-size: 11.7px !important;
+
+}
+
+.font-6,.payment-tag,.paid-amt {
+    font-size: 7.8px;
+}
+
+.font-18,.amount-show-container {
+    font-size: 20.3px;
+}
+
+.analytic-avatar {
+    width: 78.21px !important;
+    height: 78.21px !important;
+    font-size: 50px;
+    
+}
+::ng-deep.analytic-avatar span{padding-top: 4px;}
+
+.font-20,
+.analytic-name {
+    font-size: 25.9px;
+}
+
+.font-15,
+.stats-data,.trash-icon {
+    font-size: 19.5px;
+}
+
+.font-12 {
+    font-size: 12px;
+}
+}
+/* End */
+
+/* 1901-2100 px */
+@media screen and (max-width: 2100px) and (min-width: 1901px) {
+    .address-div-outer{top:11px;}
+    .amount-btn-padding{padding-top: 1px!important;}
+    .add-customer-btn{height: 25px;}
+    ::ng-deep.ant-popover .popover-filter-booking{width:360px; max-width: unset!important;}
+    ::ng-deep.ant-popover .select-group-popover-booking, ::ng-deep.ant-popover .select-skill-popover-booking{width:225px;}
+    .font-10,
+    ::ng-deep.showemailmodel .ant-btn-primary,::ng-deep.showemailmodel .ant-btn-default,
+::ng-deep .ant-select-selection-selected-value,
+::ng-deep .ant-select-selection__choice,
+::ng-deep .ant-select-selection__placeholder,
+::ng-deep .ant-input,
+::ng-deep .ant-input:placeholder-shown,
+::ng-deep .ant-select-dropdown-menu-item,
+.address-div,.analytic-detail span,.stats-head,.analytic-count-icon,.analytic-count-data,.booking-history-label,.booking-history-data,.history-treatment-data,.btn-fill,.btn-outline
+,.booking-history-staff,.analytic-head,.ther-filter-radiogroup * {
+    font-size: 14.4px !important;
+
+}
+
+.font-9,.add-customer-btn,.invoicelink-label,.invoicelink-email-label,.error-msg-red,.error-msg-grey,.bookingform label,.bookingform .error-msg,.extra-label,.analytic-detail fa,.analytic-detail i {
+    font-size: 13px !important;
+
+}
+
+.font-6,.payment-tag,.paid-amt {
+    font-size: 8.6px;
+}
+
+.font-18,.amount-show-container {
+    font-size: 22.5px;
+}
+
+.analytic-avatar {
+    width: 86.9px !important;
+    height: 86.9px !important;
+    font-size: 55px;
+
+}
+
+::ng-deep.analytic-avatar span{padding-top: 10px;}
+
+.font-20,
+.analytic-name {
+    font-size: 28.8px;
+}
+
+.font-15,
+.stats-data,.trash-icon {
+    font-size: 21.6px;
+}
+
+.font-12 {
+    font-size: 12px;
+}
+}
+/* End */
+/* 2100-2300 px */
+@media screen and (max-width: 2300px) and (min-width: 2101px) {
+    .address-div-outer{top:12px;}
+    .amount-btn-padding{padding-top: 1px!important;}
+    .add-customer-btn{height: 26px;}
+    ::ng-deep.ant-popover .popover-filter-booking{width:360px; max-width: unset!important;}
+    ::ng-deep.ant-popover .select-group-popover-booking, ::ng-deep.ant-popover .select-skill-popover-booking{width:250px;}
+    .font-10,
+    
+    ::ng-deep.showemailmodel .ant-btn-primary,::ng-deep.showemailmodel .ant-btn-default,
+::ng-deep .ant-select-selection-selected-value,
+::ng-deep .ant-select-selection__choice,
+::ng-deep .ant-select-selection__placeholder,
+::ng-deep .ant-input,
+::ng-deep .ant-input:placeholder-shown,
+::ng-deep .ant-select-dropdown-menu-item,
+.address-div,.analytic-detail span,.stats-head,.analytic-count-icon,.analytic-count-data,.booking-history-label,.booking-history-data,.history-treatment-data,.btn-fill,.btn-outline
+,.booking-history-staff,.analytic-head,.ther-filter-radiogroup * {
+    font-size: 15.6px !important;
+
+}
+
+.font-9,.add-customer-btn,.invoicelink-label,.invoicelink-email-label,.error-msg-red,.error-msg-grey,.bookingform label,.bookingform .error-msg,.extra-label,.analytic-detail fa,.analytic-detail i {
+    font-size: 14.3px !important;
+
+}
+
+.font-6,.payment-tag,.paid-amt {
+    font-size: 9.53px;
+}
+
+.font-18,.amount-show-container {
+    font-size: 28.5px;
+}
+
+.analytic-avatar {
+    width: 95.59px !important;
+    height: 95.59px !important;
+    font-size: 55px;
+
+}
+::ng-deep.analytic-avatar span{padding-top: 13px;}
+
+.font-20,
+.analytic-name {
+    font-size: 31.7px;
+}
+
+.font-15,
+.stats-data,.trash-icon {
+    font-size: 23.8px;
+}
+
+.font-12 {
+    font-size: 12px;
+}
+}
+/* End */
+
+/* 2300-2500 px */
+@media screen and (max-width: 2500px) and (min-width: 2301px) {
+    .address-div-outer{top:14px;}
+    .amount-btn-padding{padding-top: 1px!important;}
+    .add-customer-btn{height: 27px;}
+    ::ng-deep.ant-popover .popover-filter-booking{width:425px; max-width: unset!important;}
+    ::ng-deep.ant-popover .select-group-popover-booking, ::ng-deep.ant-popover .select-skill-popover-booking{width:250px;}
+    .font-10,
+    
+    ::ng-deep.showemailmodel .ant-btn-primary,::ng-deep.showemailmodel .ant-btn-default,
+::ng-deep .ant-select-selection-selected-value,
+::ng-deep .ant-select-selection__choice,
+::ng-deep .ant-select-selection__placeholder,
+::ng-deep .ant-input,
+::ng-deep .ant-input:placeholder-shown,
+::ng-deep .ant-select-dropdown-menu-item,
+.address-div,.analytic-detail span,.stats-head,.analytic-count-icon,.analytic-count-data,.booking-history-label,.booking-history-data,.history-treatment-data,.btn-fill,.btn-outline
+,.booking-history-staff,.analytic-head,.ther-filter-radiogroup * {
+    font-size: 17.3px !important;
+
+}
+
+.font-9,.add-customer-btn,.invoicelink-label,.invoicelink-email-label,.error-msg-red,.error-msg-grey,.bookingform label,.bookingform .error-msg,.extra-label,.analytic-detail fa,.analytic-detail i{
+    font-size: 15.6px !important;
+
+}
+
+.font-6,.payment-tag,.paid-amt {
+    font-size: 10.4px;
+}
+
+.font-18,.amount-show-container {
+    font-size: 31.1px;
+}
+
+.analytic-avatar {
+    width: 104.2px !important;
+    height: 104.29px !important;
+    font-size: 60px;
+
+}
+::ng-deep.analytic-avatar span{padding-top: 17px;}
+
+.font-20,
+.analytic-name {
+    font-size: 34.6px;
+}
+
+.font-15,
+.stats-data,.trash-icon {
+    font-size: 25.9px;
+}
+
+.font-12 {
+    font-size: 12px;
+}
+}
+/* End */
+
+/* 2500-2700 px */
+/* @media screen and (max-width: 2500px) and (min-width: 2301px) {
+    .font-10,
+::ng-deep .ant-select-selection-selected-value,
+::ng-deep .ant-select-selection__choice,
+::ng-deep .ant-select-selection__placeholder,
+::ng-deep .ant-input,
+::ng-deep .ant-input:placeholder-shown,
+.address-div,.analytic-detail span,.stats-head,.analytic-count-icon,.analytic-count-data,.booking-history-label,.booking-history-data,.history-treatment-data,.btn-fill,.btn-outline
+,.booking-history-staff,.analytic-head {
+    font-size: 18.7px !important;
+
+}
+
+.font-9,.invoicelink-label,.invoicelink-email-label,.error-msg-red,.bookingform label,.bookingform .error-msg,.extra-label,.analytic-detail fa,.analytic-detail i {
+    font-size: 16.9px !important;
+
+}
+
+.font-6,.payment-tag,.paid-amt {
+    font-size: 11.2px;
+}
+
+.font-18,.amount-show-container {
+    font-size: 33.7px;
+}
+
+.analytic-avatar {
+    width: 112.9px !important;
+    height: 112.9px !important;
+}
+
+.font-20,
+.analytic-name {
+    font-size: 37.5px;
+}
+
+.font-15,
+.stats-data,.trash-icon {
+    font-size: 28.1px;
+}
+
+.font-12 {
+    font-size: 12px;
+}
+} */
+/* End */
+
+/* 2700-2900 px */
+/* @media screen and (max-width: 2500px) and (min-width: 2301px) {
+    .font-10,
+::ng-deep .ant-select-selection-selected-value,
+::ng-deep .ant-select-selection__choice,
+::ng-deep .ant-select-selection__placeholder,
+::ng-deep .ant-input,
+::ng-deep .ant-input:placeholder-shown,
+.address-div,.analytic-detail span,.stats-head,.analytic-count-icon,.analytic-count-data,.booking-history-label,.booking-history-data,.history-treatment-data,.btn-fill,.btn-outline
+,.booking-history-staff,.analytic-head {
+    font-size: 20.2px !important;
+
+}
+
+.font-9,.invoicelink-label,.invoicelink-email-label,.error-msg-red,.bookingform label,.bookingform .error-msg,.extra-label,.analytic-detail fa,.analytic-detail i {
+    font-size: 18.2px !important;
+
+}
+
+.font-6,.payment-tag,.paid-amt {
+    font-size: 12.1px;
+}
+
+.font-18,.amount-show-container {
+    font-size: 36.3px;
+}
+
+.analytic-avatar {
+    width: 121.6px !important;
+    height: 121.6px !important;
+}
+
+.font-20,
+.analytic-name {
+    font-size: 40.4px;
+}
+
+.font-15,
+.stats-data,.trash-icon {
+    font-size: 30.3px;
+}
+
+.font-12 {
+    font-size: 12px;
+}
+} */
+/* End */
+/* 2500 and above px */
+@media screen and (min-width: 2501px) {
+    .address-div-outer{top:18px;}
+    .add-customer-btn{height: 30px;}
+    .amount-btn-padding{padding-top: 2px!important;}
+    ::ng-deep.ant-popover .popover-filter-booking{width:500px; max-width: unset!important;}
+    ::ng-deep.ant-popover .select-group-popover-booking, ::ng-deep.ant-popover .select-skill-popover-booking{width:300px;}
+    .font-10,
+    
+    ::ng-deep.showemailmodel .ant-btn-primary,::ng-deep.showemailmodel .ant-btn-default,
+::ng-deep .ant-select-selection-selected-value,
+::ng-deep .ant-select-selection__choice,
+::ng-deep .ant-select-selection__placeholder,
+::ng-deep .ant-input,
+::ng-deep .ant-input:placeholder-shown,
+::ng-deep .ant-select-dropdown-menu-item,
+.address-div,.analytic-detail span,.stats-head,.analytic-count-icon,.analytic-count-data,.booking-history-label,.booking-history-data,.history-treatment-data,.btn-fill,.btn-outline
+,.booking-history-staff,.analytic-head,.ther-filter-radiogroup * {
+    font-size: 18.7px !important;
+
+}
+
+.font-9,.add-customer-btn,.invoicelink-label,.invoicelink-email-label,.error-msg-red,.error-msg-grey,.bookingform label,.bookingform .error-msg,.extra-label,.analytic-detail fa,.analytic-detail i {
+    font-size: 18.2px !important;
+
+}
+
+.font-6,.payment-tag,.paid-amt {
+    font-size: 12.1px;
+}
+
+.font-18,.amount-show-container {
+    font-size: 33.7px;
+}
+
+.analytic-avatar {
+    width: 121.6px !important;
+    height: 121.6px !important;
+    font-size: 65px;
+
+}
+::ng-deep.analytic-avatar span{padding-top: 26px;}
+
+.font-20,
+.analytic-name {
+    font-size: 40.4px;
+}
+
+.font-15,
+.stats-data,.trash-icon {
+    font-size: 30.3px;
+}
+
+.font-12 {
+    font-size: 12px;
+}
+
+}
+/* End */
+
+/* End */
+
+.color-label,
+.bookingform label,
+.bookingform .warning-msg,
+.analytic-head {
+    color: #55555c !important;
+    
+}
+.analytic-count-data{padding-left: 10px;}
+
+.color-error,
+.bookingform .error-msg {
+    color: #e24a4a !important;
+}
+
+.font-semi-bold,
+.bookingform label,
+.payment-tag,
+.amount-show-container,
+.paid-amt,
+.extra-label,
+.analytic-name,
+.stats-data,
+.booking-history-label,
+.btn-fill,.btn-outline,.filter-by,.filter-group-btn,.filter-skill-btn,::ng-deep.showemailmodel .ant-btn-primary,::ng-deep.showemailmodel .ant-btn-default {
+    font-weight: 600 !important;
+}
+.ther-filter{
+    font-family:Poppins !important;
+
+}
+.ther-filter .ant-popover-inner-content{
+    margin: 0px !important;
+
+}
+.ther-filter-heading{
+        color: #2A2A2A;
+      
+        padding-left: 5px;
+}
+.filter-by{
+    color: #000000;
+    padding-top: 3px;
+}
+.filter-group-btn{
+    color: #000000; border-radius: 4px; border: 0.5px dashed #2D2D35;height: auto;
+    /* max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis; */
+    /* margin-bottom: 0px; */
+} 
+.ther-filter-radiogroup *{
+    color: #000000 !important;
+}
+.font-regular,
+::ng-deep .ant-select-selection-selected-value,
+::ng-deep .ant-select-selection__choice,
+::ng-deep .ant-select-selection__placeholder,
+::ng-deep .ant-input,
+::ng-deep .ant-input:placeholder-shown,
+.bookingform .error-msg,
+.bookingform .warning-msg,
+.address-div,
+.stats-head,
+.analytic-count-data,.booking-history-data,.history-treatment-data,.booking-history-staff,.ther-filter-radiogroup{
+    font-weight: 400 !important;
+}
+
+.font-medium,
+.analytic-head
+ {
+    font-weight: 500 !important;
+}
+
+.bookingform .msg-span {
+    font-size: 9px !important;
+    font-weight: 600 !important;
+}
+
+::ng-deep .ant-select-selection-selected-value,
+::ng-deep .ant-select-selection__choice,
+::ng-deep .ant-select-selection__placeholder,
+::ng-deep .ant-input,
+::ng-deep .ant-input:placeholder-shown,
+.stats-data,
+.stats-head,
+.analytic-count-data,
+.booking-history-label,
+.booking-history-data {
+    color: #000000 !important;
+
+}
+
+.payment-tag {
+    /* background-color: #E24A4A; */
+    border-radius: 4px;
+    width: auto;
+
+    color: #FFFFFF;
+
+    height: 14px;
+    margin: 0px !important;
+    float: right;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+    min-width: 80% !important;
+    text-align: center;
+
+
+}
+
+.payment-tag span {
+    /* background-color: #E24A4A; */
+    top: 0px;
+    position: relative;
+    text-transform: uppercase;
+}
+
+.amount-show-container {
+    padding: 0px 0px;
+    background-color: #f1f1f1;
+    border-radius: 5.3px;
+
+    height: 100%;
+    margin-right: 20px;
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    /* max-height: 40px; */
+    color: #000000 !important;
+}
+
+.paid-amt {
+    padding: 2px 2px;
+    display: block;
+    color: #ee6d1d !important;
+}
+
+.extra-label {
+    color: #EE6D1D !important;
+
+}
+
+.analytic-line-height {
+    line-height: 1em;
+}
+
+.analytic-count-icon * {
+
+    display: table-cell;
+}
+
+.booking-history-ml {
+    /* margin-left: 30px; */
+}
+
+.history-treatment-data,.booking-history-staff {
+    color: #312c29 !important;
+    mix-blend-mode: normal;
+    opacity: 0.8;
+}
+.booking-history-notes{mix-blend-mode: normal;
+    opacity: 0.8;}
+
+.trash-icon {
+    color: #ee6d1d !important;
+    float: right;
+}
+
+.btn-outline,.btn-outline-pop {
+    border-radius: 5.33px;
+    border-color: #EE6D1D;
+    background-color: #ffffff;
+    color: #ee6d1d;
+    height: 40px;
+
+}
+
+.btn-fill,.btn-fill-pop {
+    border-radius: 5.33px;
+    border-color: #EE6D1D;
+    background-color: #EE6D1D;
+    color: #ffffff;
+    height: 40px;
+
+}
+
+.pop-btn-outline,::ng-deep.showemailmodel .ant-btn-default {
+    /* border-radius: 5.33px; */
+    border-color: #EE6D1D !important;
+    background-color: #ffffff !important;
+    color: #ee6d1d !important;
+
+
+}
+
+.pop-btn-fill,::ng-deep.showemailmodel .ant-btn-primary {
+    /* border-radius: 5.33px; */
+    border-color: #EE6D1D !important;
+    background-color: #EE6D1D !important;
+    color: #ffffff !important;
+
+
+}
+
+.btn-margin-left {
+    margin-left: 20px !important;
+}
+.ther-filter-radiogroup *{
+    color: #000000 !important;
+}
+/************M css start*********************/
+.booking-history-tag{display: initial;
+    border-radius: 5px;
+    padding-top: 2px;
+padding-bottom: 2px;
+
+}
+.booking-history-div{float: left;width: 100%;}
+.booking-history-mt.booking-history-div.ant-row {
+    margin-top: 6px;
+}
+.hourspan{padding-left: 8px;}
+.elevatorspan{padding-left: 30px; padding-right: 8px;}
+.total-amt.payment-tag{
+    float: none;
+    vertical-align: middle;
+display: inline;
+padding-top: 3px;
+padding-bottom: 3px;
+}
+.paymentStatuslabel{text-align: right;}
+.address-div{padding: 5px;  padding-left: 10px; padding-right: 10px; background-color: #FCF1EA;
+    float: left; border-radius: 5px;}
+
+.therBtn{width: 15%;}
+.therInput{width:85%!important;}
+.therInput.ant-input:hover:not([disabled]){border-color:#edf2f9!important}
+.total-amt .amount-div{text-align: center;}
+.total-amt{height: 38.5px; width: 80%!important; min-width: unset!important;}
+.paid-amt{width: auto;  float: left;margin-bottom: 0px; position: absolute;}
+
+.strikethrough{margin-top: 0px;  float: left; width: 100%; text-align: center;font-size: 10px;margin-bottom: -5px;}
+.treatment-scroller {   scrollbar-width: thin;   scrollbar-color: #EBE5E1 #F2F2F2;  }
+::ng-deep.ant-select-selection{border: 1px solid #d9d9d9!important;}
+.btn-outline[_ngcontent-coi-c18]{height: auto;}
+.paymentStatuslabel .payment-tag{width: 80% !important;    display: inline-block!important; height: auto!important;}
+.paymentStatuslabel{text-align: left!important;}
+.address-ellipses{width: 100%;  padding-right: 10px;}
+::ng-deep.multiselectboxheight .ant-select-selection{height: auto!important;}
+#appointmentDate ::ng-deep.ant-calendar-picker-input.ant-input.ng-star-inserted{text-align: left; }
+#appointmentDate ::ng-deep.ant-calendar-picker{ width:75%!important;}
+.booking-history-middle .booking-history-ml{padding-left: 30px;}
+.booking-history .booking-history-ml{padding-left: 25px; padding-right: 25px;}
+.booking-history-label.booking-history-ml.ant-col.ant-col-24{padding-left: 20px;}
+::ng-deep.nzcard-side .ant-card-body{padding-bottom: 0px!important;}
+::ng-deep.ant-select-selection__choice{background-color: #f1f1f1!important;  border-radius: 4px!important;}
+#prodContainer div:last-child div{margin-bottom: 0px!important;}
+::ng-deep.ant-select-sm .ant-select-selection--multiple .ant-select-arrow{top: 50%;}
+.booking-card-draft{background-color: #FBF0E8!important;}
+
+.analytic-head{padding-left: 10px;}
+
+.main-top-btn,.paymentStatuslabel .total-amt{margin-left: 10px!important;}
+.treatment-scroller .total-amt{font-weight:400!important;}
+
+
+
+@media screen and (max-width: 1500) {
+    
+}
+
+@media screen and (max-width: 1700px) and (min-width: 1501px) {
+   
+}
+@media screen and (min-width: 1700px) {
+    .bookingform textarea,.btn-outline,.btn-fill,.therInput, .therBtn,.total-amt, .ant-select, .bookingform input[type=number], .bookingform input[type=text], ::ng-deep.ant-calendar-picker-input, ::ng-deep.ant-select-selection__rendered, ::ng-deep.ant-select-selection {
+        height: 2.083vw!important;}
+        
+        
+        
+}
+
+@media screen and (max-width: 1900px) and (min-width: 1701px) {
+    .analytic-line-height .stats-head, .analytic-line-height .stats-data{line-height: 20px;}
+    .analytic-detail{line-height: 16px;}
+}
+
+@media screen and (max-width: 2100px) and (min-width: 1901px) {
+        ::ng-deep.ant-select-selection-selected-value{padding-top: .10vw;;}
+        .analytic-detail, .analytic-line-height .stats-head, .analytic-line-height .stats-data{line-height: 25px;}
+        ::ng-deep.ant-select-sm .ant-select-selection--multiple .ant-select-selection__rendered > ul > li
+{   height: auto;    padding-top: 3px;padding-bottom: 3px;display: flex;}
+}
+
+@media screen and (max-width: 2300px) and (min-width: 2101px) {
+    
+        ::ng-deep.ant-select-selection-selected-value{padding-top: .15vw;;}
+        .analytic-detail, .analytic-line-height .stats-head, .analytic-line-height .stats-data{line-height: 25px;}
+        ::ng-deep.ant-select-sm .ant-select-selection--multiple .ant-select-selection__rendered > ul > li
+{   height: auto;    padding-top: 4px;padding-bottom: 4px;display: flex;}
+}
+
+@media screen and (max-width: 2500px) and (min-width: 2301px) {
+        ::ng-deep.ant-select-selection-selected-value{padding-top: .25vw;}
+        .analytic-detail, .analytic-line-height .stats-head, .analytic-line-height .stats-data{line-height: 30px;}
+        ::ng-deep.ant-select-sm .ant-select-selection--multiple .ant-select-selection__rendered > ul > li{    height: auto;    padding-top: 5px;padding-bottom: 5px;display: flex;}
+        
+}@media screen and (min-width: 2501px) {
+        ::ng-deep.ant-select-selection-selected-value{padding-top: .25vw;}
+        .analytic-line-height .stats-head, .analytic-line-height .stats-data{line-height: 40px;}
+        .analytic-detail{line-height: 30px;}
+        ::ng-deep.ant-select-sm .ant-select-selection--multiple .ant-select-selection__rendered > ul > li{   height: auto;    padding-top: 5px;padding-bottom: 5px;display: flex;}
+}
+
+@media screen and (min-width: 3400px){
+.ant-select-selection-selected-value {
+  padding-top: 0.40vw!important;
+}
+}
+
+/************End*********************/
+
+::ng-deep .ant-radio-group{
+width: 100% !important;
+}
+
+.ellipsis-select .ant-select-selection-item,
+.ellipsis-select .ant-select-selection-placeholder {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ellipsis-select ::ng-deep .ant-select-selection-selected-value {
+ max-width: 92% !important;
+}

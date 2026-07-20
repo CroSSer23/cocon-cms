@@ -1,0 +1,108 @@
+<!-- Toast -->
+<ng2-toasty [position]="'top-right'"></ng2-toasty>
+
+<!-- Default view: show promo-code table -->
+<nz-card [@slideIn]>
+    <!-- Actions -->
+    <div nz-row nzGutter="16" style="margin-bottom: 25px;">
+        <div nz-col class="gutter-row d-flex" nzSpan="7">
+            <nz-input-group [nzPrefix]="prefiXTemplate">
+                <input nz-input placeholder="Search" (keyup)="onKeyUp(searchBox.value)"
+                    ng-model-options="{ debounce: 1000 }" #searchBox nzSize="small">
+            </nz-input-group>
+            <ng-template #prefiXTemplate>
+                <i nz-icon nzType="search" theme="outline"></i>
+            </ng-template>
+
+        </div>
+    </div>
+    <div nz-row nzGutter="16">
+        <div nz-col class="gutter-row" nzSpan='24'>
+            <nz-table #ratingTable [nzData]="ratingData" [nzLoading]="loadingFlag">
+                <thead (nzSortChange)="sort($event)" nzSingleSort>
+                    <tr>
+                        <th class="font-16 font-small-caps">User</th>
+                        <th class="font-16 font-small-caps" nzShowSort nzSortKey="BookingId">Booking</th>
+                        <th class="font-16 font-small-caps" nzShowSort nzSortKey="EaseOfBooking">Ease of Booking</th>
+                        <th class="font-16 font-small-caps" nzShowSort nzSortKey="Professionalism">Professionalism</th>
+                        <th class="font-16 font-small-caps" nzShowSort nzSortKey="Experience">Experience</th>
+                        <th class="font-16 font-small-caps" nzShowSort nzSortKey="Quality">Quality</th>
+                        <th class="font-16 font-small-caps" nzShowSort nzSortKey="Value">Value</th>
+                        <th class="font-16 font-small-caps">Feedback</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of ratingTable.data" class="data-row"
+                    [ngStyle]="{'background-color': (data.Archive==1) ? '#FFEBEE' : null}">
+                        <td [nz-tooltip]="(data.Archive==1? 'User no longer exists': null)">{{(data.Name)?data.Name:"-"}}</td>
+                        <td>
+                            <span (click)="viewBooking(data.BookingId)" title="View Booking Detail"
+                                style="cursor: pointer;">
+                                #{{data.BookingId}}
+                            </span>
+                        </td>
+                        <td>
+                            <span *ngFor='let in of counter(data.EaseOfBooking) ;let i = index'>
+                                <img src="assets/images/icons/star_solid.png" class="rating-icon-solid" />
+                            </span>
+                            <span *ngFor='let in of counter(5 - data.EaseOfBooking) ;let i = index'>
+                                <img src="assets/images/icons/star.png" class="rating-icon-solid" />
+                            </span>
+                        </td>
+                        <td>
+                            <span *ngFor='let in of counter(data.Professionalism) ;let i = index'>
+                                <img src="assets/images/icons/star_solid.png" class="rating-icon-solid" />
+                            </span>
+                            <span *ngFor='let in of counter(5 - data.Professionalism) ;let i = index'>
+                                <img src="assets/images/icons/star.png" class="rating-icon-solid" />
+                            </span>
+                        </td>
+                        <td>
+                            <span *ngFor='let in of counter(data.Experience) ;let i = index'>
+                                <img src="assets/images/icons/star_solid.png" class="rating-icon-solid" />
+                            </span>
+                            <span *ngFor='let in of counter(5 - data.Experience) ;let i = index'>
+                                <img src="assets/images/icons/star.png" class="rating-icon-solid" />
+                            </span>
+                        </td>
+                        <td>
+                            <span *ngFor='let in of counter(data.Quality) ;let i = index'>
+                                <img src="assets/images/icons/star_solid.png" class="rating-icon-solid" />
+                            </span>
+                            <span *ngFor='let in of counter(5 - data.Quality) ;let i = index'>
+                                <img src="assets/images/icons/star.png" class="rating-icon-solid" />
+                            </span>
+                        </td>
+                        <td>
+                            <span *ngFor='let in of counter(data.Value) ;let i = index'>
+                                <img src="assets/images/icons/star_solid.png" class="rating-icon-solid" />
+                            </span>
+                            <span *ngFor='let in of counter(5 - data.Value) ;let i = index'>
+                                <img src="assets/images/icons/star.png" class="rating-icon-solid" />
+                            </span>
+                        </td>
+                        <td>
+                            <span *ngIf="!data.Feedback">-</span>
+                            <span *ngIf="data.Feedback">
+                                <span *ngIf="data.FeedbackExtra">
+                                    <span nz-popover [nzPopoverContent]="contentFeedback" nzPopoverTrigger="hover"
+                                        nzPopoverPlacement="left">
+                                        {{data.FeedbackShow}}
+                                    </span>
+                                </span>
+                                <span *ngIf="!data.FeedbackExtra">
+                                    {{data.FeedbackShow}}
+                                </span>
+                            </span>
+                            <ng-template #contentFeedback>
+                                <span>
+                                    {{data.Feedback}}
+                                </span>
+                            </ng-template>
+                        </td>
+                    </tr>
+                </tbody>
+            </nz-table>
+        </div>
+    </div>
+</nz-card>

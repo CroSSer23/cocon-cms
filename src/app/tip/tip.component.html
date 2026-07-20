@@ -1,0 +1,91 @@
+<!-- Toast -->
+<ng2-toasty [position]="'top-right'"></ng2-toasty>
+
+<!-- Default view: show promo-code table -->
+<nz-card [@slideIn]>
+    <!-- Actions -->
+    <div nz-row nzGutter="16" class="m-b-5">
+        <div nz-col class="gutter-row" nzSpan="7">
+            <nz-input-group [nzPrefix]="prefiXTemplate">
+                <input nz-input placeholder="Search" (keyup)="onKeyUp(searchBox.value)"
+                    ng-model-options="{ debounce: 1000 }" #searchBox nzSize="small">
+            </nz-input-group>
+            <ng-template #prefiXTemplate>
+                <i nz-icon nzType="search" theme="outline"></i>
+            </ng-template>
+        </div>
+        <div nz-col class="gutter-row" nzSpan="17">
+            <div style="text-align: right;">
+                <span class="amount-show-container color-brand-primary">
+                    <img src="assets/images/icons/euro-dark.png" class="tip-euro" />
+                    {{totalAmount}}
+                </span>
+                <nz-month-picker [(ngModel)]="selectedMonth" nzAllowClear="false" (ngModelChange)="changeMonth($event)"
+                    nzPlaceHolder="Select month" nzFormat="MMM yyyy">
+                </nz-month-picker>
+            </div>
+        </div>
+    </div>
+    <div nz-row nzGutter="16">
+        <div nz-col class="gutter-row" nzSpan='24'>
+            <nz-table #tipTable [nzData]="tipData" [nzLoading]="loadingFlag" [nzTitle]="tableHeader">
+                <thead (nzSortChange)="sort($event)" nzSingleSort>
+                    <tr *ngIf="selectedView === 0">
+                        <th class="font-16 font-small-caps">Booking</th>
+                        <th class="font-16 font-small-caps">User</th>
+                        <th class="font-16 font-small-caps" nzShowSort nzSortKey="TipAmount">
+                            Amount
+                            <img src="assets/images/icons/euro-dark.png"
+                                style="height:auto; width:11px;margin-left: 2px;" />
+                        </th>
+                        <th class="font-16 font-small-caps">Staff</th>
+                    </tr>
+                    <tr *ngIf="selectedView === 1">
+                        <th class="font-16 font-small-caps">Staff</th>
+                        <th class="font-16 font-small-caps" nzShowSort nzSortKey="TipAmount">
+                            Total Tip
+                            <img src="assets/images/icons/euro-dark.png"
+                                style="height:auto; width:11px;margin-left: 2px;" />
+                        </th>
+                    </tr>
+                </thead>
+                <tbody *ngIf="selectedView === 0">
+                    <tr *ngFor="let data of tipTable.data" class="data-row"
+                    [ngStyle]="{'background-color': (data.User.Archive==1) ? '#FFEBEE' : null}">
+                        <td>
+                            <span (click)="viewBooking(data.BookingId)" title="View Booking Detail"
+                                style="cursor: pointer;">
+                                #{{data.BookingId}}
+                            </span>
+                        </td>
+                        
+                        <td [nz-tooltip]="(data.User.Archive==1? 'User no longer exists': null)">{{(data.User.Name)?data.User.Name:"-"}}</td>
+                        <td>{{data.TipAmount}}</td>
+                        <td>{{data.StaffNames}}</td>
+                    </tr>
+                </tbody>
+                <tbody *ngIf="selectedView === 1">
+                    <tr *ngFor="let data of tipTable.data" class="data-row">
+                        <td>{{data.Name}}</td>
+                        <td>{{data.TotalTip}}</td>
+                    </tr>
+                </tbody>
+            </nz-table>
+            <ng-template #tableHeader>
+                <div nz-row nzGutter="16">
+                    <div nz-col nzXs="12" nzSm="8" nzMd="7">
+                        <span class="m-r-5 m-l-15" style="font-weight: 600;">
+                            View:
+                        </span>
+                        <nz-select nzPlaceHolder="View" nzDropdownClassName="border-less"
+                            (ngModelChange)="changeView($event)" class="border-less" [(ngModel)]="selectedView"
+                            nzSize="small" style="width: 50%;">
+                            <nz-option *ngFor="let type of this.viewList" [nzValue]="type.type" [nzLabel]="type.name">
+                            </nz-option>
+                        </nz-select>
+                    </div>
+                </div>
+            </ng-template>
+        </div>
+    </div>
+</nz-card>
