@@ -22,24 +22,26 @@ export class FirebaseService {
     }
 
     signInWithEmailAndPassword(email: string, password: string) {
+        // Firebase (chat) is optional in this deploy. With a dummy/invalid key the SDK can
+        // reject the promise OR throw synchronously — either way we must still resolve so
+        // the CMS login/navigation flow is never blocked.
         return new Promise((resolve, reject) => {
-            if (app.name) {
-                app.auth()
-                    .signInWithEmailAndPassword(email, password)
-                    .then((value) => {
-                        window.localStorage.setItem("FRBCL", password);
-                        resolve(value);
-                    })
-                    .catch((err) => {
-                        // Firebase (chat) is optional in this deploy — don't let an auth
-                        // failure block the CMS login/navigation flow.
-                        console.warn("Firebase sign-in skipped:", err && err.message);
-                        window.localStorage.setItem("FRBCL", password);
-                        resolve("firebase auth skipped");
-                    })
-            } else {
-                window.localStorage.setItem("FRBCL", password);
-                resolve("app not exist");
+            const done = (v?) => { window.localStorage.setItem("FRBCL", password); resolve(v); };
+            try {
+                if (app && app.name) {
+                    app.auth()
+                        .signInWithEmailAndPassword(email, password)
+                        .then((value) => done(value))
+                        .catch((err) => {
+                            console.warn("Firebase sign-in skipped:", err && err.message);
+                            done("firebase auth skipped");
+                        });
+                } else {
+                    done("app not exist");
+                }
+            } catch (err) {
+                console.warn("Firebase sign-in threw, skipped:", err && err.message);
+                done("firebase auth threw");
             }
         })
     }
