@@ -30,6 +30,13 @@ export class FirebaseService {
                         window.localStorage.setItem("FRBCL", password);
                         resolve(value);
                     })
+                    .catch((err) => {
+                        // Firebase (chat) is optional in this deploy — don't let an auth
+                        // failure block the CMS login/navigation flow.
+                        console.warn("Firebase sign-in skipped:", err && err.message);
+                        window.localStorage.setItem("FRBCL", password);
+                        resolve("firebase auth skipped");
+                    })
             } else {
                 window.localStorage.setItem("FRBCL", password);
                 resolve("app not exist");
